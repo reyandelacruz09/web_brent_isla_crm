@@ -15,8 +15,8 @@ const columns: GridColDef[] = [
 
 const rows = [
   {
-    status: "Received",
-    id: "4",
+    status: "Completed",
+    id: "3",
     name: "Orlhie Almendares",
     assignedbranch: "Makati Branch",
     amount: "100",
@@ -24,8 +24,8 @@ const rows = [
     edt: "6/23/2024 14:25",
   },
   {
-    status: "Received",
-    id: "11",
+    status: "Completed",
+    id: "13",
     name: "Orlhie Almendares",
     assignedbranch: "Makati Branch",
     amount: "100",
@@ -35,7 +35,7 @@ const rows = [
 ];
 
 const theme = createTheme();
-function Table_Received() {
+function Table_Completed_History() {
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === "New Order") {
       return (
@@ -105,4 +105,4 @@ function Table_Received() {
   );
 }
 
-export default Table_Received;
+export default Table_Completed_History;

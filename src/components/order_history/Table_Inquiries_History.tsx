@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const columns: GridColDef[] = [
-  { field: "status", headerName: "Status", width: 130 },
+  { field: "status", headerName: "Status", width: 150 },
   { field: "id", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
@@ -15,7 +15,7 @@ const columns: GridColDef[] = [
 
 const rows = [
   {
-    status: "Received",
+    status: "Cancelled Order",
     id: "4",
     name: "Orlhie Almendares",
     assignedbranch: "Makati Branch",
@@ -24,7 +24,7 @@ const rows = [
     edt: "6/23/2024 14:25",
   },
   {
-    status: "Received",
+    status: "Cancelled Order",
     id: "11",
     name: "Orlhie Almendares",
     assignedbranch: "Makati Branch",
@@ -35,49 +35,16 @@ const rows = [
 ];
 
 const theme = createTheme();
-function Table_Received() {
+function Table_Inquiries_History() {
   const renderCell = (params: any) => {
-    if (params.colDef.field === "status" && params.value === "New Order") {
-      return (
-        <span className="bg-pink-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
+    if (
       params.colDef.field === "status" &&
-      params.value === "Received"
-    ) {
-      return (
-        <span className="bg-blue-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "In-Transit"
+      params.value === "Cancelled Order"
     ) {
       return (
         <span className="bg-red-500 text-white p-2 px-3 rounded-2xl">
           {params.value}
         </span>
-      );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "Completed"
-    ) {
-      return (
-        <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
-      params.colDef.field === "name" &&
-      params.value === "Orlhie Almendares"
-    ) {
-      return (
-        <Link to="/customer-details">
-          <span className="cursor-pointer font-bold">{params.value}</span>
-        </Link>
       );
     }
     return params.value;
@@ -105,4 +72,4 @@ function Table_Received() {
   );
 }
 
-export default Table_Received;
+export default Table_Inquiries_History;

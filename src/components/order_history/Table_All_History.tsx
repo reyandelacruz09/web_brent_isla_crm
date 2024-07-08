@@ -10,13 +10,94 @@ const columns: GridColDef[] = [
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
   { field: "amount", headerName: "Amount", width: 130 },
   { field: "ordertaker", headerName: "Order Taker", width: 150 },
-  { field: "edt", headerName: "EDT", width: 130 },
+  { field: "edt", headerName: "Call Type", width: 130 },
 ];
 
 const rows = [
   {
+    status: "New Order",
+    id: "1",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "In-Transit",
+    id: "2",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "Completed",
+    id: "3",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
     status: "Received",
     id: "4",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "New Order",
+    id: "5",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "New Order",
+    id: "6",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "New Order",
+    id: "7",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "In-Transit",
+    id: "8",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "New Order",
+    id: "9",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "New Order",
+    id: "10",
     name: "Orlhie Almendares",
     assignedbranch: "Makati Branch",
     amount: "100",
@@ -32,10 +113,28 @@ const rows = [
     ordertaker: "Superman",
     edt: "6/23/2024 14:25",
   },
+  {
+    status: "In-Transit",
+    id: "12",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
+  {
+    status: "Completed",
+    id: "13",
+    name: "Orlhie Almendares",
+    assignedbranch: "Makati Branch",
+    amount: "100",
+    ordertaker: "Superman",
+    edt: "6/23/2024 14:25",
+  },
 ];
 
 const theme = createTheme();
-function Table_Received() {
+function Table_All_History() {
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === "New Order") {
       return (
@@ -82,6 +181,7 @@ function Table_Received() {
     }
     return params.value;
   };
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -105,4 +205,4 @@ function Table_Received() {
   );
 }
 
-export default Table_Received;
+export default Table_All_History;

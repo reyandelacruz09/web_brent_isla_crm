@@ -169,6 +169,15 @@ function Table_All_Orders() {
           {params.value}
         </span>
       );
+    } else if (
+      params.colDef.field === "name" &&
+      params.value === "Orlhie Almendares"
+    ) {
+      return (
+        <Link to="/customer-details">
+          <span className="cursor-pointer font-bold">{params.value}</span>
+        </Link>
+      );
     }
     return params.value;
   };

@@ -1,6 +1,7 @@
 //import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130 },
@@ -104,6 +105,15 @@ function Table_New_Orders() {
         <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
           {params.value}
         </span>
+      );
+    } else if (
+      params.colDef.field === "name" &&
+      params.value === "Orlhie Almendares"
+    ) {
+      return (
+        <Link to="/customer-details">
+          <span className="cursor-pointer font-bold">{params.value}</span>
+        </Link>
       );
     }
     return params.value;

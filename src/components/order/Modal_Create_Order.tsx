@@ -60,7 +60,53 @@ export default function CustomizedDialogs() {
         maxWidth="lg"
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-          Create Order
+          <div className="flex">
+            <div className="w-1/3">Create Order</div>
+            <div className="w-2/3 flex justify-end pr-10">
+              <div className="flex gap-3">
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="w-32 pt-2"
+                  tabIndex={-1}
+                  size="small"
+                  color="primary"
+                >
+                  <span className="">Save & Close</span>
+                </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="w-32 pt-2"
+                  tabIndex={-1}
+                  size="small"
+                  color="primary"
+                >
+                  <span className="">Save & New</span>
+                </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="w-36 pt-2"
+                  tabIndex={-1}
+                  size="small"
+                  color="primary"
+                >
+                  <span className="">Locate Address</span>
+                </Button>
+                <Button
+                  component="label"
+                  variant="contained"
+                  className="w-32 pt-2"
+                  tabIndex={-1}
+                  size="small"
+                  color="primary"
+                >
+                  <span className="">Print Preview</span>
+                </Button>
+              </div>
+            </div>
+          </div>
         </DialogTitle>
         <IconButton
           aria-label="close"

@@ -1,10 +1,13 @@
 import NavBar from "../components/NavBar";
+import AddUser from "../components/user/AddUser";
+import AllUser from "../components/user/AllUser";
 
 function User() {
   return (
     <>
       <NavBar />
-      <div>User</div>
+      <AddUser />
+      <AllUser />
     </>
   );
 }

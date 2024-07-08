@@ -2,6 +2,7 @@ import NavBar from "../NavBar";
 import CustomerDetails_L from "./CustomerDetails_L";
 import CustomerDetails_R1 from "./CustomerDetails_R1";
 import CustomerDetails_R2 from "./CustomerDetails_R2";
+import CustomerDetails_R3 from "./CustomerDetails_R3";
 
 function CustomerDetails() {
   return (
@@ -17,6 +18,9 @@ function CustomerDetails() {
           </div>
           <div className="w-full">
             <CustomerDetails_R2 />
+          </div>
+          <div className="w-full">
+            <CustomerDetails_R3 />
           </div>
         </div>
       </div>
