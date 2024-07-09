@@ -16,7 +16,7 @@ function sleep(duration: number): Promise<void> {
   });
 }
 
-export default function SearchInput() {
+export default function InventorySearchInput() {
   const [open, setOpen] = React.useState(false);
   const [options, setOptions] = React.useState<readonly Film[]>([]);
   const loading = open && options.length === 0;

@@ -12,7 +12,7 @@ import { Button, styled } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 let counter = 1;
-function ProductOrder() {
+function Modal_ProductOrder() {
   const [array, setArray] = useState([0]);
 
   const handleAddDiv = () => {
@@ -56,10 +56,6 @@ function ProductOrder() {
                 <TableCell className="bg-gray-300 w-36" align="center">
                   Subtotal
                 </TableCell>
-                <TableCell
-                  className="bg-gray-300 w-14"
-                  align="center"
-                ></TableCell>
               </TableRow>
             </TableHead>
 
@@ -107,29 +103,8 @@ function ProductOrder() {
                       disabled
                     />
                   </StyledTableCell>
-                  <StyledTableCell className="w-14" align="center">
-                    <span
-                      className="text-red-600 cursor-pointer"
-                      onClick={() => handleRemoveDiv(idx)}
-                    >
-                      <DeleteForeverIcon />
-                    </span>
-                  </StyledTableCell>
                 </TableRow>
               ))}
-
-              <TableRow>
-                <TableCell>
-                  <Button
-                    variant="contained"
-                    color="success"
-                    onClick={handleAddDiv}
-                  >
-                    Add
-                  </Button>
-                </TableCell>
-                <TableCell colSpan={5}></TableCell>
-              </TableRow>
 
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
@@ -198,4 +173,4 @@ function ProductOrder() {
   );
 }
 
-export default ProductOrder;
+export default Modal_ProductOrder;

@@ -16,10 +16,9 @@ import FormLabel from "@mui/material/FormLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 
-import AddIcon from "@mui/icons-material/Add";
-import CustomerInformation from "./CustomerInformation";
-import ProductOrder from "./ProductOrder";
-import Others from "./Others";
+import Modal_CustomerInformation from "./Modal_CustomerInformation";
+import Modal_ProductOrder from "./Modal_ProductOrder";
+import Modal_Others from "./Modal_Others";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -30,7 +29,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function CustomizedDialogs() {
+export default function Modal_Show_All_Details() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -63,10 +62,9 @@ export default function CustomizedDialogs() {
         role={undefined}
         variant="contained"
         tabIndex={-1}
-        startIcon={<AddIcon />}
         onClick={handleClickOpen}
       >
-        Create New Order
+        Show All Details
       </Button>
       <BootstrapDialog
         onClose={handleClose}
@@ -77,51 +75,22 @@ export default function CustomizedDialogs() {
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           <div className="flex">
-            <div className="w-1/3">Create Order</div>
-            <div className="w-2/3 flex justify-end pr-10">
-              <div className="flex gap-3">
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Save & Close</span>
-                </Button>
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Save & New</span>
-                </Button>
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-36 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Locate Address</span>
-                </Button>
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Print Preview</span>
-                </Button>
+            <div className="w-1/3">
+              <div className="flex ">
+                <div>
+                  <img
+                    className="inline-block w-14 object-cover rounded-full"
+                    src="../../images/avatar.jpg"
+                    alt=""
+                  />
+                </div>
+                <div className="pl-3">
+                  <span className="font-bold">Orlhie S. Almendares</span>
+                  <p>Order ID: 123456789</p>
+                </div>
               </div>
             </div>
+            <div className="w-2/3 flex justify-end pr-10"></div>
           </div>
         </DialogTitle>
         <IconButton
@@ -284,17 +253,17 @@ export default function CustomizedDialogs() {
           </div>
 
           <hr className="mt-3" />
-          <CustomerInformation />
+          <Modal_CustomerInformation />
 
           <hr className="mt-3" />
-          <ProductOrder />
+          <Modal_ProductOrder />
 
           <hr className="mt-5" />
-          <Others />
+          <Modal_Others />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>
-            Save changes
+            Close
           </Button>
         </DialogActions>
       </BootstrapDialog>

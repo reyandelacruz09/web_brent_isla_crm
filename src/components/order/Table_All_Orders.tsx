@@ -198,6 +198,7 @@ function Table_All_Orders() {
               },
             }}
             pageSizeOptions={[5, 10]}
+            hideFooterSelectedRowCount
           />
         </div>
       </ThemeProvider>

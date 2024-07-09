@@ -9,6 +9,7 @@ import Inventory from "./pages/Inventory";
 import User from "./pages/User";
 import Modal_Create_Order from "./components/order/Modal_Create_Order";
 import CustomerDetails from "./components/order/CustomerDetails";
+import Testing_Only from "./components/order/Testing";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/user" element={<User />} />
           <Route path="/modal" element={<Modal_Create_Order />} />
           <Route path="/customer-details" element={<CustomerDetails />} />
+          <Route path="/testing" element={<Testing_Only />} />
         </Routes>
       </BrowserRouter>
     </>

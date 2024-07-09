@@ -98,6 +98,7 @@ function Table_Received() {
               },
             }}
             pageSizeOptions={[5, 10]}
+            hideFooterSelectedRowCount
           />
         </div>
       </ThemeProvider>

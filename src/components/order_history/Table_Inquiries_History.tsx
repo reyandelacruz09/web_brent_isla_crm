@@ -65,6 +65,7 @@ function Table_Inquiries_History() {
               },
             }}
             pageSizeOptions={[5, 10]}
+            hideFooterSelectedRowCount
           />
         </div>
       </ThemeProvider>

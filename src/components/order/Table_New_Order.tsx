@@ -134,6 +134,7 @@ function Table_New_Orders() {
               },
             }}
             pageSizeOptions={[5, 10]}
+            hideFooterSelectedRowCount
           />
         </div>
       </ThemeProvider>
