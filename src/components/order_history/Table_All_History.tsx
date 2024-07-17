@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const columns: GridColDef[] = [
-  { field: "status", headerName: "Status", width: 130 },
+  { field: "status", headerName: "Status", width: 130, align: "center" },
   { field: "id", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
