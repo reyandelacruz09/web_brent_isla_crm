@@ -20,12 +20,12 @@ function NavBar() {
       <div className="w-full flex items-center justify-between px-15 py-2 border-b-2">
         {/* sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 */}
         <img
-          src="../../images/super_kalan_logo_landscape.png"
+          src="../../images/OODC_logo.png"
           alt=""
           className="hidden 2xl:block xl:block lg:block 2xl:w-32 2xl:ml-10 xl:w-28 xl:ml-10 lg:ml-5 w-24 cursor-pointer"
         />
         <img
-          src="../../images/super_kalan_icon.png"
+          src="../../images/OODC_logo_only.png"
           alt=""
           className="hidden 2xl:hidden xl:hidden lg:hidden md:block w-7 cursor-pointer ml-5"
         />

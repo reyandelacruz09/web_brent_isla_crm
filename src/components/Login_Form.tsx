@@ -17,13 +17,34 @@ import { red, blue } from "@mui/material/colors";
 import { Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
+import axios from "axios";
+
 function Login_Form() {
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+
   const [showPassword, setShowPassword] = React.useState(false);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleMouseDownPassword = (
     event: React.MouseEvent<HTMLButtonElement>
   ) => {
     event.preventDefault();
+  };
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    try {
+      const response = await axios.post("http://localhost:8000/api/login/", {
+        username,
+        password,
+      });
+      const { token, user } = response.data;
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+      alert("Login successful");
+    } catch (error) {
+      alert("Login failed");
+    }
   };
 
   return (
@@ -39,7 +60,7 @@ function Login_Form() {
               />
             </div>
             <div className="flex justify-center">
-              <form className="w-5/6">
+              <form className="w-5/6" onSubmit={handleSubmit}>
                 <div className="mb-6 w-full">
                   <TextField
                     id="filled-required"
@@ -47,6 +68,8 @@ function Login_Form() {
                     defaultValue=""
                     variant="filled"
                     className="w-full border-b-0"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                   />
                 </div>
 
@@ -57,6 +80,8 @@ function Login_Form() {
                   <FilledInput
                     id="filled-adornment-password"
                     type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
@@ -93,7 +118,11 @@ function Login_Form() {
 
                 <div className="pb-10 mt-3 mb-3 flex justify-center pt-2">
                   <Link to="/dashboard" className="w-full">
-                    <Button variant="contained" className="w-full">
+                    <Button
+                      variant="contained"
+                      className="w-full"
+                      type="submit"
+                    >
                       Sign In
                     </Button>
                   </Link>

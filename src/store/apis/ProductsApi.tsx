@@ -43,6 +43,16 @@ const productApi = createApi({
           };
         },
       }),
+      UpdateProduct: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `api/products/0/update_product/`,
+            headers: { Authorization: "token " + token },
+            body: formBody,
+            method: "POST",
+          };
+        },
+      }),
     };
   },
 });
@@ -51,5 +61,6 @@ export const {
   useProductListQuery,
   useCreateProductMutation,
   useViewProductQuery,
+  useUpdateProductMutation,
 } = productApi;
 export { productApi };

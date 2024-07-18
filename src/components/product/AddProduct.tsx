@@ -38,7 +38,7 @@ function AddProduct() {
   const saveProduct = async (e: any) => {
     e.preventDefault();
 
-    const data = {
+    const data1 = {
       client: 2,
       owner: product.owner,
       category: 2,
@@ -50,21 +50,21 @@ function AddProduct() {
     };
 
     try {
-      const checkstat = await addPost(data).unwrap();
+      const checkstat = await addPost(data1).unwrap();
       if (checkstat.success === true) {
         alert("success");
         {
-          setProduct({
-            client: "",
-            owner: "",
-            category: "",
-            code: "",
-            name: "",
-            active: true,
-            price: "",
-            description: "",
-          });
-          window.location.reload();
+          // setProduct({
+          //   client: "",
+          //   owner: "",
+          //   category: "",
+          //   code: "",
+          //   name: "",
+          //   active: true,
+          //   price: "",
+          //   description: "",
+          // });
+          // window.location.reload();
         }
       } else {
         alert("something wrong");

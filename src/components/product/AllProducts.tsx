@@ -12,6 +12,7 @@ import {
   useState,
   useEffect,
 } from "react";
+import Modal_Delete_Product from "./Modal_Delete_Product";
 
 export interface Product {
   id: string;
@@ -22,6 +23,7 @@ export interface Product {
   unitPrice: string;
   active: string;
   edit: string;
+  delete: string;
 }
 
 const columns: GridColDef[] = [
@@ -59,6 +61,7 @@ function AllProducts() {
           unitPrice: result.data[i].unitPrice,
           active: result.data[i].active,
           edit: result.data[i].id,
+          delete: result.data[i].id,
         });
       }
 
@@ -95,7 +98,8 @@ function AllProducts() {
     } else if (params.colDef.field === "delete") {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <DeleteForeverOutlinedIcon />
+          <Modal_Delete_Product modalid={params.value} />
+          {/* <DeleteForeverOutlinedIcon /> */}
         </span>
       );
     }

@@ -21,6 +21,7 @@ export {
   useProductListQuery,
   useCreateProductMutation,
   useViewProductQuery,
+  useUpdateProductMutation,
 } from "../store/apis/ProductsApi";
 
 export { useClientListQuery } from "../store/apis/ClientsApi";
