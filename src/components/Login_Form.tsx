@@ -15,11 +15,14 @@ import AppleIcon from "@mui/icons-material/Apple";
 import { red, blue } from "@mui/material/colors";
 
 import { Button, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import axios from "axios";
 
 function Login_Form() {
+  const apiDomain = process.env.REACT_APP_API_DOMAIN;
+  const [error, setError] = React.useState("");
+
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
 
@@ -31,20 +34,50 @@ function Login_Form() {
     event.preventDefault();
   };
 
-  const handleSubmit = async (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post("http://localhost:8000/api/login/", {
-        username,
-        password,
+  const fetchAccountDetailed = async (id: any, token: string) => {
+    await axios
+      .get(`${apiDomain}/api/account/${id}/account_detailed/`, {
+        headers: {
+          Authorization: "token " + token,
+        },
+      })
+      .then((result) => {
+        localStorage.setItem(
+          "account_detail",
+          JSON.stringify(result.data.data)
+        );
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
-      alert("Login successful");
-    } catch (error) {
-      alert("Login failed");
-    }
+  };
+
+  let navigate = useNavigate();
+
+  let email = username;
+  const login = async (event: { preventDefault: () => void }) => {
+    event.preventDefault();
+    await axios
+      .post(`${apiDomain}/api/user/login/`, {
+        username: email,
+        password: password,
+      })
+      .then(function (response) {
+        localStorage.setItem("mytoken", response.data.token);
+        localStorage.setItem("user_info", JSON.stringify(response.data.user));
+        navigate("/dashboard");
+        fetchAccountDetailed(response.data.user.id, response.data.token);
+      })
+      .catch(function (error) {
+        setError("Invalid username or password");
+      });
+  };
+
+  const handlePassword = (evt: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setPassword(evt.target.value);
   };
 
   return (
@@ -53,14 +86,10 @@ function Login_Form() {
         <div className="column w-100 h-screen flex items-center justify-center">
           <div className="w-4/6 h-4/5">
             <div className="flex justify-center pb-10">
-              <img
-                src="../../images/super_kalan_logo.png"
-                alt=""
-                className="w-64"
-              />
+              <img src="../../images/OODC_logo.png" alt="" className="w-64" />
             </div>
             <div className="flex justify-center">
-              <form className="w-5/6" onSubmit={handleSubmit}>
+              <form className="w-5/6" onSubmit={login}>
                 <div className="mb-6 w-full">
                   <TextField
                     id="filled-required"
@@ -81,7 +110,7 @@ function Login_Form() {
                     id="filled-adornment-password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={handlePassword}
                     endAdornment={
                       <InputAdornment position="end">
                         <IconButton
