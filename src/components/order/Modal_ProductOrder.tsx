@@ -9,7 +9,6 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ListIcon from "@mui/icons-material/List";
 import { Button, styled } from "@mui/material";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 let counter = 1;
 function Modal_ProductOrder() {

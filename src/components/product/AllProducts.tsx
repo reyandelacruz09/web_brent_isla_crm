@@ -3,91 +3,86 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Product from "./Modal_Update_Product";
+import { useProductListQuery } from "../../store";
+import {
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+  useState,
+  useEffect,
+} from "react";
+import Modal_Delete_Product from "./Modal_Delete_Product";
+
+export interface Product {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  owner: string;
+  unitPrice: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "Product Code", width: 100 },
-  { field: "pname", headerName: "Product Name", width: 200 },
-  { field: "pdescription", headerName: "Product Description", width: 200 },
-  { field: "powner", headerName: "Product Owner", width: 130 },
-  { field: "unitprice", headerName: "Unit Price", width: 150 },
+  { field: "code", headerName: "Product Code", width: 100 },
+  { field: "name", headerName: "Product Name", width: 200 },
+  { field: "description", headerName: "Product Description", width: 200 },
+  { field: "owner", headerName: "Product Owner", width: 130 },
+  { field: "price", headerName: "Unit Price", width: 150 },
   { field: "active", headerName: "Active", width: 130 },
   { field: "edit", headerName: "Edit", width: 130 },
   { field: "delete", headerName: "Delete", width: 130 },
 ];
 
-const rows = [
-  {
-    id: "001",
-    pname: "Product 1",
-    pdescription: "Description 1",
-    powner: "Brent Gas",
-    unitprice: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "002",
-    pname: "Product 2",
-    pdescription: "Description 2",
-    powner: "One Tech",
-    unitprice: "200",
-    active: "N",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "003",
-    pname: "Product 3",
-    pdescription: "Description 3",
-    powner: "Brent Gas",
-    unitprice: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "004",
-    pname: "Product 4",
-    pdescription: "Description 4",
-    powner: "Aristocrat",
-    unitprice: "150",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "005",
-    pname: "Product 5",
-    pdescription: "Description 5",
-    powner: "Globe",
-    unitprice: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "006",
-    pname: "Product 6",
-    pdescription: "Description 6",
-    powner: "Brent Gas",
-    unitprice: "159",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-];
-
 const theme = createTheme();
 function AllProducts() {
+  const { data, error, isLoading, isSuccess } = useProductListQuery("");
+  const [content, setContent] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      let content: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const products: Product[] = [];
+
+      for (let i = 0; i < size; i++) {
+        products.push({
+          id: result.data[i].id,
+          code: result.data[i].code,
+          name: result.data[i].name,
+          description: result.data[i].description,
+          owner: result.data[i].owner,
+          unitPrice: result.data[i].unitPrice,
+          active: result.data[i].active,
+          edit: result.data[i].id,
+          delete: result.data[i].id,
+        });
+      }
+
+      setContent(products);
+    }
+  }, [data, isSuccess]);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === "Y") {
+    if (params.colDef.field === "active" && params.value === 1) {
       return (
         <span className="flex justify-center items-center h-full">
           <Checkbox defaultChecked />
         </span>
       );
-    } else if (params.colDef.field === "active" && params.value === "N") {
+    } else if (params.colDef.field === "active" && params.value === 2) {
       return (
         <span className="flex justify-center items-center h-full">
           <Checkbox />
@@ -97,19 +92,20 @@ function AllProducts() {
       return (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
           {/* <EditOutlined /> */}
-          <Modal_Update_Product />
+          <Modal_Update_Product modalid={params.value} />
         </span>
       );
     } else if (params.colDef.field === "delete") {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <DeleteForeverOutlinedIcon />
+          <Modal_Delete_Product modalid={params.value} />
+          {/* <DeleteForeverOutlinedIcon /> */}
         </span>
       );
     }
-
     return params.value;
   };
+
   return (
     <>
       <div className="flex justify-center pt-5">
@@ -126,7 +122,7 @@ function AllProducts() {
               <ThemeProvider theme={theme}>
                 <div className="w-full h-full bg-white">
                   <DataGrid
-                    rows={rows}
+                    rows={content}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,
@@ -136,7 +132,7 @@ function AllProducts() {
                         paginationModel: { page: 0, pageSize: 10 },
                       },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
                     hideFooterSelectedRowCount
                   />
                 </div>
