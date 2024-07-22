@@ -44,7 +44,7 @@ function AddProduct() {
       category: 2,
       code: product.code,
       name: product.name,
-      active: product.active ? 1 : 0,
+      active: product.active ? 1 : 2,
       price: product.price,
       description: product.description,
     };

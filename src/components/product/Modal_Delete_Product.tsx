@@ -43,11 +43,11 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
           <DialogContentText id="alert-dialog-description">
             {/* Let Google help apps determine location. This means sending
             anonymous location data to Google, even when no apps are running. */}
-            <p>ID: {modalid}</p>
+            {/* <p>ID: {modalid}</p> */}
           </DialogContentText>
         </DialogContent>
         <DialogActions className="">
-          <div className="w-full flex">
+          <div className="w-full flex pb-5">
             <div className="w-1/2 text-center">
               <Button
                 className="w-5/6"

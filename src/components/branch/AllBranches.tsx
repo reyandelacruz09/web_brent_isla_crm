@@ -4,6 +4,18 @@ import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Branch from "./Modal_Update_Branch";
 
+export interface Branches {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  owner: string;
+  unitPrice: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
+
 const columns: GridColDef[] = [
   { field: "id", headerName: "Branch Code", width: 100 },
   { field: "bname", headerName: "Branch Name", width: 200 },
