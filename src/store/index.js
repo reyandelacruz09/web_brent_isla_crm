@@ -3,6 +3,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import { productApi } from "../store/apis/ProductsApi";
 import { clientApi } from "../store/apis/ClientsApi";
 import { addressApi } from "../store/apis/AddressApi";
+import { branchApi } from "../store/apis/BranchApi";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -10,12 +11,14 @@ export const store = configureStore({
     [productApi.reducerPath]: productApi.reducer,
     [clientApi.reducerPath]: clientApi.reducer,
     [addressApi.reducerPath]: addressApi.reducer,
+    [branchApi.reducerPath]: branchApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
       .concat(productApi.middleware)
       .concat(clientApi.middleware)
-      .concat(addressApi.middleware);
+      .concat(addressApi.middleware)
+      .concat(branchApi.middleware);
   },
 });
 
@@ -34,3 +37,9 @@ export {
   useCityListQuery,
   useBarangayListQuery,
 } from "../store/apis/AddressApi";
+export {
+  useBranchListQuery,
+  useCreateBranchMutation,
+  useViewBranchQuery,
+  useUpdateBranchMutation,
+} from "../store/apis/BranchApi";

@@ -8,6 +8,7 @@ import {
   useCityListQuery,
   useBarangayListQuery,
   useClientListQuery,
+  useCreateBranchMutation,
 } from "../../store";
 import { useEffect, useState } from "react";
 import Branch from "../../pages/Branch";
@@ -33,7 +34,6 @@ export interface adress {
 export interface Client {
   id: string;
   name: string;
-  region: string;
 }
 
 export interface ListClient {
@@ -96,26 +96,26 @@ function AddBranch() {
 
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegionId(event.target.value);
-    //console.warn(event.target.value);
+    setSelectedProvinceId("0");
+    setSelectedCityId("0");
   };
 
   const handleProvinceChange = (
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     setSelectedProvinceId(event.target.value);
-    //console.warn(event.target.value);
+    setSelectedCityId("0");
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCityId(event.target.value);
-    //console.warn(event.target.value);
   };
 
   const [branch, setBranch] = useState({
     code: "",
     name: "",
     active: true,
-    owner: "",
+    owner: 2,
     block_street: "",
     barangay: "",
     email: "",
@@ -126,17 +126,43 @@ function AddBranch() {
     setBranch({ ...branch, [name]: type === "checkbox" ? checked : value });
   };
 
-  //const { data: listClientsData } = useClientListQuery("");
-  // const [clientList, setClientList] = useState<ListClient[]>([]);
+  const [addBranch] = useCreateBranchMutation();
+  const saveBranch = async (e: any) => {
+    e.preventDefault();
 
-  // const { data: listofclient, isSuccess: islistofclientSuccess } =
-  //   useClientListQuery("");
+    const data1 = {
+      code: branch.code,
+      name: branch.name,
+      active: branch.active,
+      owner: 2,
+      block_street: branch.block_street,
+      barangay: branch.barangay,
+      email: branch.email,
+    };
 
-  // if (islistofclientSuccess && listofclient) {
-  //   setClientList(listofclient.data);
-  // }
-
-  // console.warn(clientList);
+    try {
+      const checkstat = await addBranch(data1).unwrap();
+      if (checkstat.success === true) {
+        alert("success");
+        {
+          setBranch({
+            code: "",
+            name: "",
+            active: true,
+            owner: 2,
+            block_street: "",
+            barangay: "",
+            email: "",
+          });
+          window.location.reload();
+        }
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      alert("Hala");
+    }
+  };
 
   return (
     <>
@@ -164,6 +190,7 @@ function AddBranch() {
                 tabIndex={-1}
                 size="small"
                 color="primary"
+                onClick={saveBranch}
               >
                 <span className="">Save and Close</span>
               </Button>
@@ -174,6 +201,7 @@ function AddBranch() {
                 tabIndex={-1}
                 size="small"
                 color="primary"
+                onClick={saveBranch}
               >
                 <span className="">Save and New</span>
               </Button>

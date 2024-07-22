@@ -54,17 +54,17 @@ function AddProduct() {
       if (checkstat.success === true) {
         alert("success");
         {
-          // setProduct({
-          //   client: "",
-          //   owner: "",
-          //   category: "",
-          //   code: "",
-          //   name: "",
-          //   active: true,
-          //   price: "",
-          //   description: "",
-          // });
-          // window.location.reload();
+          setProduct({
+            client: "",
+            owner: "",
+            category: "",
+            code: "",
+            name: "",
+            active: true,
+            price: "",
+            description: "",
+          });
+          window.location.reload();
         }
       } else {
         alert("something wrong");
