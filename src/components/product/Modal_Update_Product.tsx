@@ -30,7 +30,7 @@ export interface Product {
   description: string;
   owner: string;
   unitPrice: string;
-  active: string;
+  active: boolean;
   edit: string;
 }
 
@@ -69,10 +69,14 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
 
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
-    setUpdateProduct((prevProduct) => ({
-      ...prevProduct,
+    setUpdateProduct({
+      ...updateProduct,
       [name]: type === "checkbox" ? checked : value,
-    }));
+    });
+    // setUpdateProduct((prevProduct) => ({
+    //   ...prevProduct,
+    //   [name]: type === "checkbox" ? checked : value,
+    // }));
   };
 
   //const selectedProduct = useViewProductQuery(modalid);
@@ -111,7 +115,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
       const checkstat = await upProduct(updateProduct).unwrap();
       if (checkstat.success === true) {
         alert("success");
-        window.location.reload();
+        //window.location.reload();
       } else {
         alert("something wrong");
       }
@@ -227,7 +231,13 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                   />
                   <FormControlLabel
                     className="absolute top-0 right-0"
-                    control={<Checkbox defaultChecked />}
+                    control={
+                      <Checkbox
+                        onChange={handleInput}
+                        checked={updateProduct.active === true}
+                        name="active"
+                      />
+                    }
                     label="Active"
                   />
                 </div>

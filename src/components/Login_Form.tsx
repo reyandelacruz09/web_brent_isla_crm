@@ -71,6 +71,7 @@ function Login_Form() {
       })
       .catch(function (error) {
         setError("Invalid username or password");
+        alert("Invalid Credentials!");
       });
   };
 
@@ -146,15 +147,11 @@ function Login_Form() {
                 </div>
 
                 <div className="pb-10 mt-3 mb-3 flex justify-center pt-2">
-                  <Link to="/dashboard" className="w-full">
-                    <Button
-                      variant="contained"
-                      className="w-full"
-                      type="submit"
-                    >
-                      Sign In
-                    </Button>
-                  </Link>
+                  {/* <Link to="/dashboard" className="w-full"> */}
+                  <Button variant="contained" className="w-full" type="submit">
+                    Sign In
+                  </Button>
+                  {/* </Link> */}
                 </div>
 
                 <div className="text-sm text-center">Or sign in with</div>

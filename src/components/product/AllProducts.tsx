@@ -69,6 +69,8 @@ function AllProducts() {
     }
   }, [data, isSuccess]);
 
+  console.log(content);
+
   if (isLoading) {
     return <div>Loading...</div>;
   } else if (error) {

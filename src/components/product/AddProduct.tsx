@@ -44,7 +44,7 @@ function AddProduct() {
       category: 2,
       code: product.code,
       name: product.name,
-      active: product.active ? 1 : 0,
+      active: product.active ? 1 : 2,
       price: product.price,
       description: product.description,
     };
@@ -54,17 +54,17 @@ function AddProduct() {
       if (checkstat.success === true) {
         alert("success");
         {
-          // setProduct({
-          //   client: "",
-          //   owner: "",
-          //   category: "",
-          //   code: "",
-          //   name: "",
-          //   active: true,
-          //   price: "",
-          //   description: "",
-          // });
-          // window.location.reload();
+          setProduct({
+            client: "",
+            owner: "",
+            category: "",
+            code: "",
+            name: "",
+            active: true,
+            price: "",
+            description: "",
+          });
+          window.location.reload();
         }
       } else {
         alert("something wrong");
