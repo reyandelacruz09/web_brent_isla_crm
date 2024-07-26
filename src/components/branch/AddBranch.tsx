@@ -12,6 +12,7 @@ import {
 } from "../../store";
 import { useEffect, useState } from "react";
 import Branch from "../../pages/Branch";
+import toast from "react-hot-toast";
 
 export interface Branch {
   data: any;
@@ -94,6 +95,31 @@ function AddBranch() {
     }
   }, [isBarangaySuccess, barangay]);
 
+  const clients = useClientListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess && clients) {
+      let result: any = [];
+      let content: any = [];
+      result = clients.data;
+
+      const size = Object.keys(result.data).length;
+      const client: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        client.push({
+          id: result.data[i].id,
+          name: result.data[i].name,
+        });
+      }
+
+      setContent(client);
+    }
+  }, [clients, clients.isSuccess]);
+  const listOptions = content;
+
+  // console.warn(content);
+
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegionId(event.target.value);
     setSelectedProvinceId("0");
@@ -134,7 +160,7 @@ function AddBranch() {
       code: branch.code,
       name: branch.name,
       active: branch.active,
-      owner: 2,
+      owner: branch.owner,
       block_street: branch.block_street,
       barangay: branch.barangay,
       email: branch.email,
@@ -143,13 +169,14 @@ function AddBranch() {
     try {
       const checkstat = await addBranch(data1).unwrap();
       if (checkstat.success === true) {
-        alert("success");
+        // alert("success");
+        toast.success("Successfully Updated!");
         {
           setBranch({
             code: "",
             name: "",
             active: true,
-            owner: 2,
+            owner: 0,
             block_street: "",
             barangay: "",
             email: "",
@@ -265,21 +292,20 @@ function AddBranch() {
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                 Branch Owner
               </label>
-              {/* <div className="relative mb-6 ">
-                <input
-                  type="text"
-                  id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder=""
-                  onChange={handleInput}
-                  name="owner"
-                />
-              </div> */}
               <select
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 onChange={handleInput}
                 name="owner"
-              ></select>
+              >
+                <option value="" disabled selected>
+                  Choose One
+                </option>
+                {listOptions.map((listOption) => (
+                  <option key={listOption.id} value={listOption.id}>
+                    {listOption.name}
+                  </option>
+                ))}
+              </select>
             </div>
 
             <div className="mr-5">

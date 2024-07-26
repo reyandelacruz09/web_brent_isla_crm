@@ -8,12 +8,23 @@ import {
   useEffect,
   useState,
 } from "react";
-import { useCreateProductMutation, useClientListQuery } from "../../store";
-import AllProducts from "./AllProducts";
+import {
+  useCreateProductMutation,
+  useClientListQuery,
+  useBranchListQuery,
+  useCategoryListQuery,
+} from "../../store";
 
 export interface Client {
   id: number;
   name: string;
+}
+
+interface PCategory {
+  id: string;
+  name: string;
+  code: string;
+  branch: string;
 }
 
 function AddProduct() {
@@ -25,6 +36,7 @@ function AddProduct() {
     name: "",
     active: true,
     price: "",
+    discount: "",
     description: "",
   });
 
@@ -39,13 +51,14 @@ function AddProduct() {
     e.preventDefault();
 
     const data1 = {
-      client: 2,
+      client: product.client,
       owner: product.owner,
-      category: 2,
+      category: product.category,
       code: product.code,
       name: product.name,
       active: product.active ? 1 : 2,
       price: product.price,
+      discount: product.discount,
       description: product.description,
     };
 
@@ -53,19 +66,18 @@ function AddProduct() {
       const checkstat = await addPost(data1).unwrap();
       if (checkstat.success === true) {
         alert("success");
-        {
-          setProduct({
-            client: "",
-            owner: "",
-            category: "",
-            code: "",
-            name: "",
-            active: true,
-            price: "",
-            description: "",
-          });
-          window.location.reload();
-        }
+        setProduct({
+          client: "",
+          owner: "",
+          category: "",
+          code: "",
+          name: "",
+          active: true,
+          price: "",
+          discount: "",
+          description: "",
+        });
+        window.location.reload();
       } else {
         alert("something wrong");
       }
@@ -74,32 +86,26 @@ function AddProduct() {
     }
   };
 
-  const { data: clients, error, isLoading, isSuccess } = useClientListQuery("");
+  const clients = useBranchListQuery("");
   const [content, setContent] = useState<Client[]>([]);
-
   useEffect(() => {
-    if (isSuccess) {
-      let result: any = [];
-      let content: any = [];
-      result = clients;
-
-      const size = Object.keys(result.data).length;
-      const client: Client[] = [];
-
-      for (let i = 0; i < size; i++) {
-        client.push({
-          id: result.data[i].id,
-          name: result.data[i].name,
-        });
-      }
-
-      setContent(client);
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
     }
-  }, [clients, isSuccess]);
+  }, [clients.isSuccess, clients.data]);
 
-  //console.log(content);
+  const productcategory = useCategoryListQuery("");
+  const [listCategory, setListCategory] = useState<PCategory[]>([]);
+  useEffect(() => {
+    if (productcategory.isSuccess) {
+      const category_result =
+        ((productcategory.data as any).data as PCategory[]) || [];
+      setListCategory(category_result);
+    }
+  }, [productcategory.isSuccess, productcategory.data]);
 
-  const listOptions = content;
+  // console.warn(listCategory);
 
   return (
     <>
@@ -174,7 +180,7 @@ function AddProduct() {
                     <option value="" disabled>
                       Choose One
                     </option>
-                    {listOptions.map((listOption) => (
+                    {content.map((listOption: any) => (
                       <option key={listOption.id} value={listOption.id}>
                         {listOption.name}
                       </option>
@@ -187,15 +193,22 @@ function AddProduct() {
                   Product Category
                 </label>
                 <div className="relative mb-6">
-                  <input
-                    type="text"
-                    id="input-group-1"
+                  <select
                     name="category"
                     value={product.category}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
-                  />
+                    id="rec_mode"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  >
+                    <option value="" disabled>
+                      Choose One
+                    </option>
+                    {listCategory.map((listcate: any) => (
+                      <option key={listcate.id} value={listcate.id}>
+                        {listcate.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
               <div className="pt-3 mr-5">
@@ -252,6 +265,23 @@ function AddProduct() {
                     id="input-group-1"
                     name="price"
                     value={product.price}
+                    onChange={handleInput}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    placeholder=""
+                  />
+                </div>
+              </div>
+
+              <div className="mr-5">
+                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                  Discount
+                </label>
+                <div className="relative mb-6">
+                  <input
+                    type="number"
+                    id="input-group-1"
+                    name="discount"
+                    value={product.discount}
                     onChange={handleInput}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                     placeholder=""

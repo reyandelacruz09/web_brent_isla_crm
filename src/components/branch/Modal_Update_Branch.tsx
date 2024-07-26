@@ -19,8 +19,11 @@ import {
   useProvinceListQuery,
   useCityListQuery,
   useBarangayListQuery,
+  useClientListQuery,
 } from "../../store";
 import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -50,6 +53,11 @@ interface ModalUpdateBranchProps {
 }
 
 interface adress {
+  id: string;
+  name: string;
+}
+
+interface Client {
   id: string;
   name: string;
 }
@@ -93,10 +101,35 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
   let result: any = [];
   result = data;
 
+  const clients = useClientListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+
+  useEffect(() => {
+    if (clients.isSuccess && clients) {
+      let result: any = [];
+      let content: any = [];
+      result = clients.data;
+
+      const size = Object.keys(result.data).length;
+      const client: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        client.push({
+          id: result.data[i].id,
+          name: result.data[i].name,
+        });
+      }
+
+      setContent(client);
+    }
+  }, [clients, clients.isSuccess]);
+  const listOptions = content;
+
+  const [condition, setCondition] = useState(true);
+
   React.useEffect(() => {
     if (isSuccess) {
       let result: any = [];
-      let content: any = [];
       result = data;
 
       setUpdateBranch({
@@ -104,7 +137,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
         code: result.data.code || "",
         name: result.data.name || "",
         active: result.data.active || "",
-        owner: result.data.owner.name || "",
+        owner: result.data.owner.id || "",
         block_street: result.data.block_street || "",
         barangay: result.data.barangay.id || "",
         email: result.data.email || "",
@@ -113,6 +146,10 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
         city: result.data.barangay.city.id || "",
         edit: "",
       });
+
+      if (result.data.active === 2) {
+        setCondition(false);
+      }
 
       setSelectedRegionId(result.data.barangay.city.province.region.id);
       setSelectedProvinceId(result.data.barangay.city.province.id);
@@ -187,22 +224,24 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
     setSelectedCityId(event.target.value);
   };
 
+  const [upBranch] = useUpdateBranchMutation();
   const saveBranch = async (e: any) => {
     e.preventDefault();
 
     console.warn(updateBranch);
 
-    // try {
-    //   const checkstat = await upProduct(updateProduct).unwrap();
-    //   if (checkstat.success === true) {
-    //     alert("success");
-    //     //window.location.reload();
-    //   } else {
-    //     alert("something wrong");
-    //   }
-    // } catch (error) {
-    //   alert("Hala");
-    // }
+    try {
+      const checkstat = await upBranch(updateBranch).unwrap();
+      if (checkstat.success === true) {
+        // alert("success");
+        toast.success("Successfully Updated!");
+        window.location.reload();
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      alert("Hala");
+    }
   };
 
   return (
@@ -307,7 +346,13 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                 />
                 <FormControlLabel
                   className="absolute top-0 right-0"
-                  control={<Checkbox defaultChecked />}
+                  control={
+                    <Checkbox
+                      name="active"
+                      defaultChecked={condition}
+                      onChange={handleInput}
+                    />
+                  }
                   label="Active"
                 />
               </div>
@@ -317,14 +362,21 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                 Branch Owner
               </label>
               <div className="relative mb-6 ">
-                <input
-                  type="text"
-                  id="input-group-1"
+                <select
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleInput}
                   name="owner"
                   value={updateBranch.owner}
-                  onChange={handleInput}
-                />
+                >
+                  <option value="" disabled selected>
+                    Choose One
+                  </option>
+                  {listOptions.map((listOption) => (
+                    <option key={listOption.id} value={listOption.id}>
+                      {listOption.name}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
