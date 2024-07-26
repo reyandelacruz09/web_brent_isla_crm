@@ -5,6 +5,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import Modal_Update_Branch from "./Modal_Update_Branch";
 import { useBranchListQuery } from "../../store";
 import { useEffect, useState } from "react";
+import Modal_Delete_Branch from "./Modal_Delete_Branch";
 
 interface Branch {
   data: any;
@@ -131,7 +132,7 @@ function AllBranches() {
         });
       }
 
-      console.warn(size);
+      //console.warn(size);
 
       setContent(branches);
     }
@@ -167,7 +168,8 @@ function AllBranches() {
     } else if (params.colDef.field === "delete") {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <DeleteForeverOutlinedIcon />
+          <Modal_Delete_Branch modalid={params.value} />
+          {/* <DeleteForeverOutlinedIcon /> */}
         </span>
       );
     }

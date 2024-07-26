@@ -53,6 +53,15 @@ const branchApi = createApi({
           };
         },
       }),
+      DeleteBranch: builder.mutation({
+        query: (id) => {
+          return {
+            url: `api/branch/${id}/delete_branch/`,
+            headers: { Authorization: "token " + token },
+            method: "POST",
+          };
+        },
+      }),
     };
   },
 });
@@ -62,5 +71,6 @@ export const {
   useCreateBranchMutation,
   useViewBranchQuery,
   useUpdateBranchMutation,
+  useDeleteBranchMutation,
 } = branchApi;
 export { branchApi };

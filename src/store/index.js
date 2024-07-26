@@ -28,6 +28,7 @@ export {
   useCreateProductMutation,
   useViewProductQuery,
   useUpdateProductMutation,
+  useCategoryListQuery,
 } from "../store/apis/ProductsApi";
 
 export { useClientListQuery } from "../store/apis/ClientsApi";
@@ -42,4 +43,5 @@ export {
   useCreateBranchMutation,
   useViewBranchQuery,
   useUpdateBranchMutation,
+  useDeleteBranchMutation,
 } from "../store/apis/BranchApi";

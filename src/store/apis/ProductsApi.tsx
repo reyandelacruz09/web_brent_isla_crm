@@ -1,8 +1,27 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Product } from "../../components/product/AllProducts";
+
 const apiDomain = process.env.REACT_APP_API_DOMAIN;
 const token = localStorage.getItem("mytoken");
-// const account_detailed = JSON.parse(localStorage.getItem("account_detail"));
+// const account_detailed = JSON.parse(localStorage.getItem("account_detail"))
+
+interface Category {
+  id: string;
+  name: string;
+  code: string;
+  branch: string;
+}
+
+interface Product {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  owner: string;
+  unitPrice: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
 
 const productApi = createApi({
   reducerPath: "products",
@@ -53,6 +72,15 @@ const productApi = createApi({
           };
         },
       }),
+      CategoryList: builder.query<Category, string>({
+        query: () => {
+          return {
+            url: `/api/products/category_list`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
     };
   },
 });
@@ -62,5 +90,6 @@ export const {
   useCreateProductMutation,
   useViewProductQuery,
   useUpdateProductMutation,
+  useCategoryListQuery,
 } = productApi;
 export { productApi };
