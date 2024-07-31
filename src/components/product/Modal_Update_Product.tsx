@@ -12,7 +12,15 @@ import EditOutlined from "@mui/icons-material/EditOutlined";
 import ProductInformation from "./ProductInformation";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
 import { Checkbox, FormControlLabel } from "@mui/material";
-import { useViewProductQuery, useUpdateProductMutation } from "../../store";
+import {
+  useViewProductQuery,
+  useUpdateProductMutation,
+  useBranchListQuery,
+  useCategoryListQuery,
+} from "../../store";
+
+import { useEffect, useState } from "react";
+import { Client, PCategory } from "./AddProduct";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -42,11 +50,6 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   modalid,
 }) => {
   const [open, setOpen] = React.useState(false);
-  // const [pcode, setPcode] = React.useState("");
-  // const [pname, setPname] = React.useState("");
-  // const [powner, setPowner] = React.useState("");
-  // const [pprice, setPprice] = React.useState("");
-  // const [pdescription, setPdescription] = React.useState("");
 
   const [updateProduct, setUpdateProduct] = React.useState({
     id: "",
@@ -57,6 +60,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     name: "",
     active: true,
     price: "",
+    discount: "",
     description: "",
   });
 
@@ -67,21 +71,18 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     setOpen(false);
   };
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setUpdateProduct({
       ...updateProduct,
       [name]: type === "checkbox" ? checked : value,
     });
-    // setUpdateProduct((prevProduct) => ({
-    //   ...prevProduct,
-    //   [name]: type === "checkbox" ? checked : value,
-    // }));
   };
 
-  //const selectedProduct = useViewProductQuery(modalid);
   const { data, error, isLoading, isSuccess } = useViewProductQuery(modalid);
   const [upProduct] = useUpdateProductMutation();
+
+  const [condition, setCondition] = useState(true);
 
   let result: any = [];
   result = data;
@@ -95,15 +96,21 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
       setUpdateProduct({
         id: result.data.id || "",
         client: result.data.client || "",
-        owner: result.data.owner || "",
+        owner: result.data.branch.id || "",
         category: result.data.category || "",
         code: result.data.code || "",
         name: result.data.name || "",
         active: result.data.active || true,
         price: result.data.price || "",
+        discount: result.data.discount || "",
         description: result.data.description || "",
       });
+
+      if (result.data.status === 2) {
+        setCondition(false);
+      }
     }
+    //console.warn(data);
   }, [data, isSuccess]);
 
   const saveProduct = async (e: any) => {
@@ -115,7 +122,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
       const checkstat = await upProduct(updateProduct).unwrap();
       if (checkstat.success === true) {
         alert("success");
-        //window.location.reload();
+        window.location.reload();
       } else {
         alert("something wrong");
       }
@@ -123,6 +130,25 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
       alert("Hala");
     }
   };
+
+  const clients = useBranchListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
+    }
+  }, [clients.isSuccess, clients.data]);
+
+  const productcategory = useCategoryListQuery("");
+  const [listCategory, setListCategory] = useState<PCategory[]>([]);
+  useEffect(() => {
+    if (productcategory.isSuccess) {
+      const category_result =
+        ((productcategory.data as any).data as PCategory[]) || [];
+      setListCategory(category_result);
+    }
+  }, [productcategory.isSuccess, productcategory.data]);
 
   return (
     <form>
@@ -234,7 +260,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                     control={
                       <Checkbox
                         onChange={handleInput}
-                        checked={updateProduct.active === true}
+                        defaultChecked={condition}
                         name="active"
                       />
                     }
@@ -242,20 +268,52 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                   />
                 </div>
               </div>
+
               <div className="pt-5 mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                   Product Owner
                 </label>
                 <div className="relative mb-6 ">
-                  <input
-                    type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                  <select
                     name="owner"
                     value={updateProduct.owner}
                     onChange={handleInput}
-                  />
+                    id="rec_mode"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  >
+                    <option value="" disabled>
+                      Choose One
+                    </option>
+                    {content.map((listOption: any) => (
+                      <option key={listOption.id} value={listOption.id}>
+                        {listOption.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mr-5">
+                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                  Product Category
+                </label>
+                <div className="relative mb-6 ">
+                  <select
+                    name="category"
+                    value={updateProduct.category}
+                    onChange={handleInput}
+                    id="rec_mode"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  >
+                    <option value="" disabled>
+                      Choose One
+                    </option>
+                    {listCategory.map((listcate: any) => (
+                      <option key={listcate.id} value={listcate.id}>
+                        {listcate.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -276,18 +334,18 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                 </div>
               </div>
 
-              <div className=" mr-5">
+              <div className="mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Description
+                  Discount
                 </label>
                 <div className="relative mb-6">
                   <input
-                    type="text"
+                    type="number"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    className="text-right bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder=""
-                    name="description"
-                    value={updateProduct.description}
+                    name="discount"
+                    value={updateProduct.discount}
                     onChange={handleInput}
                   />
                 </div>
@@ -295,10 +353,26 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
 
               <div className=" mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                  Product Description
+                </label>
+                <div className="relative mb-6">
+                  <textarea
+                    id="input-group-1"
+                    name="description"
+                    value={updateProduct.description}
+                    onChange={handleInput}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    placeholder=""
+                  ></textarea>
+                </div>
+              </div>
+
+              {/* <div className=" mr-5">
+                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                   Bar Code
                 </label>
                 <div className="relative mb-6"></div>
-              </div>
+              </div> */}
             </div>
           </DialogContent>
           <DialogActions>

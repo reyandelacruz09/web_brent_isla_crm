@@ -228,7 +228,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
   const saveBranch = async (e: any) => {
     e.preventDefault();
 
-    console.warn(updateBranch);
+    //console.warn(updateBranch);
 
     try {
       const checkstat = await upBranch(updateBranch).unwrap();

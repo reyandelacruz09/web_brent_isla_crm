@@ -10,7 +10,6 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -20,6 +19,19 @@ import AddIcon from "@mui/icons-material/Add";
 import CustomerInformation from "./CustomerInformation";
 import ProductOrder from "./ProductOrder";
 import Others from "./Others";
+
+import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import { useEffect, useState } from "react";
+import { adress } from "../branch/AddBranch";
+import {
+  useBarangayListQuery,
+  useBranchListQuery,
+  useCityListQuery,
+  useProvinceListQuery,
+  useRegionListQuery,
+} from "../../store";
+import { Client } from "../product/AddProduct";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -32,6 +44,130 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 
 export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("callType");
+  const [otypeCall, setotypeCall] = React.useState("");
+  const [otypeComplaint, setotypeComplaint] = React.useState("hidden");
+
+  const [regionList, setRegionList] = useState<adress[]>([]);
+  const [provinceList, setProvinceList] = useState<adress[]>([]);
+  const [cityList, setCityList] = useState<adress[]>([]);
+  const [barangayList, setBarangayList] = useState<adress[]>([]);
+
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
+    null
+  );
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+
+  const { data: regions, isSuccess: isRegionSuccess } = useRegionListQuery("");
+  useEffect(() => {
+    if (isRegionSuccess && regions) {
+      setRegionList(regions.data);
+    }
+  }, [isRegionSuccess, regions]);
+
+  const { data: province, isSuccess: isProvinceSuccess } = useProvinceListQuery(
+    selectedRegionId || ""
+  );
+
+  useEffect(() => {
+    if (isProvinceSuccess && province) {
+      setProvinceList(province.data);
+    }
+  }, [isProvinceSuccess, province]);
+
+  const { data: city, isSuccess: isCitySuccess } = useCityListQuery(
+    selectedProvinceId || ""
+  );
+
+  useEffect(() => {
+    if (isCitySuccess && city) {
+      setCityList(city.data);
+    }
+  }, [isCitySuccess, city]);
+
+  const { data: barangay, isSuccess: isBarangaySuccess } = useBarangayListQuery(
+    selectedCityId || ""
+  );
+
+  useEffect(() => {
+    if (isBarangaySuccess && barangay) {
+      setBarangayList(barangay.data);
+    }
+  }, [isBarangaySuccess, barangay]);
+
+  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRegionId(event.target.value);
+    setSelectedProvinceId("0");
+    setSelectedCityId("0");
+  };
+
+  const handleProvinceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedProvinceId(event.target.value);
+    setSelectedCityId("0");
+  };
+
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCityId(event.target.value);
+  };
+
+  const clients = useBranchListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
+    }
+  }, [clients.isSuccess, clients.data]);
+
+  const [formData, setFormData] = React.useState({
+    demographic: "residential",
+    order_type: "callType",
+    call_type: "",
+    type_of_complaint: "",
+    reason_cancell: "",
+    customer: {
+      fname: "",
+      lname: "",
+      phone1: "",
+      phone2: "",
+      landline: "",
+      email: "",
+      block_unit: "",
+      barangay: "",
+      company: "",
+      nearest_landmark: "",
+    },
+    order: {
+      branch: "",
+      customerID: "",
+      demographic: "",
+      order_type: "",
+      call_type: "",
+      type_of_complaint: "",
+      reason_cancell: "",
+      sendsms: "",
+      sendemail: "",
+      special_instructions: "",
+      expected_deltime: "",
+    },
+    productOrder: {
+      product: "",
+      price: "",
+      quantity: "",
+      discount: "",
+      total: "",
+      subtotal: "",
+      delcharge: "",
+      total_discount: "",
+      grandtotal: "",
+      mopayment: "",
+      changefor: "",
+      changeamount: "",
+    },
+  });
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -40,20 +176,86 @@ export default function CustomizedDialogs() {
     setOpen(false);
   };
 
-  const [value, setValue] = React.useState("callType");
-  const [otypeCall, setotypeCall] = React.useState("");
-  const [otypeComplaint, setotypeComplaint] = React.useState("hidden");
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    let otype = (event.target as HTMLInputElement).value;
-    setValue(otype);
-    if (otype === "callType") {
-      setotypeCall("");
-      setotypeComplaint("hidden");
-    } else {
-      setotypeComplaint("");
-      setotypeCall("hidden");
+    if (name === "order_type") {
+      setValue(value);
+      if (value === "callType") {
+        setotypeCall("");
+        setotypeComplaint("hidden");
+      } else {
+        setotypeComplaint("");
+        setotypeCall("hidden");
+      }
     }
+  };
+
+  const handleInputChange = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    const finalValue = type === "checkbox" ? checked : value;
+
+    setFormData((prevState) => {
+      const customerFields = [
+        "fname",
+        "lname",
+        "phone1",
+        "phone2",
+        "landline",
+        "email",
+        "block_unit",
+        "barangay",
+        "company",
+        "nearest_landmark",
+      ];
+
+      const orderFields = [
+        "branch",
+        "customerID",
+        "demographic",
+        "order_type",
+        "call_type",
+        "type_of_complaint",
+        "reason_cancell",
+        "sendsms",
+        "sendemail",
+        "special_instructions",
+        "expected_deltime",
+      ];
+
+      if (customerFields.includes(name)) {
+        return {
+          ...prevState,
+          customer: {
+            ...prevState.customer,
+            [name]: finalValue,
+          },
+        };
+      } else if (orderFields.includes(name)) {
+        return {
+          ...prevState,
+          order: {
+            ...prevState.order,
+            [name]: finalValue,
+          },
+        };
+      }
+
+      return {
+        ...prevState,
+        [name]: finalValue,
+      };
+    });
+  };
+
+  const checkdata = async (e: any) => {
+    e.preventDefault();
+
+    console.warn(formData);
   };
 
   return (
@@ -87,6 +289,7 @@ export default function CustomizedDialogs() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={checkdata}
                 >
                   <span className="">Save & Close</span>
                 </Button>
@@ -97,6 +300,7 @@ export default function CustomizedDialogs() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={checkdata}
                 >
                   <span className="">Save & New</span>
                 </Button>
@@ -148,9 +352,10 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
+                  name="demographic"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1"
-                  defaultValue="residential"
+                  value={formData.demographic}
+                  onChange={handleRadioChange}
                 >
                   <FormControlLabel
                     value="residential"
@@ -185,11 +390,10 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
+                  name="order_type"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1"
-                  // defaultValue="callType"
-                  value={value}
-                  onChange={handleChange}
+                  value={formData.order_type}
+                  onChange={handleRadioChange}
                 >
                   <FormControlLabel
                     value="callType"
@@ -224,14 +428,19 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
+                  name="call_type"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
+                  value={formData.call_type}
+                  onChange={handleInputChange}
                 >
                   <Select
                     variant="standard"
                     className="mt-0 w-full border-none"
+                    name="call_type"
+                    value={formData.call_type}
+                    onChange={handleInputChange}
                   >
-                    <MenuItem value="Order">
+                    <MenuItem value="Call">
                       <span className="text-sm">Call</span>
                     </MenuItem>
                   </Select>
@@ -249,11 +458,16 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
                 >
-                  <Select variant="standard" className="mt-0 w-full">
-                    <MenuItem value="Order">
+                  <Select
+                    variant="standard"
+                    className="mt-0 w-full"
+                    name="type_of_complaint"
+                    value={formData.type_of_complaint}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="cancelled_order">
                       <span className="text-sm">Cancelled Order</span>
                     </MenuItem>
                   </Select>
@@ -270,11 +484,16 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
                 >
-                  <Select variant="standard" className="mt-0 w-full">
-                    <MenuItem value="Order">
+                  <Select
+                    variant="standard"
+                    className="mt-0 w-full"
+                    name="reason_cancell"
+                    value={formData.reason_cancell}
+                    onChange={handleInputChange}
+                  >
+                    <MenuItem value="late_delivery">
                       <span className="text-sm">Late Delivery</span>
                     </MenuItem>
                   </Select>
@@ -284,7 +503,288 @@ export default function CustomizedDialogs() {
           </div>
 
           <hr className="mt-3" />
-          <CustomerInformation />
+          <div className="grid grid-cols-3 mt-4">
+            <div className="col-span-3 mt-3">
+              <span className="text-lg font-bold">
+                <KeyboardAltOutlinedIcon className="align-top" /> Customer
+                Information
+              </span>
+            </div>
+
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                First Name
+              </label>
+              <div className="relative mb-6">
+                <input
+                  name="fname"
+                  value={formData.customer.fname}
+                  onChange={handleInputChange}
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Last Name
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="lname"
+                  value={formData.customer.lname}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Cell Phone 1
+              </label>
+              <div className="relative mb-6 ">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone1"
+                  value={formData.customer.phone1}
+                  onChange={handleInputChange}
+                />
+                <FormControlLabel
+                  className="absolute top-0 right-0"
+                  control={<Checkbox />}
+                  label="Send SMS"
+                />
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Cell Phone 2
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone2"
+                  value={formData.customer.phone2}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Landline
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="landline"
+                  value={formData.customer.landline}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Email
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="email"
+                  value={formData.customer.email}
+                  onChange={handleInputChange}
+                />
+                <FormControlLabel
+                  className="absolute top-0 right-0"
+                  control={<Checkbox />}
+                  label="Send Email"
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Block No / Unit No / Street
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="block_unit"
+                  value={formData.customer.block_unit}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Region
+              </label>
+              <div className="relative mb-6">
+                <select
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleRegionChange}
+                  name="region"
+                >
+                  <option>Select Region</option>
+                  {regionList.map((list) => (
+                    <option key={list.id} value={list.id}>
+                      {list.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Province
+              </label>
+              <div className="relative mb-6">
+                <select
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleProvinceChange}
+                  name="province"
+                >
+                  <option>Select Province</option>
+                  {provinceList.map((list) => (
+                    <option key={list.id} value={list.id}>
+                      {list.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Municipality
+              </label>
+              <div className="relative mb-6">
+                <select
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  onChange={handleCityChange}
+                  name="city"
+                >
+                  <option>Select Municipality</option>
+                  {cityList.map((list) => (
+                    <option key={list.id} value={list.id}>
+                      {list.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Barangay
+              </label>
+              <div className="relative mb-6">
+                <select
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="barangay"
+                  value={formData.customer.barangay}
+                  onChange={handleInputChange}
+                >
+                  <option>Select Barangay</option>
+                  {barangayList.map((list) => (
+                    <option key={list.id} value={list.id}>
+                      {list.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Company
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="company"
+                  value={formData.customer.company}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Branch Assignment
+              </label>
+              <div className="relative mb-6">
+                <select
+                  name="branch"
+                  value={formData.order.branch}
+                  onChange={handleInputChange}
+                  id="rec_mode"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                >
+                  <option value="" disabled>
+                    Choose One
+                  </option>
+                  {content.map((listOption: any) => (
+                    <option key={listOption.id} value={listOption.id}>
+                      {listOption.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Expexted Delivery Time
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="time"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="expected_deltime"
+                  value={formData.order.expected_deltime}
+                  onChange={handleInputChange}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Nearest Landmark / Remarks
+              </label>
+              <div className="relative mb-6">
+                <textarea
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="nearest_landmark"
+                  value={formData.customer.nearest_landmark}
+                  onChange={handleInputChange}
+                >
+                  {" "}
+                </textarea>
+              </div>
+            </div>
+          </div>
 
           <hr className="mt-3" />
           <ProductOrder />

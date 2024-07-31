@@ -1,7 +1,97 @@
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
 import { Checkbox, FormControlLabel } from "@mui/material";
+import { useEffect, useState } from "react";
+import { adress } from "../branch/AddBranch";
+import {
+  useBarangayListQuery,
+  useBranchListQuery,
+  useCityListQuery,
+  useProvinceListQuery,
+  useRegionListQuery,
+} from "../../store";
+import { Client } from "../product/AddProduct";
 
 function CustomerInformation() {
+  // const orderCI = useState({
+  //   code: "sample only",
+  //   name: "",
+  //   barangay: "",
+  //   email: "",
+  // });
+  const [regionList, setRegionList] = useState<adress[]>([]);
+  const [provinceList, setProvinceList] = useState<adress[]>([]);
+  const [cityList, setCityList] = useState<adress[]>([]);
+  const [barangayList, setBarangayList] = useState<adress[]>([]);
+
+  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
+    null
+  );
+  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+
+  const { data: regions, isSuccess: isRegionSuccess } = useRegionListQuery("");
+  useEffect(() => {
+    if (isRegionSuccess && regions) {
+      setRegionList(regions.data);
+    }
+  }, [isRegionSuccess, regions]);
+
+  const { data: province, isSuccess: isProvinceSuccess } = useProvinceListQuery(
+    selectedRegionId || ""
+  );
+
+  useEffect(() => {
+    if (isProvinceSuccess && province) {
+      setProvinceList(province.data);
+    }
+  }, [isProvinceSuccess, province]);
+
+  const { data: city, isSuccess: isCitySuccess } = useCityListQuery(
+    selectedProvinceId || ""
+  );
+
+  useEffect(() => {
+    if (isCitySuccess && city) {
+      setCityList(city.data);
+    }
+  }, [isCitySuccess, city]);
+
+  const { data: barangay, isSuccess: isBarangaySuccess } = useBarangayListQuery(
+    selectedCityId || ""
+  );
+
+  useEffect(() => {
+    if (isBarangaySuccess && barangay) {
+      setBarangayList(barangay.data);
+    }
+  }, [isBarangaySuccess, barangay]);
+
+  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRegionId(event.target.value);
+    setSelectedProvinceId("0");
+    setSelectedCityId("0");
+  };
+
+  const handleProvinceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    setSelectedProvinceId(event.target.value);
+    setSelectedCityId("0");
+  };
+
+  const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCityId(event.target.value);
+  };
+
+  const clients = useBranchListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
+    }
+  }, [clients.isSuccess, clients.data]);
+
   return (
     <>
       <div className="grid grid-cols-3 mt-4">
@@ -18,10 +108,10 @@ function CustomerInformation() {
           </label>
           <div className="relative mb-6">
             <input
+              name="fname"
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
             />
           </div>
         </div>
@@ -106,7 +196,7 @@ function CustomerInformation() {
 
         <div className=" mr-5">
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Block No / Unit No
+            Block No / Unit No / Street
           </label>
           <div className="relative mb-6">
             <input
@@ -120,29 +210,61 @@ function CustomerInformation() {
 
         <div className=" mr-5">
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Building/Subdivision
+            Region
           </label>
           <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
+            <select
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            />
+              onChange={handleRegionChange}
+              name="region"
+            >
+              <option>Select Region</option>
+              {regionList.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {list.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
         <div className=" mr-5">
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Street
+            Province
           </label>
           <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
+            <select
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            />
+              onChange={handleProvinceChange}
+              name="province"
+            >
+              <option>Select Province</option>
+              {provinceList.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {list.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className=" mr-5">
+          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+            Municipality
+          </label>
+          <div className="relative mb-6">
+            <select
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={handleCityChange}
+              name="city"
+            >
+              <option>Select Municipality</option>
+              {cityList.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {list.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -151,26 +273,18 @@ function CustomerInformation() {
             Barangay
           </label>
           <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
+            <select
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            />
-          </div>
-        </div>
-
-        <div className=" mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            City
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            />
+              //onChange={handleInput}
+              name="barangay"
+            >
+              <option>Select Barangay</option>
+              {barangayList.map((list) => (
+                <option key={list.id} value={list.id}>
+                  {list.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
@@ -193,12 +307,22 @@ function CustomerInformation() {
             Branch Assignment
           </label>
           <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            />
+            <select
+              name="owner"
+              // value={product.owner}
+              // onChange={handleInput}
+              id="rec_mode"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+            >
+              <option value="" disabled>
+                Choose One
+              </option>
+              {content.map((listOption: any) => (
+                <option key={listOption.id} value={listOption.id}>
+                  {listOption.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 

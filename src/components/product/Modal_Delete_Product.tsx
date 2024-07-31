@@ -6,6 +6,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
+import { useDeleteProductMutation } from "../../store";
+import toast from "react-hot-toast";
 
 interface ModalDeleteProductProps {
   modalid: string;
@@ -22,6 +24,24 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [delProduct] = useDeleteProductMutation();
+  const deleteProduct = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      const checkstat = await delProduct(modalid).unwrap();
+      if (checkstat.success === true) {
+        //alert("success");
+        toast.success("Successfully Deleted!");
+        window.location.reload();
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      alert("Hala");
+    }
   };
 
   return (
@@ -53,7 +73,7 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
                 className="w-5/6"
                 variant="contained"
                 color="error"
-                onClick={handleClose}
+                onClick={deleteProduct}
               >
                 Yes
               </Button>
