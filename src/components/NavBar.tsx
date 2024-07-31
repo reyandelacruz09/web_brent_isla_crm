@@ -9,11 +9,27 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import { Link } from "react-router-dom";
 import "../App.css";
+import { useState } from "react";
+import { Menu, MenuItem, Typography } from "@mui/material";
+import React from "react";
+
+// const settings = ["Profile", "Account", "Dashboard", "Logout"];
+const settings = ["Logout"];
 
 function NavBar() {
-  //console.log(window.location.pathname);
-
   let url = window.location.pathname;
+
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
+    null
+  );
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   return (
     <>
@@ -124,7 +140,35 @@ function NavBar() {
               className="inline-block 2xl:w-8 2xl:mr-10 xl:w-8 xl:mr-10 lg:mr-5 md:w-8 cursor-pointer mr-5 h-18 w-6 object-cover rounded-full ring-2 ring-white"
               src="../../images/avatar.jpg"
               alt=""
+              onClick={handleOpenUserMenu}
             />
+            {/* <div>
+              <div className="bg-red-200 absolute p-3 mr-40">
+                <a>Logout</a>
+              </div>
+            </div> */}
+            <Menu
+              sx={{ mt: "45px" }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {settings.map((setting) => (
+                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                  <Typography textAlign="center">{setting}</Typography>
+                </MenuItem>
+              ))}
+            </Menu>
           </div>
         </div>
       </div>

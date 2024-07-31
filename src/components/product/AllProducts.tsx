@@ -20,7 +20,7 @@ export interface Product {
   name: string;
   description: string;
   owner: string;
-  unitPrice: string;
+  price: string;
   active: string;
   edit: string;
   delete: string;
@@ -57,9 +57,9 @@ function AllProducts() {
           code: result.data[i].code,
           name: result.data[i].name,
           description: result.data[i].description,
-          owner: result.data[i].owner,
-          unitPrice: result.data[i].unitPrice,
-          active: result.data[i].active,
+          owner: result.data[i].branch.name,
+          price: result.data[i].price,
+          active: result.data[i].status,
           edit: result.data[i].id,
           delete: result.data[i].id,
         });
@@ -69,7 +69,7 @@ function AllProducts() {
     }
   }, [data, isSuccess]);
 
-  console.log(content);
+  // console.warn(content);
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -20,7 +20,7 @@ export interface Client {
   name: string;
 }
 
-interface PCategory {
+export interface PCategory {
   id: string;
   name: string;
   code: string;
@@ -188,6 +188,7 @@ function AddProduct() {
                   </select>
                 </div>
               </div>
+
               <div className="pt-3 mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                   Product Category

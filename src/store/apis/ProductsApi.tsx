@@ -81,6 +81,15 @@ const productApi = createApi({
           };
         },
       }),
+      DeleteProduct: builder.mutation({
+        query: (id) => {
+          return {
+            url: `/api/products/${id}/delete_product/`,
+            headers: { Authorization: "token " + token },
+            method: "POST",
+          };
+        },
+      }),
     };
   },
 });
@@ -91,5 +100,6 @@ export const {
   useViewProductQuery,
   useUpdateProductMutation,
   useCategoryListQuery,
+  useDeleteProductMutation,
 } = productApi;
 export { productApi };

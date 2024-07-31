@@ -29,6 +29,7 @@ export {
   useViewProductQuery,
   useUpdateProductMutation,
   useCategoryListQuery,
+  useDeleteProductMutation,
 } from "../store/apis/ProductsApi";
 
 export { useClientListQuery } from "../store/apis/ClientsApi";

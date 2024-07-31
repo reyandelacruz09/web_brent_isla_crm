@@ -33,69 +33,6 @@ const columns: GridColDef[] = [
   { field: "delete", headerName: "Delete", width: 80 },
 ];
 
-const rows = [
-  {
-    id: "001",
-    bname: "Branch 1",
-    baddress: "Address 1",
-    bowner: "Brent Gas",
-    email: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "002",
-    bname: "Branch 2",
-    baddress: "Address 2",
-    bowner: "One Tech",
-    email: "200",
-    active: "N",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "003",
-    bname: "Branch 3",
-    baddress: "Address 3",
-    bowner: "Brent Gas",
-    email: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "004",
-    bname: "Branch 4",
-    baddress: "Address 4",
-    bowner: "Aristocrat",
-    email: "150",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "005",
-    bname: "Branch 5",
-    baddress: "Address 5",
-    bowner: "Globe",
-    email: "100",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "006",
-    bname: "Branch 6",
-    baddress: "Address 6",
-    bowner: "Brent Gas",
-    email: "159",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-];
-
 const theme = createTheme();
 function AllBranches() {
   const { data, error, isLoading, isSuccess } = useBranchListQuery("");
