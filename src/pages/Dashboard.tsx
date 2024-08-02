@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import NavBar from "../components/NavBar";
+import { Link, useNavigate } from "react-router-dom";
 
-const account_detailed = JSON.parse(localStorage.getItem("user_info") || "{}");
-//console.warn(account_detailed);
+const account_detailed1 = JSON.parse(localStorage.getItem("user_info") || "{}");
 
 function Dashboard() {
   return (
     <>
       <NavBar />
       <div>
-        Welcome {account_detailed.first_name} {account_detailed.last_name}
+        Welcome {account_detailed1.first_name} {account_detailed1.last_name}
       </div>
     </>
   );

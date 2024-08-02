@@ -2,76 +2,47 @@ import ListIcon from "@mui/icons-material/List";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import Modal_Update_User from "./Modal_Update_User";
+import Modal_Update_Department from "./Modal_Update_Department";
+// import Modal_Update_User from "./Modal_Update_User";
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "Agent Code", width: 130 },
-  { field: "username", headerName: "Username", width: 200 },
-  { field: "login", headerName: "Log-In", width: 200 },
-  { field: "group", headerName: "Group", width: 130 },
-  { field: "email", headerName: "Email", width: 150 },
-  { field: "active", headerName: "Active", width: 130 },
-  { field: "edit", headerName: "Edit", width: 130 },
-  { field: "delete", headerName: "Delete", width: 130 },
+  { field: "id", headerName: "Department Code", width: 130 },
+  { field: "depname", headerName: "Department Name", width: 200 },
+  { field: "category", headerName: "Category", width: 200 },
+  { field: "validity", headerName: "Validity", width: 200 },
+  { field: "dephead", headerName: "Department Head", width: 180 },
+  { field: "active", headerName: "Active", width: 100 },
+  { field: "edit", headerName: "Edit", width: 100 },
+  { field: "delete", headerName: "Delete", width: 100 },
 ];
 
 const rows = [
   {
-    id: "Brent_Gas-001",
-    username: "username 1",
-    login: "login 1",
-    group: "Group 1",
-    email: "email 1",
+    id: "0001",
+    depname: "Brent Gas",
+    category: "Petroleum",
+    validity: "12/25/2024 - 12/25/2025",
+    dephead: "Orlhie S. Almendares",
     active: "Y",
     edit: "",
     delete: "",
   },
   {
-    id: "Brent_Gas-002",
-    username: "username 2",
-    login: "login 2",
-    group: "Group 2",
-    email: "email 2",
+    id: "0002",
+    depname: "Aristocrat",
+    category: "Food and Beverages",
+    validity: "12/25/2024 - 12/25/2025",
+    dephead: "Orlhie S. Almendares",
     active: "N",
     edit: "",
     delete: "",
   },
   {
-    id: "Brent_Gas-003",
-    username: "username 3",
-    login: "login 3",
-    group: "Group 3",
-    email: "email 3",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-004",
-    username: "username 4",
-    login: "login 4",
-    group: "Group 4",
-    email: "email 4",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-005",
-    username: "username 5",
-    login: "login 5",
-    group: "Group 5",
-    email: "email 5",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-006",
-    username: "username 6",
-    login: "login 6",
-    group: "Group 6",
-    email: "email 6",
+    id: "0003",
+    depname: "Wendys",
+    category: "Food and Beverages",
+    validity: "12/25/2024 - 12/25/2025",
+    dephead: "Orlhie S. Almendares",
     active: "Y",
     edit: "",
     delete: "",
@@ -79,7 +50,7 @@ const rows = [
 ];
 
 const theme = createTheme();
-function AllUser() {
+function AllDepartment() {
   const renderCell = (params: any) => {
     if (params.colDef.field === "active" && params.value === "Y") {
       return (
@@ -96,7 +67,7 @@ function AllUser() {
     } else if (params.colDef.field === "edit") {
       return (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
-          <Modal_Update_User />
+          <Modal_Update_Department />
         </span>
       );
     } else if (params.colDef.field === "delete") {
@@ -116,7 +87,7 @@ function AllUser() {
           <div className="flex">
             <div className="flex justify-start w-1/2">
               <span className="text-lg font-bold">
-                <ListIcon className="align-top" /> All User
+                <ListIcon className="align-top" /> All Department
               </span>
             </div>
             <div className="flex justify-end w-1/2">
@@ -125,7 +96,7 @@ function AllUser() {
                 id="input-group-1"
                 name="discount"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
-                placeholder="Search User"
+                placeholder="Search Department"
               />
             </div>
           </div>
@@ -161,4 +132,4 @@ function AllUser() {
   );
 }
 
-export default AllUser;
+export default AllDepartment;

@@ -7,14 +7,20 @@ import InventoryOutlinedIcon from "@mui/icons-material/InventoryOutlined";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
-import { Link } from "react-router-dom";
+import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
+import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
+import { Link, useNavigate } from "react-router-dom";
 import "../App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import React from "react";
 
-// const settings = ["Profile", "Account", "Dashboard", "Logout"];
-const settings = ["Logout"];
+const account_detailed = JSON.parse(localStorage.getItem("user_info") || "{}");
+interface AccountDetails {
+  id?: string;
+  first_name?: string;
+  last_name?: string;
+}
 
 function NavBar() {
   let url = window.location.pathname;
@@ -30,6 +36,27 @@ function NavBar() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
+
+  let account_detailed: AccountDetails = {};
+
+  try {
+    account_detailed = JSON.parse(localStorage.getItem("user_info") || "{}");
+  } catch (e) {
+    console.error("Error parsing user info from localStorage", e);
+  }
+
+  useEffect(() => {
+    if (!account_detailed.id) {
+      navigate("/");
+    }
+  }, [account_detailed.id, navigate]);
 
   return (
     <>
@@ -126,6 +153,28 @@ function NavBar() {
               <a className=" pl-1">User</a>
             </Link>
           </li>
+          <li
+            className={
+              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              (url === "/department" ? " activenavbar" : "")
+            }
+          >
+            <Link to="/department">
+              <BedOutlinedIcon className="align-top" />
+              <a className=" pl-1">Department</a>
+            </Link>
+          </li>
+          <li
+            className={
+              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              (url === "/kb" ? " activenavbar" : "")
+            }
+          >
+            <Link to="/kb">
+              <LiveHelpOutlinedIcon className="align-top" />
+              <a className=" pl-1">KB</a>
+            </Link>
+          </li>
         </ul>
 
         <div className="flex items-center gap-5">
@@ -163,11 +212,11 @@ function NavBar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={handleCloseUserMenu}>
+                <button onClick={handleLogout}>
+                  <Typography textAlign="center">Logout</Typography>
+                </button>
+              </MenuItem>
             </Menu>
           </div>
         </div>

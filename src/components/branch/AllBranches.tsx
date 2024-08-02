@@ -117,9 +117,22 @@ function AllBranches() {
     <>
       <div className="flex justify-center pt-5">
         <div className="w-5/6 p-5 border">
-          <span className="text-lg font-bold">
-            <ListIcon className="align-top" /> All Branches
-          </span>
+          <div className="flex">
+            <div className="flex justify-start w-1/2">
+              <span className="text-lg font-bold">
+                <ListIcon className="align-top" /> All Branches
+              </span>
+            </div>
+            <div className="flex justify-end w-1/2">
+              <input
+                type="text"
+                id="input-group-1"
+                name="discount"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
+                placeholder="Search Branch"
+              />
+            </div>
+          </div>
 
           <div className="pt-3">
             <div className="pb-3">

@@ -10,6 +10,8 @@ import User from "./pages/User";
 import Modal_Create_Order from "./components/order/Modal_Create_Order";
 import CustomerDetails from "./components/order/CustomerDetails";
 import Testing_Only from "./components/order/Testing";
+import Department from "./pages/Department";
+import KB from "./pages/KB";
 
 function App() {
   return (
@@ -24,9 +26,11 @@ function App() {
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/user" element={<User />} />
-          <Route path="/modal" element={<Modal_Create_Order />} />
+          <Route path="/department" element={<Department />} />
+          <Route path="/kb" element={<KB />} />
+          {/* <Route path="/modal" element={<Modal_Create_Order />} /> */}
           <Route path="/customer-details" element={<CustomerDetails />} />
-          <Route path="/testing" element={<Testing_Only />} />
+          {/* <Route path="/testing" element={<Testing_Only />} /> */}
         </Routes>
       </BrowserRouter>
     </>

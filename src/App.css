@@ -1,3 +1,64 @@
 .activenavbar {
   color: #007bc1;
 }
+
+.kbImage {
+  position: relative;
+  /* width: 1176px;
+  height: 372px; */
+  width: 80%;
+  background: #00bdd6ff;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.rectangle1 {
+  position: absolute;
+  top: 275px;
+  left: -221px;
+  width: 442px;
+  height: 229px;
+  background: #ebfdff4d;
+  border-radius: 8px;
+}
+.rectangle2 {
+  position: absolute;
+  top: -144px;
+  left: 1097px;
+  width: 442px;
+  height: 229px;
+  background: #ebfdff4d;
+  border-radius: 8px;
+}
+.avatar_1 {
+  position: absolute;
+  top: 70px;
+  left: 53px;
+  width: 70px;
+  height: 70px;
+  background: #a6f5ffff;
+  opacity: 1;
+  overflow: hidden;
+  border-radius: 45px;
+}
+.avatar_2 {
+  position: absolute;
+  top: 43px;
+  left: 987px;
+  width: 51px;
+  height: 51px;
+  background: #a6f5ffff;
+  opacity: 1;
+  overflow: hidden;
+  border-radius: 36px;
+}
+.avatar_3 {
+  position: absolute;
+  top: 269px;
+  left: 1007px;
+  width: 31px;
+  height: 31px;
+  background: #c5d1f7ff;
+  opacity: 1;
+  overflow: hidden;
+  border-radius: 26px;
+}

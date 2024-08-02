@@ -428,10 +428,7 @@ export default function CustomizedDialogs() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="call_type"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
-                  value={formData.call_type}
-                  onChange={handleInputChange}
                 >
                   <Select
                     variant="standard"
