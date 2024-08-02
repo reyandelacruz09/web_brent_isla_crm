@@ -47,7 +47,16 @@ export default function BasicTabs() {
     <div className="w-full">
       <div className="flex justify-center pt-5">
         <div className="w-5/6 flex justify-end">
-          <Modal_Create_Order />
+          <div className="flex gap-5">
+            <input
+              type="text"
+              id="input-group-1"
+              name="discount"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
+              placeholder="Search"
+            />
+            <Modal_Create_Order />
+          </div>
         </div>
       </div>
       <div className="flex justify-center">

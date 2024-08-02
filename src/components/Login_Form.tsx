@@ -85,9 +85,15 @@ function Login_Form() {
     <>
       <div className="sm:bg-white h-screen grid md:grid-cols-2 grid-cols-1">
         <div className="column w-100 h-screen flex items-center justify-center">
-          <div className="w-4/6 h-4/5">
-            <div className="flex justify-center pb-10">
-              <img src="../../images/OODC_logo.png" alt="" className="w-64" />
+          <div className="w-4/6 h-full">
+            <div className="flex justify-center pt-10 pb-10">
+              <img src="../../images/OODC_hres.png" alt="" className="w-52" />
+            </div>
+
+            <div className="flex justify-center">
+              <div className="w-5/6 pb-5">
+                <Typography>Sign in to OOG Ordering System</Typography>
+              </div>
             </div>
             <div className="flex justify-center">
               <form className="w-5/6" onSubmit={login}>

@@ -1,5 +1,7 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material";
+import { useProductListQuery } from "../../store";
+import { useEffect, useState } from "react";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "Product Code", width: 130 },
@@ -61,9 +63,53 @@ const rows = [
   },
 ];
 
+interface Product {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  owner: string;
+  price: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
+
 const theme = createTheme();
 
 function InventoryDetails_R() {
+  const { data, error, isLoading, isSuccess } = useProductListQuery("");
+  const [content, setContent] = useState<Product[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      let content: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const products: Product[] = [];
+
+      for (let i = 0; i < size; i++) {
+        products.push({
+          id: result.data[i].id,
+          code: result.data[i].code,
+          name: result.data[i].name,
+          description: result.data[i].description,
+          owner: result.data[i].branch.name,
+          price: result.data[i].price,
+          active: result.data[i].status,
+          edit: result.data[i].id,
+          delete: result.data[i].id,
+        });
+      }
+
+      setContent(products);
+    }
+  }, [data, isSuccess]);
+
+  console.warn(content);
+
   return (
     <>
       <div className="pt-3">
@@ -76,7 +122,7 @@ function InventoryDetails_R() {
               <ThemeProvider theme={theme}>
                 <div className="w-full h-full bg-white">
                   <DataGrid
-                    rows={rows}
+                    rows={content}
                     columns={columns}
                     initialState={{
                       pagination: {

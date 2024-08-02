@@ -19,18 +19,10 @@ interface Product {
   owner: string;
   price: string;
   active: string;
+  discount: string;
 }
 
 function ProductOrder() {
-  // const [productList, setProductList] = useState<Product[]>([]);
-  // const { data: product, isSuccess: isProductSuccess } =
-  //   useProductListQuery("");
-  // useEffect(() => {
-  //   if (isProductSuccess && product) {
-  //     setProductList(product.data);
-  //   }
-  // }, [isProductSuccess, product]);
-
   const product = useProductListQuery("");
   const [productList, setProductList] = useState<Product[]>([]);
   useEffect(() => {
@@ -44,6 +36,25 @@ function ProductOrder() {
     { id: 0, product: "", unitPrice: "", qty: "", discount: "", subtotal: "" },
   ]);
 
+  const [totalSubtotal, setTotalSubtotal] = useState("0.00");
+  const [deliveryCharge, setDeliveryCharge] = useState("0.00");
+  const [totalDiscount, setTotalDiscount] = useState("0.00");
+  const [grandTotal, setGrandTotal] = useState("0.00");
+
+  useEffect(() => {
+    const subtotalTotal = array.reduce(
+      (acc, item) => acc + parseFloat(item.subtotal || "0"),
+      0
+    );
+    setTotalSubtotal(subtotalTotal.toFixed(2));
+    setDeliveryCharge("49.00");
+
+    const discount = parseFloat(totalDiscount) || 0;
+    const delivery = parseFloat(deliveryCharge) || 0;
+    const grandTotalValue = subtotalTotal + delivery - discount;
+    setGrandTotal(grandTotalValue.toFixed(2));
+  }, [array, totalDiscount, deliveryCharge]);
+
   const handleAddDiv = () => {
     setArray((prev) => [
       ...prev,
@@ -56,20 +67,11 @@ function ProductOrder() {
         subtotal: "",
       },
     ]);
-    // console.warn(array);
-    // console.warn(productList);
   };
 
   const handleRemoveDiv = (idx: number) => {
     setArray((prev) => prev.filter((_, index) => index !== idx));
   };
-
-  // const handleInputChange = (idx: any, field: any, value: any) => {
-  //   const updatedArray = array.map((item, index) =>
-  //     index === idx ? { ...item, [field]: value } : item
-  //   );
-  //   setArray(updatedArray);
-  // };
 
   const handleInputChange = (idx: number, field: string, value: string) => {
     setArray((prev) =>
@@ -77,18 +79,22 @@ function ProductOrder() {
         if (index === idx) {
           const updatedItem = { ...item, [field]: value };
           if (field === "product") {
-            // Fetch product details and update unitPrice if necessary
-            // Example placeholder, replace with actual fetching logic
             const selectedProduct = productList.find(
-              (prod) => prod.id === value
+              (prod) => prod.id == value
             );
-
-            var result = Object.entries(productList);
-            console.warn(productList);
             if (selectedProduct) {
               updatedItem.unitPrice = selectedProduct.price;
+              updatedItem.discount = selectedProduct.discount;
             }
+            console.warn(productList);
           }
+
+          let price = updatedItem.unitPrice;
+          updatedItem.unitPrice = parseFloat(price).toFixed(2);
+
+          let newdiscount = updatedItem.discount;
+          updatedItem.discount = parseFloat(newdiscount).toFixed(2);
+
           const qty = parseFloat(updatedItem.qty) || 0;
           const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
           const discount = parseFloat(updatedItem.discount) || 0;
@@ -137,7 +143,6 @@ function ProductOrder() {
                 ></TableCell>
               </TableRow>
             </TableHead>
-
             <TableBody>
               {array.map((item, idx) => (
                 <TableRow key={item.id}>
@@ -162,51 +167,44 @@ function ProductOrder() {
                     <input
                       type="number"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      name="unitPrice"
                       value={item.unitPrice}
-                      onChange={(e) =>
-                        handleInputChange(idx, "unitPrice", e.target.value)
-                      }
+                      readOnly
                     />
                   </StyledTableCell>
-
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center"
+                      name="qty"
                       value={item.qty}
                       onChange={(e) =>
                         handleInputChange(idx, "qty", e.target.value)
                       }
                     />
                   </StyledTableCell>
-
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      name="discount"
                       value={item.discount}
-                      onChange={(e) =>
-                        handleInputChange(idx, "discount", e.target.value)
-                      }
+                      readOnly
                     />
                   </StyledTableCell>
-
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="text"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      name="subtotal"
                       value={item.subtotal}
-                      onChange={(e) =>
-                        handleInputChange(idx, "subtotal", e.target.value)
-                      }
-                      disabled
+                      readOnly
                     />
                   </StyledTableCell>
-
                   <StyledTableCell className="w-14" align="center">
                     <span
                       className="text-red-600 cursor-pointer"
@@ -217,7 +215,6 @@ function ProductOrder() {
                   </StyledTableCell>
                 </TableRow>
               ))}
-
               <TableRow>
                 <TableCell>
                   <Button
@@ -230,7 +227,6 @@ function ProductOrder() {
                 </TableCell>
                 <TableCell colSpan={5}></TableCell>
               </TableRow>
-
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
                   <span className="pr-5">Subtotal</span>
@@ -239,13 +235,13 @@ function ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    name="total_subtotal"
+                    value={totalSubtotal}
                     disabled
                   />
                 </StyledTableCell>
               </TableRow>
-
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
                   <span className="pr-5">Delivery Charged</span>
@@ -254,13 +250,13 @@ function ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    name="total_delcharge"
+                    value={deliveryCharge}
                     disabled
                   />
                 </StyledTableCell>
               </TableRow>
-
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
                   <span className="pr-5">Discount</span>
@@ -269,8 +265,9 @@ function ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    name="total_discount"
+                    value={totalDiscount}
                     disabled
                   />
                 </StyledTableCell>
@@ -284,8 +281,9 @@ function ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    name="total_grandtotal"
+                    value={grandTotal}
                     disabled
                   />
                 </StyledTableCell>
