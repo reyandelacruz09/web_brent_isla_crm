@@ -30,8 +30,13 @@ import {
   useCityListQuery,
   useProvinceListQuery,
   useRegionListQuery,
+  useCreateOrderMutation,
 } from "../../store";
 import { Client } from "../product/AddProduct";
+import toast from "react-hot-toast";
+
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -123,11 +128,11 @@ export default function CustomizedDialogs() {
   }, [clients.isSuccess, clients.data]);
 
   const [formData, setFormData] = React.useState({
-    demographic: "residential",
-    order_type: "callType",
-    call_type: "",
-    type_of_complaint: "",
-    reason_cancell: "",
+    demographic: 1,
+    order_type: 1,
+    call_type: 1,
+    type_of_complaint: 0,
+    reason_cancell: 0,
     customer: {
       fname: "",
       lname: "",
@@ -151,6 +156,7 @@ export default function CustomizedDialogs() {
       sendsms: "",
       sendemail: "",
       special_instructions: "",
+      expected_deldate: "",
       expected_deltime: "",
     },
     productOrder: {
@@ -185,7 +191,7 @@ export default function CustomizedDialogs() {
 
     if (name === "order_type") {
       setValue(value);
-      if (value === "callType") {
+      if (value === "1") {
         setotypeCall("");
         setotypeComplaint("hidden");
       } else {
@@ -224,6 +230,7 @@ export default function CustomizedDialogs() {
         "sendsms",
         "sendemail",
         "special_instructions",
+        "expected_deldate",
         "expected_deltime",
       ];
 
@@ -252,11 +259,53 @@ export default function CustomizedDialogs() {
     });
   };
 
-  const checkdata = async (e: any) => {
+  // const checkdata = async (e: any) => {
+  //   e.preventDefault();
+
+  //   console.warn(formData);
+  // };
+
+  const [addOrder] = useCreateOrderMutation();
+  const saveOrder = async (e: any) => {
     e.preventDefault();
 
     console.warn(formData);
+    // const data1 = {
+    //   code: branch.code,
+    //   name: branch.name,
+    //   active: branch.active,
+    //   owner: branch.owner,
+    //   block_street: branch.block_street,
+    //   barangay: branch.barangay,
+    //   email: branch.email,
+    // };
+
+    try {
+      const checkstat = await addOrder(formData).unwrap();
+      if (checkstat.success === true) {
+        // alert("success");
+        toast.success("Successfully Updated!");
+        {
+          // setBranch({
+          //   code: "",
+          //   name: "",
+          //   active: true,
+          //   owner: 0,
+          //   block_street: "",
+          //   barangay: "",
+          //   email: "",
+          // });
+          // window.location.reload();
+        }
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      alert("Hala");
+    }
   };
+
+  const [startDate, setStartDate] = useState(new Date());
 
   return (
     <React.Fragment>
@@ -289,7 +338,7 @@ export default function CustomizedDialogs() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
-                  onClick={checkdata}
+                  onClick={saveOrder}
                 >
                   <span className="">Save & Close</span>
                 </Button>
@@ -300,7 +349,7 @@ export default function CustomizedDialogs() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
-                  onClick={checkdata}
+                  onClick={saveOrder}
                 >
                   <span className="">Save & New</span>
                 </Button>
@@ -358,7 +407,7 @@ export default function CustomizedDialogs() {
                   onChange={handleRadioChange}
                 >
                   <FormControlLabel
-                    value="residential"
+                    value="1"
                     control={<Radio />}
                     label={<span className="text-sm">Residential</span>}
                     sx={{
@@ -368,7 +417,7 @@ export default function CustomizedDialogs() {
                     }}
                   />
                   <FormControlLabel
-                    value="business"
+                    value="2"
                     control={<Radio />}
                     label={<span className="text-sm">Business</span>}
                     sx={{
@@ -396,7 +445,7 @@ export default function CustomizedDialogs() {
                   onChange={handleRadioChange}
                 >
                   <FormControlLabel
-                    value="callType"
+                    value="1"
                     control={<Radio />}
                     label={<span className="text-sm">Call Type</span>}
                     sx={{
@@ -406,7 +455,7 @@ export default function CustomizedDialogs() {
                     }}
                   />
                   <FormControlLabel
-                    value="complaint"
+                    value="2"
                     control={<Radio />}
                     label={<span className="text-sm">Complaint</span>}
                     sx={{
@@ -437,8 +486,11 @@ export default function CustomizedDialogs() {
                     value={formData.call_type}
                     onChange={handleInputChange}
                   >
-                    <MenuItem value="Call">
+                    <MenuItem value="1">
                       <span className="text-sm">Call</span>
+                    </MenuItem>
+                    <MenuItem value="2">
+                      <span className="text-sm">SMS</span>
                     </MenuItem>
                   </Select>
                 </RadioGroup>
@@ -464,7 +516,7 @@ export default function CustomizedDialogs() {
                     value={formData.type_of_complaint}
                     onChange={handleInputChange}
                   >
-                    <MenuItem value="cancelled_order">
+                    <MenuItem value="1">
                       <span className="text-sm">Cancelled Order</span>
                     </MenuItem>
                   </Select>
@@ -490,7 +542,7 @@ export default function CustomizedDialogs() {
                     value={formData.reason_cancell}
                     onChange={handleInputChange}
                   >
-                    <MenuItem value="late_delivery">
+                    <MenuItem value="1">
                       <span className="text-sm">Late Delivery</span>
                     </MenuItem>
                   </Select>
@@ -555,6 +607,8 @@ export default function CustomizedDialogs() {
                   className="absolute top-0 right-0"
                   control={<Checkbox />}
                   label="Send SMS"
+                  name="sendsms"
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -608,6 +662,8 @@ export default function CustomizedDialogs() {
                   className="absolute top-0 right-0"
                   control={<Checkbox />}
                   label="Send Email"
+                  name="sendemail"
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -751,13 +807,36 @@ export default function CustomizedDialogs() {
 
             <div className=" mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                Expexted Delivery Time
+                Expected Delivery Time
               </label>
-              <div className="relative mb-6">
-                <input
+              <div className="relative mb-6 flex">
+                {/* <input
                   type="time"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="expected_deltime"
+                  value={formData.order.expected_deltime}
+                  onChange={handleInputChange}
+                /> */}
+                {/* <DatePicker
+                  selected={startDate}
+                  //onChange={(date) => setStartDate(date)}
+                  timeInputLabel="Time:"
+                  dateFormat="MM/dd/yyyy h:mm aa"
+                  showTimeInput
+                /> */}
+                <input
+                  type="date"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="expected_deldate"
+                  value={formData.order.expected_deldate}
+                  onChange={handleInputChange}
+                />
+                <input
+                  type="time"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-1/3 p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   name="expected_deltime"
                   value={formData.order.expected_deltime}
                   onChange={handleInputChange}

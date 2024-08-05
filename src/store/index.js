@@ -4,6 +4,7 @@ import { productApi } from "../store/apis/ProductsApi";
 import { clientApi } from "../store/apis/ClientsApi";
 import { addressApi } from "../store/apis/AddressApi";
 import { branchApi } from "../store/apis/BranchApi";
+import { orderApi } from "../store/apis/OrderApi";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -12,13 +13,15 @@ export const store = configureStore({
     [clientApi.reducerPath]: clientApi.reducer,
     [addressApi.reducerPath]: addressApi.reducer,
     [branchApi.reducerPath]: branchApi.reducer,
+    [orderApi.reducerPath]: orderApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
       .concat(productApi.middleware)
       .concat(clientApi.middleware)
       .concat(addressApi.middleware)
-      .concat(branchApi.middleware);
+      .concat(branchApi.middleware)
+      .concat(orderApi.middleware);
   },
 });
 
@@ -46,3 +49,4 @@ export {
   useUpdateBranchMutation,
   useDeleteBranchMutation,
 } from "../store/apis/BranchApi";
+export { useCreateOrderMutation } from "../store/apis/OrderApi";
