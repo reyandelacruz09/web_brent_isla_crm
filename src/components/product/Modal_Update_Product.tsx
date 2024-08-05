@@ -40,6 +40,7 @@ export interface Product {
   unitPrice: string;
   active: boolean;
   edit: string;
+  discount: string;
 }
 
 interface ModalUpdateProductProps {
@@ -102,7 +103,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
         name: result.data.name || "",
         active: result.data.active || true,
         price: result.data.price || "",
-        discount: result.data.discount || "",
+        discount: result.data.discount || 0,
         description: result.data.description || "",
       });
 
