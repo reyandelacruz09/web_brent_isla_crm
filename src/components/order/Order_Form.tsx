@@ -8,6 +8,7 @@ import Table_In_Transit from "./Table_In_Transit";
 import Table_New_Orders from "./Table_New_Order";
 import Table_Received from "./Table_Received";
 import Table_Completed from "./Table_Completed";
+import { Toaster } from "react-hot-toast";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -44,56 +45,59 @@ export default function BasicTabs() {
     setValue(newValue);
   };
   return (
-    <div className="w-full">
-      <div className="flex justify-center pt-5">
-        <div className="w-5/6 flex justify-end">
-          <div className="flex gap-5">
-            <input
-              type="text"
-              id="input-group-1"
-              name="discount"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
-              placeholder="Search"
-            />
-            <Modal_Create_Order />
+    <>
+      <Toaster position="top-right" />
+      <div className="w-full">
+        <div className="flex justify-center pt-5">
+          <div className="w-5/6 flex justify-end">
+            <div className="flex gap-5">
+              <input
+                type="text"
+                id="input-group-1"
+                name="discount"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
+                placeholder="Search"
+              />
+              <Modal_Create_Order />
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <div className="my-5 p-2 w-5/6">
+            {" "}
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
+                >
+                  <Tab label="All Orders" {...a11yProps(0)} />
+                  <Tab label="New Order" {...a11yProps(1)} />
+                  <Tab label="Received" {...a11yProps(2)} />
+                  <Tab label="In-Transit" {...a11yProps(3)} />
+                  <Tab label="Completed" {...a11yProps(4)} />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={value} index={0}>
+                <Table_All_Orders />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={1}>
+                <Table_New_Orders />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={2}>
+                <Table_Received />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={3}>
+                <Table_In_Transit />
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={4}>
+                <Table_Completed />
+              </CustomTabPanel>
+            </Box>
           </div>
         </div>
       </div>
-      <div className="flex justify-center">
-        <div className="my-5 p-2 w-5/6">
-          {" "}
-          <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab label="All Orders" {...a11yProps(0)} />
-                <Tab label="New Order" {...a11yProps(1)} />
-                <Tab label="Received" {...a11yProps(2)} />
-                <Tab label="In-Transit" {...a11yProps(3)} />
-                <Tab label="Completed" {...a11yProps(4)} />
-              </Tabs>
-            </Box>
-            <CustomTabPanel value={value} index={0}>
-              <Table_All_Orders />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={1}>
-              <Table_New_Orders />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={2}>
-              <Table_Received />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={3}>
-              <Table_In_Transit />
-            </CustomTabPanel>
-            <CustomTabPanel value={value} index={4}>
-              <Table_Completed />
-            </CustomTabPanel>
-          </Box>
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

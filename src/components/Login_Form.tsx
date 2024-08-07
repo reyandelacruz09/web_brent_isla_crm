@@ -87,7 +87,7 @@ function Login_Form() {
         <div className="column w-100 h-screen flex items-center justify-center">
           <div className="w-4/6 h-full">
             <div className="flex justify-center pt-10 pb-10">
-              <img src="../../images/OODC_hres.png" alt="" className="w-52" />
+              <img src="../../images/OODC_hres.png" alt="" className="w-40" />
             </div>
 
             <div className="flex justify-center">

@@ -7,7 +7,26 @@ import {
   RadioGroup,
 } from "@mui/material";
 
-function Others() {
+type Other = {
+  mopayment: string;
+  changefor: string;
+  changeamount: string;
+  special_instructions: string;
+};
+
+type OtherProps = {
+  others: Other;
+  setOthers: React.Dispatch<React.SetStateAction<Other>>;
+};
+
+function Others({ others, setOthers }: OtherProps) {
+  const handleInput = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setOthers({
+      ...others,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
   return (
     <>
       <div className="grid grid-cols-10 bg-gray-300">
@@ -25,13 +44,13 @@ function Others() {
               <RadioGroup
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                defaultValue="cash"
-                //
+                name="mopayment"
+                onChange={handleInput}
+                defaultValue={1}
               >
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="cash"
+                    value="1"
                     control={<Radio />}
                     label={<span className="text-sm">Cash</span>}
                     sx={{
@@ -43,7 +62,7 @@ function Others() {
                 </div>
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="gcash"
+                    value="2"
                     control={<Radio />}
                     label={<span className="text-sm">Gcash</span>}
                     sx={{
@@ -55,7 +74,7 @@ function Others() {
                 </div>
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="paymaya"
+                    value="3"
                     control={<Radio />}
                     label={<span className="text-sm">PayMaya</span>}
                     sx={{
@@ -67,7 +86,7 @@ function Others() {
                 </div>
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="visa"
+                    value="4"
                     control={<Radio />}
                     label={<span className="text-sm">Visa</span>}
                     sx={{
@@ -79,7 +98,7 @@ function Others() {
                 </div>
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="mastercard"
+                    value="5"
                     control={<Radio />}
                     label={<span className="text-sm">Mastercard</span>}
                     sx={{
@@ -91,7 +110,7 @@ function Others() {
                 </div>
                 <div className="w-1/3">
                   <FormControlLabel
-                    value="amex"
+                    value="6"
                     control={<Radio />}
                     label={<span className="text-sm">AMEX</span>}
                     sx={{
@@ -115,6 +134,8 @@ function Others() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
+              name="changefor"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -130,6 +151,9 @@ function Others() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
+              name="changeamount"
+              onChange={handleInput}
+              // value={grandTotal.gtotal}
             />
           </div>
         </div>
@@ -144,32 +168,13 @@ function Others() {
             <textarea
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="special_instructions"
+              onChange={handleInput}
             >
               {" "}
             </textarea>
           </div>
         </div>
-      </div>
-
-      <div className="flex justify-center gap-5 py-10">
-        <Button
-          component="label"
-          variant="contained"
-          className="w-1/5"
-          tabIndex={-1}
-        >
-          Send to Branch
-        </Button>
-        <Button
-          component="label"
-          variant="contained"
-          className="w-1/5"
-          color="error"
-          tabIndex={-1}
-        >
-          Cancel
-        </Button>
       </div>
     </>
   );

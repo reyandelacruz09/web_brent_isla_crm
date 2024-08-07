@@ -22,7 +22,35 @@ interface Product {
   discount: string;
 }
 
-function ProductOrder() {
+type OrderDetails = {
+  id: number;
+  product: string;
+  unitPrice: string;
+  qty: string;
+  discount: string;
+  subtotal: string;
+};
+
+type ProductOrderTotal = {
+  gsubtotal: string;
+  gdelcharge: string;
+  gdiscount: string;
+  gtotal: string;
+};
+
+type orderDetailsProps = {
+  productOrder: OrderDetails[];
+  setProductOrder: React.Dispatch<React.SetStateAction<OrderDetails[]>>;
+  productOrderTotal: ProductOrderTotal;
+  setProductOrderTotal: React.Dispatch<React.SetStateAction<ProductOrderTotal>>;
+};
+
+function ProductOrder({
+  productOrder,
+  setProductOrder,
+  productOrderTotal,
+  setProductOrderTotal,
+}: orderDetailsProps) {
   const product = useProductListQuery("");
   const [productList, setProductList] = useState<Product[]>([]);
   useEffect(() => {
@@ -32,9 +60,9 @@ function ProductOrder() {
     }
   }, [product.isSuccess, product.data]);
 
-  const [array, setArray] = useState([
-    { id: 0, product: "", unitPrice: "", qty: "", discount: "", subtotal: "" },
-  ]);
+  // const [array, setArray] = useState([
+  //   { id: 0, product: "", unitPrice: "", qty: "", discount: "", subtotal: "" },
+  // ]);
 
   const [totalSubtotal, setTotalSubtotal] = useState("0.00");
   const [deliveryCharge, setDeliveryCharge] = useState("0.00");
@@ -42,21 +70,33 @@ function ProductOrder() {
   const [grandTotal, setGrandTotal] = useState("0.00");
 
   useEffect(() => {
-    const subtotalTotal = array.reduce(
+    const subtotalTotal = productOrder.reduce(
       (acc, item) => acc + parseFloat(item.subtotal || "0"),
       0
     );
     setTotalSubtotal(subtotalTotal.toFixed(2));
     setDeliveryCharge("49.00");
+  }, [productOrder]);
 
+  useEffect(() => {
     const discount = parseFloat(totalDiscount) || 0;
     const delivery = parseFloat(deliveryCharge) || 0;
-    const grandTotalValue = subtotalTotal + delivery - discount;
+    const subtotal = parseFloat(totalSubtotal) || 0;
+    const grandTotalValue = subtotal + delivery - discount;
     setGrandTotal(grandTotalValue.toFixed(2));
-  }, [array, totalDiscount, deliveryCharge]);
+  }, [totalSubtotal, totalDiscount, deliveryCharge]);
+
+  useEffect(() => {
+    setProductOrderTotal({
+      gsubtotal: totalSubtotal,
+      gdelcharge: deliveryCharge,
+      gdiscount: totalDiscount,
+      gtotal: grandTotal,
+    });
+  }, [totalSubtotal, deliveryCharge, totalDiscount, grandTotal]);
 
   const handleAddDiv = () => {
-    setArray((prev) => [
+    setProductOrder((prev) => [
       ...prev,
       {
         id: prev.length,
@@ -70,11 +110,11 @@ function ProductOrder() {
   };
 
   const handleRemoveDiv = (idx: number) => {
-    setArray((prev) => prev.filter((_, index) => index !== idx));
+    setProductOrder((prev) => prev.filter((_, index) => index !== idx));
   };
 
   const handleInputChange = (idx: number, field: string, value: string) => {
-    setArray((prev) =>
+    setProductOrder((prev) =>
       prev.map((item, index) => {
         if (index === idx) {
           const updatedItem = { ...item, [field]: value };
@@ -86,7 +126,6 @@ function ProductOrder() {
               updatedItem.unitPrice = selectedProduct.price;
               updatedItem.discount = selectedProduct.discount;
             }
-            console.warn(productList);
           }
 
           let price = updatedItem.unitPrice;
@@ -119,6 +158,7 @@ function ProductOrder() {
           </span>
         </div>
       </div>
+
       <div className="pt-5">
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -144,7 +184,7 @@ function ProductOrder() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {array.map((item, idx) => (
+              {productOrder.map((item, idx) => (
                 <TableRow key={item.id}>
                   <StyledTableCell className="w-2/6 ">
                     <select
