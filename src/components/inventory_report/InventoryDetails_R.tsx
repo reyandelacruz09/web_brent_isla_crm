@@ -108,7 +108,7 @@ function InventoryDetails_R() {
     }
   }, [data, isSuccess]);
 
-  console.warn(content);
+  // console.warn(content);
 
   return (
     <>

@@ -10,14 +10,35 @@ import {
   useRegionListQuery,
 } from "../../store";
 import { Client } from "../product/AddProduct";
+import React from "react";
 
-function CustomerInformation() {
-  // const orderCI = useState({
-  //   code: "sample only",
-  //   name: "",
-  //   barangay: "",
-  //   email: "",
-  // });
+type CustomerData = {
+  fname: string;
+  lname: string;
+  phone1: string;
+  phone2: string;
+  landline: string;
+  email: string;
+  block_unit: string;
+  barangay: string;
+  company: string;
+  nearest_landmark: string;
+  expected_deldate: string;
+  expected_deltime: string;
+  sendsms: boolean;
+  sendemail: boolean;
+  branch: string;
+};
+
+type CustomerInformationProps = {
+  customerData: CustomerData;
+  setCustomerData: React.Dispatch<React.SetStateAction<CustomerData>>;
+};
+
+function CustomerInformation({
+  customerData,
+  setCustomerData,
+}: CustomerInformationProps) {
   const [regionList, setRegionList] = useState<adress[]>([]);
   const [provinceList, setProvinceList] = useState<adress[]>([]);
   const [cityList, setCityList] = useState<adress[]>([]);
@@ -92,6 +113,14 @@ function CustomerInformation() {
     }
   }, [clients.isSuccess, clients.data]);
 
+  const handleInput = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setCustomerData({
+      ...customerData,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
   return (
     <>
       <div className="grid grid-cols-3 mt-4">
@@ -108,10 +137,12 @@ function CustomerInformation() {
           </label>
           <div className="relative mb-6">
             <input
-              name="fname"
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              name="fname"
+              // value={customerData.fname}
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -124,7 +155,8 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="lname"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -137,12 +169,15 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="phone1"
+              onChange={handleInput}
             />
             <FormControlLabel
               className="absolute top-0 right-0"
               control={<Checkbox />}
               label="Send SMS"
+              name="sendsms"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -156,7 +191,8 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="phone2"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -170,7 +206,8 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="landline"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -184,12 +221,15 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="email"
+              onChange={handleInput}
             />
             <FormControlLabel
               className="absolute top-0 right-0"
               control={<Checkbox />}
               label="Send Email"
+              name="sendemail"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -203,7 +243,8 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="block_unit"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -275,7 +316,7 @@ function CustomerInformation() {
           <div className="relative mb-6">
             <select
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              //onChange={handleInput}
+              onChange={handleInput}
               name="barangay"
             >
               <option>Select Barangay</option>
@@ -297,7 +338,8 @@ function CustomerInformation() {
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="company"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -308,9 +350,8 @@ function CustomerInformation() {
           </label>
           <div className="relative mb-6">
             <select
-              name="owner"
-              // value={product.owner}
-              // onChange={handleInput}
+              name="branch"
+              onChange={handleInput}
               id="rec_mode"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
             >
@@ -330,12 +371,20 @@ function CustomerInformation() {
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
             Expexted Delivery Time
           </label>
-          <div className="relative mb-6">
+          <div className="relative mb-6 flex">
+            <input
+              type="date"
+              id="input-group-1"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              name="expected_deldate"
+              onChange={handleInput}
+            />
             <input
               type="time"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
+              name="expected_deltime"
+              onChange={handleInput}
             />
           </div>
         </div>
@@ -348,10 +397,9 @@ function CustomerInformation() {
             <textarea
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder=""
-            >
-              {" "}
-            </textarea>
+              name="nearest_landmark"
+              onChange={handleInput}
+            ></textarea>
           </div>
         </div>
       </div>
