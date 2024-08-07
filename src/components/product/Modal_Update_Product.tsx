@@ -21,6 +21,7 @@ import {
 
 import { useEffect, useState } from "react";
 import { Client, PCategory } from "./AddProduct";
+import { Slide, toast } from "react-toastify";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -59,7 +60,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     category: "",
     code: "",
     name: "",
-    active: true,
+    active: "",
     price: "",
     discount: "",
     description: "",
@@ -101,7 +102,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
         category: result.data.category || "",
         code: result.data.code || "",
         name: result.data.name || "",
-        active: result.data.active || true,
+        active: result.data.status || "",
         price: result.data.price || "",
         discount: result.data.discount || 0,
         description: result.data.description || "",
@@ -122,13 +123,19 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     try {
       const checkstat = await upProduct(updateProduct).unwrap();
       if (checkstat.success === true) {
-        alert("success");
-        window.location.reload();
+        toast.success("Successfully Updated!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

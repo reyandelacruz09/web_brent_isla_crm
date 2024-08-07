@@ -14,6 +14,7 @@ import {
   useBranchListQuery,
   useCategoryListQuery,
 } from "../../store";
+import { Slide, toast } from "react-toastify";
 
 export interface Client {
   id: number;
@@ -65,7 +66,9 @@ function AddProduct() {
     try {
       const checkstat = await addPost(data1).unwrap();
       if (checkstat.success === true) {
-        alert("success");
+        toast.success("Successfully Added!", {
+          transition: Slide,
+        });
         setProduct({
           client: "",
           owner: "",
@@ -77,12 +80,16 @@ function AddProduct() {
           discount: "",
           description: "",
         });
-        window.location.reload();
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

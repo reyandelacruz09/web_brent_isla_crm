@@ -8,7 +8,6 @@ import Table_In_Transit from "./Table_In_Transit";
 import Table_New_Orders from "./Table_New_Order";
 import Table_Received from "./Table_Received";
 import Table_Completed from "./Table_Completed";
-import { Toaster } from "react-hot-toast";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -46,7 +45,6 @@ export default function BasicTabs() {
   };
   return (
     <>
-      <Toaster position="top-right" />
       <div className="w-full">
         <div className="flex justify-center pt-5">
           <div className="w-5/6 flex justify-end">

@@ -38,9 +38,12 @@ const columns: GridColDef[] = [
 ];
 
 const theme = createTheme();
+
 function AllProducts() {
   const { data, error, isLoading, isSuccess } = useProductListQuery("");
   const [content, setContent] = useState<Product[]>([]);
+
+  const [apiData, setApiData] = useState<any>(null); // Replace 'any' with the appropriate type for your API data
 
   useEffect(() => {
     if (isSuccess) {

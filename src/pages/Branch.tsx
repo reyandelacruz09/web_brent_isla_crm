@@ -1,4 +1,3 @@
-import { Toaster } from "react-hot-toast";
 import AddBranch from "../components/branch/AddBranch";
 import AllBranches from "../components/branch/AllBranches";
 import NavBar from "../components/NavBar";
@@ -9,7 +8,6 @@ function Branch() {
       <NavBar />
       <AddBranch />
       <AllBranches />
-      <Toaster position="top-right" />
     </>
   );
 }

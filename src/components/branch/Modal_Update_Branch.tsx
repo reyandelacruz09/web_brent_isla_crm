@@ -22,8 +22,8 @@ import {
   useClientListQuery,
 } from "../../store";
 import { useEffect, useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { Slide, toast } from "react-toastify";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -233,14 +233,19 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
     try {
       const checkstat = await upBranch(updateBranch).unwrap();
       if (checkstat.success === true) {
-        // alert("success");
-        toast.success("Successfully Updated!");
-        window.location.reload();
+        toast.success("Successfully Updated!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

@@ -12,10 +12,23 @@ import CustomerDetails from "./components/order/CustomerDetails";
 import Testing_Only from "./components/order/Testing";
 import Department from "./pages/Department";
 import KB from "./pages/KB";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />

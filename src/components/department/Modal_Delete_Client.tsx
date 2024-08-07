@@ -6,14 +6,14 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import { useDeleteProductMutation } from "../../store";
+import { useDeleteClientMutation } from "../../store";
 import { Slide, toast } from "react-toastify";
 
 interface ModalDeleteProductProps {
   modalid: string;
 }
 
-const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
+const Modal_Delete_Client: React.FC<ModalDeleteProductProps> = ({
   modalid,
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -26,12 +26,12 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
     setOpen(false);
   };
 
-  const [delProduct] = useDeleteProductMutation();
-  const deleteProduct = async (e: any) => {
+  const [delClient] = useDeleteClientMutation();
+  const deleteClient = async (e: any) => {
     e.preventDefault();
 
     try {
-      const checkstat = await delProduct(modalid).unwrap();
+      const checkstat = await delClient(modalid).unwrap();
       if (checkstat.success === true) {
         toast.success("Successfully Deleted!", {
           transition: Slide,
@@ -62,7 +62,7 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Are you sure you want to delete this product?"}
+          {"Are you sure you want to delete this Client?"}
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -78,7 +78,7 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
                 className="w-5/6"
                 variant="contained"
                 color="error"
-                onClick={deleteProduct}
+                onClick={deleteClient}
               >
                 Yes
               </Button>
@@ -101,4 +101,4 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
   );
 };
 
-export default Modal_Delete_Product;
+export default Modal_Delete_Client;

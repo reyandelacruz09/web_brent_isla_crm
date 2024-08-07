@@ -17,7 +17,6 @@ import { useEffect, useState } from "react";
 import { adress } from "../branch/AddBranch";
 import { useBranchListQuery, useCreateOrderMutation } from "../../store";
 import { Client } from "../product/AddProduct";
-import toast from "react-hot-toast";
 
 import "react-datepicker/dist/react-datepicker.css";
 import Modal_Order_Type from "./Modal_Order_Type";
@@ -149,7 +148,7 @@ export default function CustomizedDialogs() {
       const checkstat = await addOrder(OrderDetails).unwrap();
       if (checkstat.success === true) {
         // alert("success");
-        toast.success("Successfully Added!");
+        // toast.success("Successfully Added!");
         {
           // setBranch({
           //   code: "",

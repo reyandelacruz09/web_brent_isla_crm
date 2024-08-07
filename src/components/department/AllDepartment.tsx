@@ -4,6 +4,20 @@ import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Department from "./Modal_Update_Department";
 // import Modal_Update_User from "./Modal_Update_User";
+import { useClientListQuery } from "../../store";
+import { useEffect, useState } from "react";
+import Modal_Delete_Client from "./Modal_Delete_Client";
+
+interface Client {
+  id: string;
+  depname: string;
+  category: string;
+  validity: string;
+  dephead: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "Department Code", width: 130 },
@@ -50,15 +64,54 @@ const rows = [
 ];
 
 const theme = createTheme();
+
 function AllDepartment() {
+  const { data, error, isLoading, isSuccess } = useClientListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      let content: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const branches: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        branches.push({
+          id: result.data[i].code,
+          depname: result.data[i].name,
+          category: result.data[i].category.name,
+          validity: result.data[i].start_date + " - " + result.data[i].end_date,
+          dephead: result.data[i].head,
+          active: result.data[i].status,
+          edit: result.data[i].id,
+          delete: result.data[i].id,
+        });
+      }
+
+      setContent(branches);
+      // console.warn("Size", size);
+    }
+  }, [data, isSuccess]);
+
+  // console.warn("Department List", content);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === "Y") {
+    if (params.colDef.field === "active" && params.value === 1) {
       return (
         <span className="flex justify-center items-center h-full">
           <Checkbox defaultChecked />
         </span>
       );
-    } else if (params.colDef.field === "active" && params.value === "N") {
+    } else if (params.colDef.field === "active" && params.value === 2) {
       return (
         <span className="flex justify-center items-center h-full">
           <Checkbox />
@@ -67,13 +120,13 @@ function AllDepartment() {
     } else if (params.colDef.field === "edit") {
       return (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
-          <Modal_Update_Department />
+          <Modal_Update_Department modalid={params.value} />
         </span>
       );
     } else if (params.colDef.field === "delete") {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <DeleteForeverOutlinedIcon />
+          <Modal_Delete_Client modalid={params.value} />
         </span>
       );
     }
@@ -109,7 +162,7 @@ function AllDepartment() {
               <ThemeProvider theme={theme}>
                 <div className="w-full h-full bg-white">
                   <DataGrid
-                    rows={rows}
+                    rows={content}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,
