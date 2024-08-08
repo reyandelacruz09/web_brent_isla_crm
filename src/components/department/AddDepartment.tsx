@@ -9,13 +9,15 @@ import {
   useState,
 } from "react";
 import {
-  useCreateProductMutation,
-  useClientListQuery,
+  useClientCategoryListQuery,
+  useCreateClientMutation,
   useBranchListQuery,
   useCategoryListQuery,
 } from "../../store";
+import { Slide, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export interface Client {
+export interface ClientCategory {
   id: number;
   name: string;
 }
@@ -28,88 +30,68 @@ export interface PCategory {
 }
 
 function AddDepartment() {
-  const [product, setProduct] = useState({
-    client: "",
-    owner: "",
-    category: "",
+  const [client, setClient] = useState({
     code: "",
     name: "",
-    active: true,
-    price: "",
-    discount: "",
-    description: "",
+    status: true,
+    category: "",
+    start_date: "",
+    end_date: "",
+    head: "",
   });
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
-    setProduct({ ...product, [name]: type === "checkbox" ? checked : value });
+    setClient({ ...client, [name]: type === "checkbox" ? checked : value });
   };
 
-  const [addPost] = useCreateProductMutation();
+  const [addClient] = useCreateClientMutation();
 
-  const saveProduct = async (e: any) => {
+  const saveClient = async (e: any) => {
     e.preventDefault();
 
-    const data1 = {
-      client: product.client,
-      owner: product.owner,
-      category: product.category,
-      code: product.code,
-      name: product.name,
-      active: product.active ? 1 : 2,
-      price: product.price,
-      discount: product.discount,
-      description: product.description,
-    };
-
     try {
-      const checkstat = await addPost(data1).unwrap();
+      const checkstat = await addClient(client).unwrap();
       if (checkstat.success === true) {
-        alert("success");
-        setProduct({
-          client: "",
-          owner: "",
-          category: "",
+        toast.success("Successfully Added!", {
+          transition: Slide,
+        });
+
+        setClient({
           code: "",
           name: "",
-          active: true,
-          price: "",
-          discount: "",
-          description: "",
+          status: true,
+          category: "",
+          start_date: "",
+          end_date: "",
+          head: "",
         });
-        window.location.reload();
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 
-  const clients = useBranchListQuery("");
-  const [content, setContent] = useState<Client[]>([]);
-  useEffect(() => {
-    if (clients.isSuccess) {
-      const result = clients.data?.data || [];
-      setContent(result);
-    }
-  }, [clients.isSuccess, clients.data]);
-
-  const productcategory = useCategoryListQuery("");
-  const [listCategory, setListCategory] = useState<PCategory[]>([]);
+  const productcategory = useClientCategoryListQuery("");
+  const [listCategory, setListCategory] = useState<ClientCategory[]>([]);
   useEffect(() => {
     if (productcategory.isSuccess) {
       const category_result =
-        ((productcategory.data as any).data as PCategory[]) || [];
+        ((productcategory.data as any).data as ClientCategory[]) || [];
       setListCategory(category_result);
     }
   }, [productcategory.isSuccess, productcategory.data]);
 
-  // console.warn(listCategory);
-
   return (
     <>
-      <form onSubmit={saveProduct}>
+      <form>
         <div className="w-full pt-5">
           <div className="flex justify-center pt-5">
             <div className="w-5/6 flex ">
@@ -128,7 +110,7 @@ function AddDepartment() {
                   <span className="">Cancel</span>
                 </Button>
                 <Button
-                  onClick={saveProduct}
+                  onClick={saveClient}
                   component="label"
                   variant="contained"
                   className="w-40 pt-2"
@@ -139,7 +121,7 @@ function AddDepartment() {
                   <span className="">Save and Close</span>
                 </Button>
                 <Button
-                  onClick={saveProduct}
+                  onClick={saveClient}
                   component="label"
                   variant="contained"
                   className="w-32 pt-2"
@@ -149,7 +131,6 @@ function AddDepartment() {
                 >
                   <span className="">Save and New</span>
                 </Button>
-                {/* <input type="submit" value="Submit Button" /> */}
               </div>
             </div>
           </div>
@@ -171,26 +152,11 @@ function AddDepartment() {
                 </label>
                 <div className="relative mb-6">
                   <input
-                    name="owner"
+                    name="code"
                     id="rec_mode"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                  />
-                  {/* <select
-                    name="owner"
-                    value={product.owner}
                     onChange={handleInput}
-                    id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                  >
-                    <option value="" disabled>
-                      Choose One
-                    </option>
-                    {content.map((listOption: any) => (
-                      <option key={listOption.id} value={listOption.id}>
-                        {listOption.name}
-                      </option>
-                    ))}
-                  </select> */}
+                  />
                 </div>
               </div>
 
@@ -203,7 +169,6 @@ function AddDepartment() {
                     type="text"
                     id="input-group-1"
                     name="name"
-                    value={product.name}
                     onChange={handleInput}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                     placeholder=""
@@ -212,9 +177,9 @@ function AddDepartment() {
                     className="absolute top-0 right-0"
                     control={
                       <Checkbox
-                        checked={product.active}
                         onChange={handleInput}
-                        name="active"
+                        defaultChecked
+                        name="status"
                       />
                     }
                     label="Active"
@@ -229,12 +194,11 @@ function AddDepartment() {
                 <div className="relative mb-6">
                   <select
                     name="category"
-                    value={product.category}
                     onChange={handleInput}
                     id="rec_mode"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                   >
-                    <option value="" disabled>
+                    <option value="" selected>
                       Choose One
                     </option>
                     {listCategory.map((listcate: any) => (
@@ -253,9 +217,9 @@ function AddDepartment() {
                   <input
                     type="date"
                     id="input-group-1"
-                    name="code"
+                    name="start_date"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    onChange={handleInput}
                   />
                 </div>
               </div>
@@ -268,9 +232,9 @@ function AddDepartment() {
                   <input
                     type="date"
                     id="input-group-1"
-                    name="price"
+                    name="end_date"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    onChange={handleInput}
                   />
                 </div>
               </div>
@@ -283,9 +247,9 @@ function AddDepartment() {
                   <input
                     type="text"
                     id="input-group-1"
-                    name="discount"
+                    name="head"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    onChange={handleInput}
                   />
                 </div>
               </div>

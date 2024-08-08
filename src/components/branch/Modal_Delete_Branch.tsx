@@ -7,7 +7,7 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import { useDeleteBranchMutation } from "../../store";
-import toast from "react-hot-toast";
+import { Slide, toast } from "react-toastify";
 
 interface ModalDeleteProductProps {
   modalid: string;
@@ -33,14 +33,19 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
     try {
       const checkstat = await delBranch(modalid).unwrap();
       if (checkstat.success === true) {
-        //alert("success");
-        toast.success("Successfully Deleted!");
-        window.location.reload();
+        toast.success("Successfully Deleted!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

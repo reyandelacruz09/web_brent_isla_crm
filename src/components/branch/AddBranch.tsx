@@ -12,7 +12,7 @@ import {
 } from "../../store";
 import { useEffect, useState } from "react";
 import Branch from "../../pages/Branch";
-import toast from "react-hot-toast";
+import { Slide, toast } from "react-toastify";
 
 export interface Branch {
   data: any;
@@ -169,25 +169,28 @@ function AddBranch() {
     try {
       const checkstat = await addBranch(data1).unwrap();
       if (checkstat.success === true) {
-        // alert("success");
-        toast.success("Successfully Updated!");
-        {
-          setBranch({
-            code: "",
-            name: "",
-            active: true,
-            owner: 0,
-            block_street: "",
-            barangay: "",
-            email: "",
-          });
+        setBranch({
+          code: "",
+          name: "",
+          active: true,
+          owner: 0,
+          block_street: "",
+          barangay: "",
+          email: "",
+        });
+        toast.success("Successfully Added!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
           window.location.reload();
-        }
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

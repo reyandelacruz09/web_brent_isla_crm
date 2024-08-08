@@ -35,7 +35,14 @@ export {
   useDeleteProductMutation,
 } from "../store/apis/ProductsApi";
 
-export { useClientListQuery } from "../store/apis/ClientsApi";
+export {
+  useClientListQuery,
+  useCreateClientMutation,
+  useClientCategoryListQuery,
+  useViewClientQuery,
+  useUpdateClientMutation,
+  useDeleteClientMutation,
+} from "../store/apis/ClientsApi";
 export {
   useRegionListQuery,
   useProvinceListQuery,
