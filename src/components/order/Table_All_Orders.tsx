@@ -2,6 +2,18 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useOrderListQuery } from "../../store";
+import { useEffect, useState } from "react";
+
+interface Order {
+  status: string;
+  id: string;
+  name: string;
+  assignedbranch: string;
+  amount: string;
+  ordertaker: string;
+  edt: string;
+}
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
@@ -135,6 +147,45 @@ const rows = [
 
 const theme = createTheme();
 function Table_All_Orders() {
+  const { data, error, isLoading, isSuccess } = useOrderListQuery("");
+  const [content, setContent] = useState<Order[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const order: Order[] = [];
+
+      for (let i = 0; i < size; i++) {
+        order.push({
+          status: result.data[i].orderID.status,
+          id: result.data[i].orderID.id,
+          name:
+            result.data[i].orderID.customerID.fname +
+            " " +
+            result.data[i].orderID.customerID.lname,
+          assignedbranch: result.data[i].orderID.branch.name,
+          amount: result.data[i].grandtotal,
+          ordertaker: result.data[i].orderID.added_by.first_name,
+          edt: result.data[i].orderID.expected_deltime,
+        });
+      }
+
+      setContent(order);
+      // console.warn("Size", size);
+    }
+  }, [data, isSuccess]);
+
+  console.warn("Order List", content);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === "New Order") {
       return (
@@ -187,7 +238,7 @@ function Table_All_Orders() {
       <ThemeProvider theme={theme}>
         <div className="w-full h-full bg-white">
           <DataGrid
-            rows={rows}
+            rows={content}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,

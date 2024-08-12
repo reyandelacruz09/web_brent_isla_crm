@@ -20,6 +20,7 @@ import { Client } from "../product/AddProduct";
 
 import "react-datepicker/dist/react-datepicker.css";
 import Modal_Order_Type from "./Modal_Order_Type";
+import { Slide, toast } from "react-toastify";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -48,6 +49,10 @@ export default function CustomizedDialogs() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("user_info") || "{}"
+  );
 
   const [orderType, setOrderType] = React.useState({
     demographic: "1",
@@ -116,6 +121,7 @@ export default function CustomizedDialogs() {
     sendsms: customerData.sendsms,
     sendemail: customerData.sendemail,
     branch: customerData.branch,
+    added_by: account_detailed1.id,
 
     demographic: orderType.demographic,
     order_type: orderType.order_type,
@@ -136,36 +142,26 @@ export default function CustomizedDialogs() {
     productOrder: productOrder,
   };
 
-  //console.warn("Grand Total", OrderDetails.gtotal);
-
   const [addOrder] = useCreateOrderMutation();
   const saveOrder = async (e: any) => {
     e.preventDefault();
 
-    // console.warn(OrderDetails);
-
     try {
       const checkstat = await addOrder(OrderDetails).unwrap();
       if (checkstat.success === true) {
-        // alert("success");
-        // toast.success("Successfully Added!");
-        {
-          // setBranch({
-          //   code: "",
-          //   name: "",
-          //   active: true,
-          //   owner: 0,
-          //   block_street: "",
-          //   barangay: "",
-          //   email: "",
-          // });
-          // window.location.reload();
-        }
+        toast.success("Successfully Added!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
       } else {
         alert("something wrong");
       }
     } catch (error) {
-      alert("Hala");
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
     }
   };
 

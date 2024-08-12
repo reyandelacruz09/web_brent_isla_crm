@@ -61,7 +61,10 @@ export {
   useUpdateBranchMutation,
   useDeleteBranchMutation,
 } from "../store/apis/BranchApi";
-export { useCreateOrderMutation } from "../store/apis/OrderApi";
+export {
+  useCreateOrderMutation,
+  useOrderListQuery,
+} from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,
   useUserListQuery,

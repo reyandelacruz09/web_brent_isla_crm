@@ -25,9 +25,18 @@ const orderApi = createApi({
           };
         },
       }),
+      OrderList: builder.query({
+        query: () => {
+          return {
+            url: `/api/order/order_list`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useCreateOrderMutation } = orderApi;
+export const { useCreateOrderMutation, useOrderListQuery } = orderApi;
 export { orderApi };
