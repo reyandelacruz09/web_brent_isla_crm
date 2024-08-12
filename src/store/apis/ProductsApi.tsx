@@ -90,6 +90,29 @@ const productApi = createApi({
           };
         },
       }),
+      AddInventory: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `/api/products/add_inventory/`,
+            headers: {
+              // Authorization: "token " + token,
+              // "Content-Type": "application/json",
+              // Accept: "/",
+            },
+            body: formBody,
+            method: "POST",
+          };
+        },
+      }),
+      InventoryList: builder.query<Product, string>({
+        query: () => {
+          return {
+            url: `/api/products/inventory_list`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
     };
   },
 });
@@ -101,5 +124,7 @@ export const {
   useUpdateProductMutation,
   useCategoryListQuery,
   useDeleteProductMutation,
+  useAddInventoryMutation,
+  useInventoryListQuery,
 } = productApi;
 export { productApi };

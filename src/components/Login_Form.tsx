@@ -36,7 +36,7 @@ function Login_Form() {
 
   const fetchAccountDetailed = async (id: any, token: string) => {
     await axios
-      .get(`${apiDomain}/api/account/${id}/account_detailed/`, {
+      .get(`${apiDomain}/api/user/${id}/account_detailed/`, {
         headers: {
           Authorization: "token " + token,
         },
@@ -54,6 +54,13 @@ function Login_Form() {
   };
 
   let navigate = useNavigate();
+
+  React.useEffect(() => {
+    const token = localStorage.getItem("mytoken");
+    if (token) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   let email = username;
   const login = async (event: { preventDefault: () => void }) => {
@@ -185,7 +192,7 @@ function Login_Form() {
             />
             <div className="absolute text-center font-bold bottom-0 pb-10">
               <p>Powered by</p>
-              <p>OneDigital System</p>
+              <p>One Outsource</p>
             </div>
           </div>
         </div>

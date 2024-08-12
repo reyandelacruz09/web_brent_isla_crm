@@ -1,18 +1,35 @@
 import ListIcon from "@mui/icons-material/List";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
+import { Checkbox, createTheme, styled, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_User from "./Modal_Update_User";
+import { useUserListQuery } from "../../store";
+import { useEffect, useState } from "react";
+import Modal_Delete_User from "./Modal_Delete_User";
+
+interface User {
+  id: string;
+  code: string;
+  fullname: string;
+  email: string;
+  role: string;
+  department: string;
+  branch: string;
+  active: string;
+  edit: string;
+  delete: string;
+}
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "Agent Code", width: 130 },
-  { field: "username", headerName: "Username", width: 200 },
-  { field: "login", headerName: "Log-In", width: 200 },
-  { field: "group", headerName: "Group", width: 130 },
-  { field: "email", headerName: "Email", width: 150 },
-  { field: "active", headerName: "Active", width: 130 },
-  { field: "edit", headerName: "Edit", width: 130 },
-  { field: "delete", headerName: "Delete", width: 130 },
+  { field: "id", headerName: "Code", width: 80 },
+  { field: "fullname", headerName: "Fullname", width: 180 },
+  { field: "email", headerName: "Email", width: 200 },
+  { field: "role", headerName: "Role", width: 130 },
+  { field: "department", headerName: "Department", width: 150 },
+  { field: "branch", headerName: "Branch", width: 150 },
+  { field: "active", headerName: "Active", width: 100 },
+  { field: "edit", headerName: "Edit", width: 100 },
+  { field: "delete", headerName: "Delete", width: 100 },
 ];
 
 const rows = [
@@ -78,31 +95,87 @@ const rows = [
   },
 ];
 
-const theme = createTheme();
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
+  },
+}));
+
 function AllUser() {
+  const { data, error, isLoading, isSuccess } = useUserListQuery("");
+  const [content, setContent] = useState<User[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      let content: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const branches: User[] = [];
+
+      for (let i = 0; i < size; i++) {
+        let newrole = "";
+        if (result.data[i].role === 3) {
+          newrole = "Admin";
+        } else if (result.data[i].role === 2) {
+          newrole = "Supervisor";
+        } else if (result.data[i].role === 1) {
+          newrole = "Agent";
+        } else {
+          newrole = "";
+        }
+
+        branches.push({
+          id: result.data[i].id,
+          code: result.data[i].code,
+          fullname: result.data[i].fullname,
+          email: result.data[i].user.email,
+          role: newrole,
+          department: result.data[i].department.name,
+          branch: result.data[i].branch.name,
+          active: result.data[i].status,
+          edit: result.data[i].id,
+          delete: result.data[i].id,
+        });
+      }
+
+      setContent(branches);
+      // console.warn("Size", size);
+    }
+  }, [data, isSuccess]);
+
+  console.warn("User List", content);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === "Y") {
+    if (params.colDef.field === "active" && params.value === 1) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox defaultChecked />
+          <Checkbox defaultChecked className="pointer-events-none" />
         </span>
       );
-    } else if (params.colDef.field === "active" && params.value === "N") {
+    } else if (params.colDef.field === "active" && params.value === 2) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox />
+          <Checkbox className="pointer-events-none" />
         </span>
       );
     } else if (params.colDef.field === "edit") {
       return (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
-          <Modal_Update_User />
+          <Modal_Update_User modalid={params.value} />
         </span>
       );
     } else if (params.colDef.field === "delete") {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <DeleteForeverOutlinedIcon />
+          <Modal_Delete_User modalid={params.value} />
         </span>
       );
     }
@@ -135,24 +208,24 @@ function AllUser() {
               {/* <span className="font-bold text-lg">Order History</span> */}
             </div>
             <div className="h-100 w-4/4 flex justify-center items-center">
-              <ThemeProvider theme={theme}>
-                <div className="w-full h-full bg-white">
-                  <DataGrid
-                    rows={rows}
-                    columns={columns.map((col) => ({
-                      ...col,
-                      renderCell: renderCell,
-                    }))}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
-                      },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    hideFooterSelectedRowCount
-                  />
-                </div>
-              </ThemeProvider>
+              {/* <ThemeProvider theme={theme}> */}
+              <div className="w-full h-full bg-white">
+                <StyledDataGrid
+                  rows={content}
+                  columns={columns.map((col) => ({
+                    ...col,
+                    renderCell: renderCell,
+                  }))}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { page: 0, pageSize: 10 },
+                    },
+                  }}
+                  pageSizeOptions={[5, 10]}
+                  hideFooterSelectedRowCount
+                />
+              </div>
+              {/* </ThemeProvider> */}
             </div>
           </div>
         </div>

@@ -40,15 +40,46 @@ function AddDepartment() {
     head: "",
   });
 
+  const [validationErrors, setValidationErrors] = useState({
+    code: false,
+    name: false,
+    category: false,
+    start_date: false,
+    end_date: false,
+    head: false,
+  });
+
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setClient({ ...client, [name]: type === "checkbox" ? checked : value });
+    setValidationErrors({ ...validationErrors, [name]: false });
   };
 
   const [addClient] = useCreateClientMutation();
 
+  const validateFields = () => {
+    const errors = {
+      code: !client.code,
+      name: !client.name,
+      category: !client.category,
+      start_date: !client.start_date,
+      end_date: !client.end_date,
+      head: !client.head,
+    };
+    setValidationErrors(errors);
+
+    return !Object.values(errors).some((error) => error === true);
+  };
+
   const saveClient = async (e: any) => {
     e.preventDefault();
+
+    if (!validateFields()) {
+      toast.error("Please fill out all required fields.", {
+        transition: Slide,
+      });
+      return;
+    }
 
     try {
       const checkstat = await addClient(client).unwrap();
@@ -56,7 +87,6 @@ function AddDepartment() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-
         setClient({
           code: "",
           name: "",
@@ -77,6 +107,19 @@ function AddDepartment() {
         transition: Slide,
       });
     }
+  };
+
+  const clearClient = async (e: any) => {
+    e.preventDefault();
+    setClient({
+      code: "",
+      name: "",
+      status: true,
+      category: "",
+      start_date: "",
+      end_date: "",
+      head: "",
+    });
   };
 
   const productcategory = useClientCategoryListQuery("");
@@ -106,10 +149,11 @@ function AddDepartment() {
                   tabIndex={-1}
                   size="small"
                   color="inherit"
+                  onClick={clearClient}
                 >
-                  <span className="">Cancel</span>
+                  <span className="">Clear</span>
                 </Button>
-                <Button
+                {/* <Button
                   onClick={saveClient}
                   component="label"
                   variant="contained"
@@ -119,7 +163,7 @@ function AddDepartment() {
                   color="primary"
                 >
                   <span className="">Save and Close</span>
-                </Button>
+                </Button> */}
                 <Button
                   onClick={saveClient}
                   component="label"
@@ -129,7 +173,7 @@ function AddDepartment() {
                   size="small"
                   color="primary"
                 >
-                  <span className="">Save and New</span>
+                  <span className="">Save</span>
                 </Button>
               </div>
             </div>
@@ -154,8 +198,13 @@ function AddDepartment() {
                   <input
                     name="code"
                     id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    className={`bg-gray-50 border ${
+                      validationErrors.code
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                     onChange={handleInput}
+                    value={client.code}
                   />
                 </div>
               </div>
@@ -170,8 +219,12 @@ function AddDepartment() {
                     id="input-group-1"
                     name="name"
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    value={client.name}
+                    className={`bg-gray-50 border ${
+                      validationErrors.name
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                   <FormControlLabel
                     className="absolute top-0 right-0"
@@ -195,8 +248,13 @@ function AddDepartment() {
                   <select
                     name="category"
                     onChange={handleInput}
+                    value={client.category}
                     id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    className={`bg-gray-50 border ${
+                      validationErrors.category
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   >
                     <option value="" selected>
                       Choose One
@@ -218,7 +276,12 @@ function AddDepartment() {
                     type="date"
                     id="input-group-1"
                     name="start_date"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    value={client.start_date}
+                    className={`bg-gray-50 border ${
+                      validationErrors.start_date
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                     onChange={handleInput}
                   />
                 </div>
@@ -233,7 +296,12 @@ function AddDepartment() {
                     type="date"
                     id="input-group-1"
                     name="end_date"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    value={client.end_date}
+                    className={`bg-gray-50 border ${
+                      validationErrors.end_date
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                     onChange={handleInput}
                   />
                 </div>
@@ -248,8 +316,13 @@ function AddDepartment() {
                     type="text"
                     id="input-group-1"
                     name="head"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    className={`bg-gray-50 border ${
+                      validationErrors.head
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                     onChange={handleInput}
+                    value={client.head}
                   />
                 </div>
               </div>

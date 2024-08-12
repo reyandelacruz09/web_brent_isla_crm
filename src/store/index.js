@@ -5,6 +5,7 @@ import { clientApi } from "../store/apis/ClientsApi";
 import { addressApi } from "../store/apis/AddressApi";
 import { branchApi } from "../store/apis/BranchApi";
 import { orderApi } from "../store/apis/OrderApi";
+import { userApi } from "../store/apis/UserApi";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -14,6 +15,7 @@ export const store = configureStore({
     [addressApi.reducerPath]: addressApi.reducer,
     [branchApi.reducerPath]: branchApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -21,7 +23,8 @@ export const store = configureStore({
       .concat(clientApi.middleware)
       .concat(addressApi.middleware)
       .concat(branchApi.middleware)
-      .concat(orderApi.middleware);
+      .concat(orderApi.middleware)
+      .concat(userApi.middleware);
   },
 });
 
@@ -33,6 +36,8 @@ export {
   useUpdateProductMutation,
   useCategoryListQuery,
   useDeleteProductMutation,
+  useAddInventoryMutation,
+  useInventoryListQuery,
 } from "../store/apis/ProductsApi";
 
 export {
@@ -57,3 +62,10 @@ export {
   useDeleteBranchMutation,
 } from "../store/apis/BranchApi";
 export { useCreateOrderMutation } from "../store/apis/OrderApi";
+export {
+  useCreateUserMutation,
+  useUserListQuery,
+  useViewUserQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+} from "../store/apis/UserApi";
