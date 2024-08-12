@@ -10,6 +10,17 @@ import CloseIcon from "@mui/icons-material/Close";
 
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import UserInformation from "./UserInformation";
+import { Checkbox, FormControlLabel } from "@mui/material";
+import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
+
+import {
+  useBranchListQuery,
+  useClientListQuery,
+  useViewUserQuery,
+  useUpdateUserMutation,
+} from "../../store";
+import { useEffect, useState } from "react";
+import { Slide, toast } from "react-toastify";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -20,7 +31,22 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function Modal_Update_User() {
+interface ModalUpdateDepartmentProps {
+  modalid: string;
+}
+
+interface Client {
+  id: number;
+  name: string;
+}
+interface Department {
+  id: number;
+  name: string;
+}
+
+export default function Modal_Update_User({
+  modalid,
+}: ModalUpdateDepartmentProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -28,6 +54,108 @@ export default function Modal_Update_User() {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const clients = useBranchListQuery("");
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
+    }
+  }, [clients.isSuccess, clients.data]);
+
+  const depList = useClientListQuery("");
+  const [clientList, setClientList] = useState<Department[]>([]);
+  useEffect(() => {
+    if (depList.isSuccess) {
+      const category_result =
+        ((depList.data as any).data as Department[]) || [];
+      setClientList(category_result);
+    }
+  }, [depList.isSuccess, depList.data]);
+
+  const [updateUser, setUpdateUser] = React.useState({
+    userid: "",
+    id: "",
+    code: "",
+    email: "",
+    status: true,
+    password: "",
+    cpassword: "",
+    fullname: "",
+    phone: "",
+    role: "",
+    department: "",
+    branch: "",
+  });
+
+  const handleInput = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setUpdateUser({
+      ...updateUser,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  const { data, error, isLoading, isSuccess } = useViewUserQuery(modalid);
+
+  const [condition, setCondition] = useState(true);
+
+  React.useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      result = data;
+
+      let newbranch = "";
+
+      if (result.data.branch.active === 2) {
+        newbranch = "0";
+      } else {
+        newbranch = result.data.branch.id;
+      }
+
+      setUpdateUser({
+        userid: result.data.user.id || "",
+        id: result.data.id || "",
+        code: result.data.code || "",
+        email: result.data.user.email || "",
+        status: result.data.status || "",
+        password: result.data.password || "",
+        cpassword: result.data.cpassword || "",
+        fullname: result.data.fullname || "",
+        phone: result.data.phone || "",
+        role: result.data.role || "",
+        department: result.data.department.id || "",
+        branch: newbranch || "",
+      });
+
+      if (result.data.status === 2) {
+        setCondition(false);
+      }
+    }
+  }, [data, isSuccess]);
+
+  const [upUser] = useUpdateUserMutation();
+
+  const submitdata = async (e: any) => {
+    try {
+      const checkstat = await upUser(updateUser).unwrap();
+      if (checkstat.success === true) {
+        toast.success("Successfully Updated!", {
+          transition: Slide,
+        });
+        setTimeout(function () {
+          window.location.reload();
+        }, 2000);
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
+    }
   };
 
   return (
@@ -72,6 +200,7 @@ export default function Modal_Update_User() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={submitdata}
                 >
                   <span className="">Save and Close</span>
                 </Button>
@@ -92,13 +221,198 @@ export default function Modal_Update_User() {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <UserInformation />
+          <div className="grid grid-cols-3">
+            <div className="col-span-3">
+              <span className="text-lg font-bold">
+                <KeyboardAltOutlinedIcon className="align-top" /> User
+                Information
+              </span>
+            </div>
+
+            <div className="pt-3 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Code
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="code"
+                  value={updateUser.code}
+                  onChange={handleInput}
+                  disabled
+                />
+              </div>
+            </div>
+            <div className="pt-3 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Fullname
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="fullname"
+                  value={updateUser.fullname}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="pt-3 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Phone Number
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone"
+                  value={updateUser.phone}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Email
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="email"
+                  value={updateUser.email}
+                  onChange={handleInput}
+                />
+                <FormControlLabel
+                  className="absolute top-0 right-0"
+                  control={
+                    <Checkbox
+                      name="status"
+                      defaultChecked={condition}
+                      onChange={handleInput}
+                    />
+                  }
+                  label="Active"
+                />
+              </div>
+            </div>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Password{" "}
+                <span className="text-xs font-light text-blue-700">
+                  *Leave blank if not going to change
+                </span>
+              </label>
+              <div className="relative mb-6 ">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="password"
+                  value={updateUser.password}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Confirm Password{" "}
+                <span className="text-xs font-light text-blue-700">
+                  *Leave blank if not going to change
+                </span>
+              </label>
+              <div className="relative mb-6 ">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="cpassword"
+                  value={updateUser.cpassword}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Role
+              </label>
+              <div className="relative mb-6 ">
+                <select
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="role"
+                  value={updateUser.role}
+                  onChange={handleInput}
+                >
+                  <option value="0" selected disabled>
+                    Choose One
+                  </option>
+                  <option value="1">Agent</option>
+                  <option value="2">Supervisor</option>
+                  <option value="3">Admin</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Department
+              </label>
+              <div className="relative mb-6">
+                <select
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="department"
+                  value={updateUser.department}
+                  onChange={handleInput}
+                >
+                  <option value="0" disabled selected>
+                    Choose One
+                  </option>
+                  {clientList.map((ClientList: any) => (
+                    <option key={ClientList.id} value={ClientList.id}>
+                      {ClientList.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Branch
+              </label>
+              <div className="relative mb-6">
+                <select
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="branch"
+                  value={updateUser.branch}
+                  onChange={handleInput}
+                >
+                  <option value="0" disabled selected>
+                    Inactive Branch
+                  </option>
+                  {content.map((listOption: any) => (
+                    <option key={listOption.id} value={listOption.id}>
+                      {listOption.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
         </DialogContent>
-        <DialogActions>
+        {/* <DialogActions>
           <Button autoFocus onClick={handleClose}>
             Save changes
           </Button>
-        </DialogActions>
+        </DialogActions> */}
       </BootstrapDialog>
     </React.Fragment>
   );
