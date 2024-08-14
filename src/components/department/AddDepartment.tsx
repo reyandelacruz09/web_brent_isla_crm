@@ -96,9 +96,6 @@ function AddDepartment() {
           end_date: "",
           head: "",
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
       } else {
         alert("something wrong");
       }
@@ -153,17 +150,6 @@ function AddDepartment() {
                 >
                   <span className="">Clear</span>
                 </Button>
-                {/* <Button
-                  onClick={saveClient}
-                  component="label"
-                  variant="contained"
-                  className="w-40 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Save and Close</span>
-                </Button> */}
                 <Button
                   onClick={saveClient}
                   component="label"

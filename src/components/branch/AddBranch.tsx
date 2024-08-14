@@ -1,7 +1,5 @@
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
 import {
   useRegionListQuery,
   useProvinceListQuery,
@@ -118,12 +116,12 @@ function AddBranch() {
   }, [clients, clients.isSuccess]);
   const listOptions = content;
 
-  // console.warn(content);
-
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegionId(event.target.value);
     setSelectedProvinceId("0");
     setSelectedCityId("0");
+    const { name, value } = event.target;
+    setBranch({ ...branch, [name]: value });
   };
 
   const handleProvinceChange = (
@@ -131,30 +129,74 @@ function AddBranch() {
   ) => {
     setSelectedProvinceId(event.target.value);
     setSelectedCityId("0");
+    const { name, value } = event.target;
+    setBranch({ ...branch, [name]: value });
   };
 
   const handleCityChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedCityId(event.target.value);
+    const { name, value } = event.target;
+    setBranch({ ...branch, [name]: value });
   };
 
   const [branch, setBranch] = useState({
     code: "",
     name: "",
     active: true,
-    owner: 2,
+    owner: "",
     block_street: "",
     barangay: "",
     email: "",
+    region: "",
+    province: "",
+    city: "",
   });
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setBranch({ ...branch, [name]: type === "checkbox" ? checked : value });
+    setValidationErrors({ ...validationErrors, [name]: false });
+  };
+
+  const [validationErrors, setValidationErrors] = useState({
+    code: false,
+    name: false,
+    owner: false,
+    block_street: false,
+    barangay: false,
+    email: false,
+    region: false,
+    province: false,
+    city: false,
+  });
+
+  const validateFields = () => {
+    const errors = {
+      code: !branch.code,
+      name: !branch.name,
+      owner: !branch.owner,
+      block_street: !branch.block_street,
+      barangay: !branch.barangay,
+      email: !branch.email,
+      region: !branch.region,
+      province: !branch.province,
+      city: !branch.city,
+    };
+    setValidationErrors(errors);
+
+    return !Object.values(errors).some((error) => error === true);
   };
 
   const [addBranch] = useCreateBranchMutation();
   const saveBranch = async (e: any) => {
     e.preventDefault();
+
+    if (!validateFields()) {
+      toast.error("Please fill out all required fields.", {
+        transition: Slide,
+      });
+      return;
+    }
 
     const data1 = {
       code: branch.code,
@@ -173,17 +215,17 @@ function AddBranch() {
           code: "",
           name: "",
           active: true,
-          owner: 0,
+          owner: "",
           block_street: "",
           barangay: "",
           email: "",
+          region: "",
+          province: "",
+          city: "",
         });
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
       } else {
         alert("something wrong");
       }
@@ -192,6 +234,25 @@ function AddBranch() {
         transition: Slide,
       });
     }
+  };
+
+  const clearBranch = async (e: any) => {
+    e.preventDefault();
+    setBranch({
+      code: "",
+      name: "",
+      active: true,
+      owner: "",
+      block_street: "",
+      barangay: "",
+      email: "",
+      region: "",
+      province: "",
+      city: "",
+    });
+    setSelectedRegionId("0");
+    setSelectedProvinceId("0");
+    setSelectedCityId("0");
   };
 
   return (
@@ -210,19 +271,9 @@ function AddBranch() {
                 tabIndex={-1}
                 size="small"
                 color="inherit"
+                onClick={clearBranch}
               >
-                <span className="">Cancel</span>
-              </Button>
-              <Button
-                component="label"
-                variant="contained"
-                className="w-40 pt-2"
-                tabIndex={-1}
-                size="small"
-                color="primary"
-                onClick={saveBranch}
-              >
-                <span className="">Save and Close</span>
+                <span className="">Clear</span>
               </Button>
               <Button
                 component="label"
@@ -233,7 +284,7 @@ function AddBranch() {
                 color="primary"
                 onClick={saveBranch}
               >
-                <span className="">Save and New</span>
+                <span className="">Save</span>
               </Button>
             </div>
           </div>
@@ -258,10 +309,13 @@ function AddBranch() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.code ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   placeholder=""
                   onChange={handleInput}
                   name="code"
+                  value={branch.code}
                 />
               </div>
             </div>
@@ -273,10 +327,13 @@ function AddBranch() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.name ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   placeholder=""
                   onChange={handleInput}
                   name="name"
+                  value={branch.name}
                 />
                 <FormControlLabel
                   className="absolute top-0 right-0"
@@ -296,9 +353,12 @@ function AddBranch() {
                 Branch Owner
               </label>
               <select
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                className={`bg-gray-50 border ${
+                  validationErrors.owner ? "border-red-500" : "border-gray-300"
+                } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                 onChange={handleInput}
                 name="owner"
+                value={branch.owner}
               >
                 <option value="" disabled selected>
                   Choose One
@@ -319,10 +379,15 @@ function AddBranch() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.block_street
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   placeholder=""
                   onChange={handleInput}
                   name="block_street"
+                  value={branch.block_street}
                 />
               </div>
             </div>
@@ -332,9 +397,14 @@ function AddBranch() {
               </label>
               <div className="relative mb-6 max-h-60">
                 <select
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.region
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleRegionChange}
                   name="region"
+                  value={branch.region}
                 >
                   <option>Select Region</option>
                   {regionList.map((list) => (
@@ -351,9 +421,14 @@ function AddBranch() {
               </label>
               <div className="relative mb-6 ">
                 <select
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.province
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleProvinceChange}
                   name="province"
+                  value={branch.province}
                 >
                   <option>Select Province</option>
                   {provinceList.map((list) => (
@@ -371,9 +446,12 @@ function AddBranch() {
               </label>
               <div className="relative mb-6">
                 <select
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.city ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleCityChange}
                   name="city"
+                  value={branch.city}
                 >
                   <option>Select Municipality</option>
                   {cityList.map((list) => (
@@ -390,9 +468,14 @@ function AddBranch() {
               </label>
               <div className="relative mb-6">
                 <select
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.barangay
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleInput}
                   name="barangay"
+                  value={branch.barangay}
                 >
                   <option>Select Barangay</option>
                   {barangayList.map((list) => (
@@ -411,10 +494,15 @@ function AddBranch() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.email
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   placeholder=""
                   onChange={handleInput}
                   name="email"
+                  value={branch.email}
                 />
               </div>
             </div>

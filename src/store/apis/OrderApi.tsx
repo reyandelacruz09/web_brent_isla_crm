@@ -25,9 +25,43 @@ const orderApi = createApi({
           };
         },
       }),
+      OrderList: builder.query({
+        query: () => {
+          return {
+            url: `/api/order/order_list`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
+      // /api/order/<cust_id>/order_list_customer
+      OrderListCustomer: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/order_list_customer`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
+      ///api/order/<cust_id>/customer_details
+      OrderCustomerDetails: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/customer_details`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+      }),
     };
   },
 });
 
-export const { useCreateOrderMutation } = orderApi;
+export const {
+  useCreateOrderMutation,
+  useOrderListQuery,
+  useOrderListCustomerQuery,
+  useOrderCustomerDetailsQuery,
+} = orderApi;
 export { orderApi };

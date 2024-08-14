@@ -145,9 +145,7 @@ export default function Modal_Update_User({
         toast.success("Successfully Updated!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }
@@ -180,10 +178,11 @@ export default function Modal_Update_User({
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={handleClose}
                 >
                   <span className="">Cancel</span>
                 </Button>
-                <Button
+                {/* <Button
                   component="label"
                   variant="contained"
                   className="w-32 pt-2"
@@ -192,7 +191,7 @@ export default function Modal_Update_User({
                   color="primary"
                 >
                   <span className="">Edit</span>
-                </Button>
+                </Button> */}
                 <Button
                   component="label"
                   variant="contained"
