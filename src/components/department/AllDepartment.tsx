@@ -86,16 +86,13 @@ function AllDepartment() {
   );
 
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === 1) {
+    const isActive = params.colDef.field === "active";
+    const isChecked = isActive && params.value === 1;
+
+    if (isActive) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox defaultChecked className="pointer-events-none" />
-        </span>
-      );
-    } else if (params.colDef.field === "active" && params.value === 2) {
-      return (
-        <span className="flex justify-center items-center h-full">
-          <Checkbox className="pointer-events-none" />
+          <Checkbox checked={isChecked} className="pointer-events-none" />
         </span>
       );
     } else if (params.colDef.field === "edit") {

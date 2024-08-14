@@ -1,4 +1,7 @@
 import Add_Quantity_Modal from "./Add_Quantity_Modal";
+// useInventoryListIDQuery
+import { useInventoryListIDQuery } from "../../store";
+import { useEffect, useState } from "react";
 
 interface InventoryDetails_LProps {
   products: {
@@ -12,7 +15,29 @@ interface InventoryDetails_LProps {
   };
 }
 
+interface productsInventory {
+  id: string;
+  code: string;
+  name: string;
+  owner: string;
+  receipt: string;
+  released: string;
+  stock: string;
+}
+
 function InventoryDetails_L({ products }: InventoryDetails_LProps) {
+  const [inProduct, setInProduct] = useState<productsInventory | null>(null);
+  const { data: inventPro, isSuccess: isInventProSuccess } =
+    useInventoryListIDQuery(products.id || "");
+
+  useEffect(() => {
+    if (isInventProSuccess && inventPro) {
+      // console.warn("Inventory Details", inventPro.data[0].name);
+      // console.warn("Inventory Details", inventPro.data);
+      setInProduct(inventPro.data[0]);
+    }
+  }, [isInventProSuccess, inventPro]);
+
   return (
     <>
       <div>
@@ -60,7 +85,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 name="code"
-                value={products.code}
+                value={inProduct?.code}
                 disabled
               />
             </div>
@@ -74,7 +99,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 type="text"
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                value={products.name}
+                value={inProduct?.name}
                 disabled
               />
             </div>
@@ -88,7 +113,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 type="text"
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                value={products.owner}
+                value={inProduct?.owner}
                 disabled
               />
             </div>
@@ -102,7 +127,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 type="text"
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-5"
-                value={products.receipt}
+                value={inProduct?.receipt || "-"}
                 disabled
               />
             </div>
@@ -116,7 +141,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 type="text"
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-5"
-                value={products.released}
+                value={inProduct?.released || "-"}
                 disabled
               />
             </div>
@@ -130,7 +155,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 type="text"
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-5"
-                value={products.stock}
+                value={inProduct?.stock || "-"}
                 disabled
               />
             </div>

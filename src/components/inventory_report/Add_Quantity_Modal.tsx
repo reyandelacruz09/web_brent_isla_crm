@@ -76,9 +76,7 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }

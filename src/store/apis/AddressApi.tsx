@@ -8,6 +8,7 @@ const addressApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["address"],
   endpoints(builder) {
     return {
       RegionList: builder.query<Branch, string>({
@@ -18,6 +19,7 @@ const addressApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["address"],
       }),
       ProvinceList: builder.query<Branch, string>({
         query: (regionid) => {
@@ -27,6 +29,7 @@ const addressApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["address"],
       }),
       CityList: builder.query<Branch, string>({
         query: (provinceid) => {
@@ -36,6 +39,7 @@ const addressApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["address"],
       }),
       BarangayList: builder.query<Branch, string>({
         query: (cityid) => {
@@ -45,6 +49,7 @@ const addressApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["address"],
       }),
     };
   },

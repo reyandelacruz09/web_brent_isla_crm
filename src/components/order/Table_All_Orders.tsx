@@ -1,11 +1,11 @@
 //import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material";
-import { Link } from "react-router-dom";
+import { createTheme, styled, ThemeProvider } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery } from "../../store";
 import { useEffect, useState } from "react";
 
-interface Order {
+export interface Order {
   status: string;
   id: string;
   name: string;
@@ -13,6 +13,7 @@ interface Order {
   amount: string;
   ordertaker: string;
   edt: string;
+  cid: string;
 }
 
 const columns: GridColDef[] = [
@@ -20,133 +21,23 @@ const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
-  { field: "amount", headerName: "Amount", width: 130 },
-  { field: "ordertaker", headerName: "Order Taker", width: 150 },
+  { field: "amount", headerName: "Amount", width: 130, align: "right" },
+  {
+    field: "ordertaker",
+    headerName: "Order Taker",
+    width: 180,
+    align: "center",
+  },
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-const rows = [
-  {
-    status: "New Order",
-    id: "1",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
   },
-  {
-    status: "In-Transit",
-    id: "2",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "Completed",
-    id: "3",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "Received",
-    id: "4",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "New Order",
-    id: "5",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "New Order",
-    id: "6",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "New Order",
-    id: "7",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "In-Transit",
-    id: "8",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "New Order",
-    id: "9",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "New Order",
-    id: "10",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "Received",
-    id: "11",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "In-Transit",
-    id: "12",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "Completed",
-    id: "13",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-];
-
-const theme = createTheme();
+}));
 function Table_All_Orders() {
+  const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListQuery("");
   const [content, setContent] = useState<Order[]>([]);
 
@@ -159,6 +50,20 @@ function Table_All_Orders() {
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
+        const dateStr = result.data[i].orderID.expected_deltime;
+        const date = new Date(dateStr);
+
+        // Format the date components
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Months are zero-based
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const formattedDate = `${month}/${day}/${year} ${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
         order.push({
           status: result.data[i].orderID.status,
           id: result.data[i].orderID.id,
@@ -167,14 +72,14 @@ function Table_All_Orders() {
             " " +
             result.data[i].orderID.customerID.lname,
           assignedbranch: result.data[i].orderID.branch.name,
-          amount: result.data[i].grandtotal,
+          amount: result.data[i].grandtotal.toFixed(2),
           ordertaker: result.data[i].orderID.added_by.first_name,
-          edt: result.data[i].orderID.expected_deltime,
+          edt: formattedDate,
+          cid: result.data[i].orderID.customerID.id,
         });
       }
 
       setContent(order);
-      // console.warn("Size", size);
     }
   }, [data, isSuccess]);
 
@@ -186,48 +91,50 @@ function Table_All_Orders() {
     return <div>Error loading data</div>;
   }
 
+  const handleNameClick = (name: string) => {
+    localStorage.setItem("view_cust", name);
+    navigate("/customer-details");
+  };
+
   const renderCell = (params: any) => {
-    if (params.colDef.field === "status" && params.value === "New Order") {
+    if (params.colDef.field === "status" && params.value === 1) {
       return (
         <span className="bg-pink-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+          New Order
         </span>
       );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "Received"
-    ) {
+    } else if (params.colDef.field === "status" && params.value === 2) {
       return (
         <span className="bg-blue-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+          Received
         </span>
       );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "In-Transit"
-    ) {
+    } else if (params.colDef.field === "status" && params.value === 3) {
       return (
-        <span className="bg-red-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+        <span className="bg-purple-700 text-white p-2 px-3 rounded-2xl">
+          In-Transit
         </span>
       );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "Completed"
-    ) {
+    } else if (params.colDef.field === "status" && params.value === 4) {
       return (
         <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+          Completed
         </span>
       );
-    } else if (
-      params.colDef.field === "name" &&
-      params.value === "Orlhie Almendares"
-    ) {
+    } else if (params.colDef.field === "status" && params.value === 5) {
       return (
-        <Link to="/customer-details">
-          <span className="cursor-pointer font-bold">{params.value}</span>
-        </Link>
+        <span className="bg-red-700 text-white p-2 px-3 rounded-2xl">
+          Canceled
+        </span>
+      );
+    } else if (params.colDef.field === "name") {
+      return (
+        <span
+          className="cursor-pointer font-bold"
+          onClick={() => handleNameClick(params.row.cid)}
+        >
+          {params.value}
+        </span>
       );
     }
     return params.value;
@@ -235,24 +142,22 @@ function Table_All_Orders() {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <div className="w-full h-full bg-white">
-          <DataGrid
-            rows={content}
-            columns={columns.map((col) => ({
-              ...col,
-              renderCell: renderCell,
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            hideFooterSelectedRowCount
-          />
-        </div>
-      </ThemeProvider>
+      <div className="w-full h-full bg-white">
+        <StyledDataGrid
+          rows={content}
+          columns={columns.map((col) => ({
+            ...col,
+            renderCell: renderCell,
+          }))}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          hideFooterSelectedRowCount
+        />
+      </div>
     </>
   );
 }

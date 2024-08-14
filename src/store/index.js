@@ -38,6 +38,7 @@ export {
   useDeleteProductMutation,
   useAddInventoryMutation,
   useInventoryListQuery,
+  useInventoryListIDQuery,
 } from "../store/apis/ProductsApi";
 
 export {
@@ -64,6 +65,8 @@ export {
 export {
   useCreateOrderMutation,
   useOrderListQuery,
+  useOrderListCustomerQuery,
+  useOrderCustomerDetailsQuery,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,

@@ -47,15 +47,52 @@ function AddUser() {
     branch: 0,
   });
 
+  const [validationErrors, setValidationErrors] = useState({
+    code: false,
+    email: false,
+    password: false,
+    cpassword: false,
+    fullname: false,
+    phone: false,
+    role: false,
+    department: false,
+    branch: false,
+  });
+
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setUser({ ...user, [name]: type === "checkbox" ? checked : value });
+    setValidationErrors({ ...validationErrors, [name]: false });
+  };
+
+  const validateFields = () => {
+    const errors = {
+      code: !user.code,
+      email: !user.email,
+      password: !user.password,
+      cpassword: !user.cpassword,
+      fullname: !user.fullname,
+      phone: !user.phone,
+      role: !user.role,
+      department: !user.department,
+      branch: !user.branch,
+    };
+    setValidationErrors(errors);
+
+    return !Object.values(errors).some((error) => error === true);
   };
 
   const [addUser] = useCreateUserMutation();
 
   const saveUser = async (e: any) => {
     e.preventDefault();
+
+    if (!validateFields()) {
+      toast.error("Please fill out all required fields.", {
+        transition: Slide,
+      });
+      return;
+    }
 
     const data1 = {
       code: user.code,
@@ -76,20 +113,18 @@ function AddUser() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-        // setProduct({
-        //   client: "",
-        //   owner: "",
-        //   category: "",
-        //   code: "",
-        //   name: "",
-        //   active: true,
-        //   price: "",
-        //   discount: "",
-        //   description: "",
-        // });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        setUser({
+          code: "",
+          email: "",
+          status: true,
+          password: "",
+          cpassword: "",
+          fullname: "",
+          phone: "",
+          role: 0,
+          department: 0,
+          branch: 0,
+        });
       } else {
         alert("something wrong");
       }
@@ -98,6 +133,22 @@ function AddUser() {
         transition: Slide,
       });
     }
+  };
+
+  const clearUser = async (e: any) => {
+    e.preventDefault();
+    setUser({
+      code: "",
+      email: "",
+      status: true,
+      password: "",
+      cpassword: "",
+      fullname: "",
+      phone: "",
+      role: 0,
+      department: 0,
+      branch: 0,
+    });
   };
 
   return (
@@ -116,19 +167,9 @@ function AddUser() {
                 tabIndex={-1}
                 size="small"
                 color="inherit"
+                onClick={clearUser}
               >
-                <span className="">Cancel</span>
-              </Button>
-              <Button
-                component="label"
-                variant="contained"
-                className="w-40 pt-2"
-                tabIndex={-1}
-                size="small"
-                color="primary"
-                onClick={saveUser}
-              >
-                <span className="">Save and Close</span>
+                <span className="">Clear</span>
               </Button>
               <Button
                 component="label"
@@ -139,7 +180,7 @@ function AddUser() {
                 color="primary"
                 onClick={saveUser}
               >
-                <span className="">Save and New</span>
+                <span className="">Save</span>
               </Button>
             </div>
           </div>
@@ -164,7 +205,9 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.code ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="code"
                   value={user.code}
                   onChange={handleInput}
@@ -179,7 +222,11 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.fullname
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="fullname"
                   value={user.fullname}
                   onChange={handleInput}
@@ -194,7 +241,11 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.phone
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="phone"
                   value={user.phone}
                   onChange={handleInput}
@@ -209,7 +260,11 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.email
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="email"
                   value={user.email}
                   onChange={handleInput}
@@ -236,7 +291,11 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.password
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="password"
                   value={user.password}
                   onChange={handleInput}
@@ -251,7 +310,11 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.cpassword
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="cpassword"
                   value={user.cpassword}
                   onChange={handleInput}
@@ -266,7 +329,9 @@ function AddUser() {
               <div className="relative mb-6 ">
                 <select
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.role ? "border-red-500" : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="role"
                   value={user.role}
                   onChange={handleInput}
@@ -288,7 +353,11 @@ function AddUser() {
               <div className="relative mb-6">
                 <select
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.department
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="department"
                   value={user.department}
                   onChange={handleInput}
@@ -311,7 +380,11 @@ function AddUser() {
               <div className="relative mb-6">
                 <select
                   id="input-group-1"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className={`bg-gray-50 border ${
+                    validationErrors.branch
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   name="branch"
                   value={user.branch}
                   onChange={handleInput}

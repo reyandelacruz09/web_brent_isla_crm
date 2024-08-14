@@ -112,9 +112,7 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
         toast.success("Successfully Updated!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }
@@ -147,10 +145,11 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={handleClose}
                 >
                   <span className="">Cancel</span>
                 </Button>
-                <Button
+                {/* <Button
                   component="label"
                   variant="contained"
                   className="w-32 pt-2"
@@ -159,7 +158,7 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                   color="primary"
                 >
                   <span className="">Edit</span>
-                </Button>
+                </Button> */}
                 <Button
                   component="label"
                   variant="contained"

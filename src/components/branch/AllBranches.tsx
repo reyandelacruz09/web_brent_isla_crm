@@ -1,6 +1,6 @@
 import ListIcon from "@mui/icons-material/List";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
+import { Checkbox, createTheme, styled, ThemeProvider } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Branch from "./Modal_Update_Branch";
 import { useBranchListQuery } from "../../store";
@@ -33,7 +33,11 @@ const columns: GridColDef[] = [
   { field: "delete", headerName: "Delete", width: 80 },
 ];
 
-const theme = createTheme();
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
+  },
+}));
 function AllBranches() {
   const { data, error, isLoading, isSuccess } = useBranchListQuery("");
   const [content, setContent] = useState<Branch[]>([]);
@@ -84,16 +88,13 @@ function AllBranches() {
   }
 
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === 1) {
+    const isActive = params.colDef.field === "active";
+    const isChecked = isActive && params.value === 1;
+
+    if (isActive) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox defaultChecked />
-        </span>
-      );
-    } else if (params.colDef.field === "active" && params.value === 2) {
-      return (
-        <span className="flex justify-center items-center h-full">
-          <Checkbox />
+          <Checkbox checked={isChecked} className="pointer-events-none" />
         </span>
       );
     } else if (params.colDef.field === "edit") {
@@ -139,24 +140,22 @@ function AllBranches() {
               {/* <span className="font-bold text-lg">Order History</span> */}
             </div>
             <div className="h-100 w-4/4 flex justify-center items-center">
-              <ThemeProvider theme={theme}>
-                <div className="w-full h-full bg-white">
-                  <DataGrid
-                    rows={content}
-                    columns={columns.map((col) => ({
-                      ...col,
-                      renderCell: renderCell,
-                    }))}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
-                      },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    hideFooterSelectedRowCount
-                  />
-                </div>
-              </ThemeProvider>
+              <div className="w-full h-full bg-white">
+                <StyledDataGrid
+                  rows={content}
+                  columns={columns.map((col) => ({
+                    ...col,
+                    renderCell: renderCell,
+                  }))}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { page: 0, pageSize: 10 },
+                    },
+                  }}
+                  pageSizeOptions={[5, 10]}
+                  hideFooterSelectedRowCount
+                />
+              </div>
             </div>
           </div>
         </div>

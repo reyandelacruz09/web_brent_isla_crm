@@ -32,69 +32,6 @@ const columns: GridColDef[] = [
   { field: "delete", headerName: "Delete", width: 100 },
 ];
 
-const rows = [
-  {
-    id: "Brent_Gas-001",
-    username: "username 1",
-    login: "login 1",
-    group: "Group 1",
-    email: "email 1",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-002",
-    username: "username 2",
-    login: "login 2",
-    group: "Group 2",
-    email: "email 2",
-    active: "N",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-003",
-    username: "username 3",
-    login: "login 3",
-    group: "Group 3",
-    email: "email 3",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-004",
-    username: "username 4",
-    login: "login 4",
-    group: "Group 4",
-    email: "email 4",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-005",
-    username: "username 5",
-    login: "login 5",
-    group: "Group 5",
-    email: "email 5",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-  {
-    id: "Brent_Gas-006",
-    username: "username 6",
-    login: "login 6",
-    group: "Group 6",
-    email: "email 6",
-    active: "Y",
-    edit: "",
-    delete: "",
-  },
-];
-
 const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
   "& .MuiDataGrid-cell:focus": {
     outline: "none",
@@ -154,16 +91,13 @@ function AllUser() {
   }
 
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === 1) {
+    const isActive = params.colDef.field === "active";
+    const isChecked = isActive && params.value === 1;
+
+    if (isActive) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox defaultChecked className="pointer-events-none" />
-        </span>
-      );
-    } else if (params.colDef.field === "active" && params.value === 2) {
-      return (
-        <span className="flex justify-center items-center h-full">
-          <Checkbox className="pointer-events-none" />
+          <Checkbox checked={isChecked} className="pointer-events-none" />
         </span>
       );
     } else if (params.colDef.field === "edit") {

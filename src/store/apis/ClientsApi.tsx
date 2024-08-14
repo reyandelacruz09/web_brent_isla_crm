@@ -24,6 +24,7 @@ const clientApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["client"],
   endpoints(builder) {
     return {
       ClientList: builder.query<ClientList, string>({
@@ -34,6 +35,7 @@ const clientApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["client"],
       }),
       ClientCategoryList: builder.query<Client, string>({
         query: () => {
@@ -43,6 +45,7 @@ const clientApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["client"],
       }),
       CreateClient: builder.mutation({
         query: (formBody) => {
@@ -57,6 +60,7 @@ const clientApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["client"],
       }),
       ViewClient: builder.query<ClientList, string>({
         query: (id) => {
@@ -66,6 +70,7 @@ const clientApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["client"],
       }),
       UpdateClient: builder.mutation({
         query: (formBody) => {
@@ -76,6 +81,7 @@ const clientApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["client"],
       }),
       DeleteClient: builder.mutation({
         query: (id) => {
@@ -85,6 +91,7 @@ const clientApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["client"],
       }),
     };
   },

@@ -1,88 +1,95 @@
 //import * as React from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, styled, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useOrderListQuery } from "../../store";
+import { useEffect, useState } from "react";
+import { Order } from "./Table_All_Orders";
 
 const columns: GridColDef[] = [
-  { field: "status", headerName: "Status", width: 130 },
+  { field: "status", headerName: "Status", width: 130, align: "center" },
   { field: "id", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
-  { field: "amount", headerName: "Amount", width: 130 },
-  { field: "ordertaker", headerName: "Order Taker", width: 150 },
+  { field: "amount", headerName: "Amount", width: 130, align: "right" },
+  {
+    field: "ordertaker",
+    headerName: "Order Taker",
+    width: 180,
+    align: "center",
+  },
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-const rows = [
-  {
-    status: "In-Transit",
-    id: "2",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
   },
-  {
-    status: "In-Transit",
-    id: "8",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "In-Transit",
-    id: "12",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-];
-
-const theme = createTheme();
+}));
 function Table_In_Transit() {
+  const { data, error, isLoading, isSuccess } = useOrderListQuery("");
+  const [content, setContent] = useState<Order[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const order: Order[] = [];
+
+      for (let i = 0; i < size; i++) {
+        const dateStr = result.data[i].orderID.expected_deltime;
+        const date = new Date(dateStr);
+
+        // Format the date components
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Months are zero-based
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const formattedDate = `${month}/${day}/${year} ${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+        if (result.data[i].orderID.status === 3) {
+          order.push({
+            status: result.data[i].orderID.status,
+            id: result.data[i].orderID.id,
+            name:
+              result.data[i].orderID.customerID.fname +
+              " " +
+              result.data[i].orderID.customerID.lname,
+            assignedbranch: result.data[i].orderID.branch.name,
+            amount: result.data[i].grandtotal.toFixed(2),
+            ordertaker: result.data[i].orderID.added_by.first_name,
+            edt: formattedDate,
+            cid: result.data[i].orderID.customerID.id,
+          });
+        }
+      }
+
+      setContent(order);
+      // console.warn("Size", size);
+    }
+  }, [data, isSuccess]);
+
+  console.warn("Order List", content);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
   const renderCell = (params: any) => {
-    if (params.colDef.field === "status" && params.value === "New Order") {
+    if (params.colDef.field === "status" && params.value === 3) {
       return (
-        <span className="bg-pink-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+        <span className="bg-purple-700 text-white p-2 px-3 rounded-2xl">
+          In-Transit
         </span>
       );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "Received"
-    ) {
-      return (
-        <span className="bg-blue-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "In-Transit"
-    ) {
-      return (
-        <span className="bg-red-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
-      params.colDef.field === "status" &&
-      params.value === "Completed"
-    ) {
-      return (
-        <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
-          {params.value}
-        </span>
-      );
-    } else if (
-      params.colDef.field === "name" &&
-      params.value === "Orlhie Almendares"
-    ) {
+    } else if (params.colDef.field === "name") {
       return (
         <Link to="/customer-details">
           <span className="cursor-pointer font-bold">{params.value}</span>
@@ -93,24 +100,22 @@ function Table_In_Transit() {
   };
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <div className="w-full h-full bg-white">
-          <DataGrid
-            rows={rows}
-            columns={columns.map((col) => ({
-              ...col,
-              renderCell: renderCell,
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            hideFooterSelectedRowCount
-          />
-        </div>
-      </ThemeProvider>
+      <div className="w-full h-full bg-white">
+        <StyledDataGrid
+          rows={content}
+          columns={columns.map((col) => ({
+            ...col,
+            renderCell: renderCell,
+          }))}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          hideFooterSelectedRowCount
+        />
+      </div>
     </>
   );
 }

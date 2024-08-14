@@ -9,6 +9,7 @@ const userApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["user"],
   endpoints(builder) {
     return {
       CreateUser: builder.mutation({
@@ -24,6 +25,7 @@ const userApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["user"],
       }),
       UserList: builder.query({
         query: () => {
@@ -33,6 +35,7 @@ const userApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["user"],
       }),
       ViewUser: builder.query({
         query: (id) => {
@@ -42,6 +45,7 @@ const userApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["user"],
       }),
       UpdateUser: builder.mutation({
         query: (formBody) => {
@@ -52,6 +56,7 @@ const userApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["user"],
       }),
       DeleteUser: builder.mutation({
         query: (id) => {
@@ -61,6 +66,7 @@ const userApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["user"],
       }),
     };
   },

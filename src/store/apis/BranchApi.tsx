@@ -9,6 +9,7 @@ const branchApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["branch"],
   endpoints(builder) {
     return {
       BranchList: builder.query<Branch, string>({
@@ -19,6 +20,7 @@ const branchApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["branch"],
       }),
       CreateBranch: builder.mutation({
         query: (formBody) => {
@@ -33,6 +35,7 @@ const branchApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["branch"],
       }),
       ViewBranch: builder.query<Branch, string>({
         query: (id) => {
@@ -42,6 +45,7 @@ const branchApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["branch"],
       }),
       UpdateBranch: builder.mutation({
         query: (formBody) => {
@@ -52,6 +56,7 @@ const branchApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["branch"],
       }),
       DeleteBranch: builder.mutation({
         query: (id) => {
@@ -61,6 +66,7 @@ const branchApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["branch"],
       }),
     };
   },

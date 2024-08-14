@@ -34,9 +34,7 @@ const Modal_Delete_User: React.FC<ModalDeleteProductProps> = ({ modalid }) => {
         toast.success("Successfully Deleted!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }

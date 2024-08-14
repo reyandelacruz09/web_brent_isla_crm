@@ -236,9 +236,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
         toast.success("Successfully Updated!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }
@@ -271,19 +269,9 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={handleClose}
                 >
                   <span className="">Cancel</span>
-                </Button>
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                  onClick={saveBranch}
-                >
-                  <span className="">Edit</span>
                 </Button>
                 <Button
                   component="label"

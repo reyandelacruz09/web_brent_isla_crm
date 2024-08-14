@@ -28,6 +28,7 @@ const productApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["products"],
   endpoints(builder) {
     return {
       ProductList: builder.query<Product, string>({
@@ -38,6 +39,7 @@ const productApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["products"],
       }),
       CreateProduct: builder.mutation({
         query: (formBody) => {
@@ -52,6 +54,7 @@ const productApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["products"],
       }),
       ViewProduct: builder.query<Product, string>({
         query: (id) => {
@@ -61,6 +64,7 @@ const productApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["products"],
       }),
       UpdateProduct: builder.mutation({
         query: (formBody) => {
@@ -71,6 +75,7 @@ const productApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["products"],
       }),
       CategoryList: builder.query<Category, string>({
         query: () => {
@@ -80,6 +85,7 @@ const productApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["products"],
       }),
       DeleteProduct: builder.mutation({
         query: (id) => {
@@ -89,6 +95,7 @@ const productApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["products"],
       }),
       AddInventory: builder.mutation({
         query: (formBody) => {
@@ -103,6 +110,7 @@ const productApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["products"],
       }),
       InventoryList: builder.query<Product, string>({
         query: () => {
@@ -112,6 +120,18 @@ const productApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["products"],
+      }),
+      // /api/products/<product_id>/inventory_list_id
+      InventoryListID: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/products/${id}/inventory_list_id`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["products"],
       }),
     };
   },
@@ -126,5 +146,6 @@ export const {
   useDeleteProductMutation,
   useAddInventoryMutation,
   useInventoryListQuery,
+  useInventoryListIDQuery,
 } = productApi;
 export { productApi };

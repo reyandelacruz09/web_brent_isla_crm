@@ -1,5 +1,8 @@
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, styled, ThemeProvider } from "@mui/material";
+import { useOrderListCustomerQuery } from "../../store";
+import { useEffect, useState } from "react";
+import { Order } from "./Table_All_Orders";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -10,59 +13,75 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-const rows = [
-  {
-    id: "1",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    id: "5",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    id: "6",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    id: "7",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    id: "9",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    id: "10",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-];
+interface cust_idProps {
+  cust_id: string;
+  setOrderID: (orderID: string) => void;
+}
 
-const theme = createTheme();
-function CustomerDetails_R3() {
+const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
+  "& .MuiDataGrid-cell:focus": {
+    outline: "none",
+  },
+}));
+function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
+  const { data, error, isLoading, isSuccess } =
+    useOrderListCustomerQuery(cust_id);
+  const [content, setContent] = useState<Order[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const order: Order[] = [];
+
+      for (let i = 0; i < size; i++) {
+        const dateStr = result.data[i].orderID.expected_deltime;
+        const date = new Date(dateStr);
+
+        // Format the date components
+        const day = date.getDate();
+        const month = date.getMonth() + 1; // Months are zero-based
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const formattedDate = `${month}/${day}/${year} ${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
+        order.push({
+          status: result.data[i].orderID.status,
+          id: result.data[i].orderID.id,
+          name:
+            result.data[i].orderID.customerID.fname +
+            " " +
+            result.data[i].orderID.customerID.lname,
+          assignedbranch: result.data[i].orderID.branch.name,
+          amount: result.data[i].grandtotal.toFixed(2),
+          ordertaker: result.data[i].orderID.added_by.first_name,
+          edt: formattedDate,
+          cid: result.data[i].orderID.customerID.id,
+        });
+      }
+
+      setContent(order);
+    }
+  }, [data, isSuccess]);
+
+  // console.warn("Order List", content);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  } else if (error) {
+    return <div>Error loading data</div>;
+  }
+
+  const handleRowClick = (params: any) => {
+    setOrderID(params.row.id);
+  };
+
   return (
     <>
       <div className="pt-3">
@@ -72,21 +91,20 @@ function CustomerDetails_R3() {
           </div>
           <div className="p-3 bg-gray-200">
             <div className="h-100 w-4/4 flex justify-center items-center">
-              <ThemeProvider theme={theme}>
-                <div className="w-full h-full bg-white">
-                  <DataGrid
-                    rows={rows}
-                    columns={columns}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
-                      },
-                    }}
-                    pageSizeOptions={[5, 10]}
-                    hideFooterSelectedRowCount
-                  />
-                </div>
-              </ThemeProvider>
+              <div className="w-full h-full bg-white">
+                <StyledDataGrid
+                  rows={content}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: { page: 0, pageSize: 10 },
+                    },
+                  }}
+                  pageSizeOptions={[5, 10]}
+                  hideFooterSelectedRowCount
+                  onRowClick={handleRowClick}
+                />
+              </div>
             </div>
           </div>
         </div>
