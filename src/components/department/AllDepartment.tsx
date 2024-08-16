@@ -1,6 +1,6 @@
 import ListIcon from "@mui/icons-material/List";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Checkbox } from "@mui/material";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import { Checkbox, Skeleton } from "@mui/material";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Modal_Update_Department from "./Modal_Update_Department";
 import { useClientListQuery } from "../../store";
@@ -28,12 +28,6 @@ const columns: GridColDef[] = [
   { field: "edit", headerName: "Edit", width: 100 },
   { field: "delete", headerName: "Delete", width: 100 },
 ];
-
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  "& .MuiDataGrid-cell:focus": {
-    outline: "none",
-  },
-}));
 
 function AllDepartment() {
   const { data, error, isLoading, isSuccess } = useClientListQuery("");
@@ -65,14 +59,6 @@ function AllDepartment() {
       // console.warn("Size", size);
     }
   }, [data, isSuccess]);
-
-  // console.warn("Department List", content);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else if (error) {
-    return <div>Error loading data</div>;
-  }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
@@ -135,28 +121,40 @@ function AllDepartment() {
           </div>
 
           <div className="pt-3">
-            <div className="pb-3">
-              {/* <span className="font-bold text-lg">Order History</span> */}
-            </div>
+            <div className="pb-3"></div>
             <div className="h-100 w-4/4 flex justify-center items-center">
-              {/* <ThemeProvider theme={theme}> */}
               <div className="w-full h-full bg-white">
-                <StyledDataGrid
-                  rows={filteredContent}
-                  columns={columns.map((col) => ({
-                    ...col,
-                    renderCell: renderCell,
-                  }))}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 10 },
-                    },
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  hideFooterSelectedRowCount
-                />
+                {isLoading ? (
+                  <Skeleton />
+                ) : error ? (
+                  "No data available"
+                ) : (
+                  <DataGrid
+                    sx={{
+                      [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                      [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                    }}
+                    rows={filteredContent}
+                    columns={columns.map((col) => ({
+                      ...col,
+                      renderCell: renderCell,
+                    }))}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 10 },
+                      },
+                    }}
+                    pageSizeOptions={[5, 10]}
+                    hideFooterSelectedRowCount
+                  />
+                )}
               </div>
-              {/* </ThemeProvider> */}
             </div>
           </div>
         </div>

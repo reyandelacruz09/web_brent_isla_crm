@@ -1,5 +1,5 @@
 //import * as React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
 
@@ -133,7 +133,6 @@ const rows = [
   },
 ];
 
-const theme = createTheme();
 function Table_All_History() {
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === "New Order") {
@@ -184,24 +183,32 @@ function Table_All_History() {
 
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <div className="w-full h-full bg-white">
-          <DataGrid
-            rows={rows}
-            columns={columns.map((col) => ({
-              ...col,
-              renderCell: renderCell,
-            }))}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+      <div className="w-full h-full bg-white">
+        <DataGrid
+          sx={{
+            [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+              {
+                outline: "none",
               },
-            }}
-            pageSizeOptions={[5, 10]}
-            hideFooterSelectedRowCount
-          />
-        </div>
-      </ThemeProvider>
+            [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+              {
+                outline: "none",
+              },
+          }}
+          rows={rows}
+          columns={columns.map((col) => ({
+            ...col,
+            renderCell: renderCell,
+          }))}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          hideFooterSelectedRowCount
+        />
+      </div>
     </>
   );
 }

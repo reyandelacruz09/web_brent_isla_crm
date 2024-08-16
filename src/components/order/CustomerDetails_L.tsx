@@ -13,7 +13,6 @@ import Modal_Show_All_Details from "./Modal_Show_All_Details";
 import { useOrderCustomerDetailsQuery } from "../../store";
 import { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
-import Stack from "@mui/material/Stack";
 
 interface cust_idProps {
   cust_id: string;
@@ -55,8 +54,8 @@ function stringAvatar(name: string) {
   return {
     sx: {
       bgcolor: stringToColor(name),
-      width: 56,
-      height: 56,
+      width: 48,
+      height: 48,
     },
     children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
   };
@@ -69,13 +68,11 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
 
   useEffect(() => {
     if (isCustomerSuccess && customer) {
-      //console.warn("Customer Details", customer.data);
       setCustData(customer.data);
     }
   }, [isCustomerSuccess, customer]);
 
   const address = custData[0]?.newAddress;
-  console.warn(address);
 
   const [complaint, setcomplaint] = React.useState("hidden");
 
@@ -102,7 +99,9 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
       <div className="py-5 flex justify-left">
         <div>
           <Avatar
-            {...stringAvatar(`${custData[0]?.fname} ${custData[0]?.lname}`)}
+            {...(custData[0]
+              ? stringAvatar(`${custData[0].fname} ${custData[0].lname}`)
+              : null)}
           />
         </div>
         <div className="pl-3">
@@ -140,7 +139,7 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 disabled
-                value={custData[0]?.phone1 || ""}
+                value={orderID ? custData[0]?.phone1 : ""}
               />
             </div>
           </div>
@@ -155,7 +154,7 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 disabled
-                value={custData[0]?.phone2 || ""}
+                value={orderID ? custData[0]?.phone2 : ""}
               />
             </div>
           </div>
@@ -170,7 +169,7 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 disabled
-                value={custData[0]?.landline || ""}
+                value={orderID ? custData[0]?.landline : ""}
               />
             </div>
           </div>
@@ -180,12 +179,9 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
               Address
             </label>
             <div className="relative mb-2">
-              <textarea
-                className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                disabled
-              >
-                {address}
-              </textarea>
+              <p className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 h-20 text-wrap">
+                {orderID ? address : ""}
+              </p>
             </div>
           </div>
           <div className="py-2">

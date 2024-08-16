@@ -1,5 +1,5 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { createTheme, styled, ThemeProvider } from "@mui/material";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import { createTheme, Skeleton, styled, ThemeProvider } from "@mui/material";
 import { useInventoryListQuery } from "../../store";
 import { useEffect, useState } from "react";
 
@@ -68,12 +68,6 @@ interface InventoryDetails_RProps {
   setProducts: (products: Product) => void;
 }
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  "& .MuiDataGrid-cell:focus": {
-    outline: "none",
-  },
-}));
-
 function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
   const { data, error, isLoading, isSuccess } = useInventoryListQuery("");
   const [content, setContent] = useState<Product[]>([]);
@@ -90,11 +84,10 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
 
       for (let i = 0; i < size; i++) {
         let newreceipt =
-          result.data[i].receipt === null ? "-" : result.data[i].receipt;
+          result.data[i].receipt === 0 ? "-" : result.data[i].receipt;
         let newreleased =
-          result.data[i].released === null ? "-" : result.data[i].released;
-        let newstock =
-          result.data[i].stock === null ? "-" : result.data[i].stock;
+          result.data[i].released === 0 ? "-" : result.data[i].released;
+        let newstock = result.data[i].stock === 0 ? "-" : result.data[i].stock;
 
         products.push({
           id: result.data[i].id,
@@ -105,7 +98,7 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
           released: newreleased,
           stock: newstock,
         });
-        console.warn(newstock);
+        // console.warn(newstock);
       }
 
       setContent(products);
@@ -154,18 +147,34 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
           <div className="p-3 bg-gray-200">
             <div className="h-100 w-4/4 flex justify-center items-center">
               <div className="w-full h-full bg-white">
-                <StyledDataGrid
-                  rows={filteredContent}
-                  columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 10 },
-                    },
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  hideFooterSelectedRowCount
-                  onRowClick={handleRowClick}
-                />
+                {isLoading ? (
+                  <Skeleton />
+                ) : error ? (
+                  "No data available"
+                ) : (
+                  <DataGrid
+                    sx={{
+                      [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                      [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                    }}
+                    rows={filteredContent}
+                    columns={columns}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 10 },
+                      },
+                    }}
+                    pageSizeOptions={[5, 10]}
+                    hideFooterSelectedRowCount
+                    onRowClick={handleRowClick}
+                  />
+                )}
               </div>
             </div>
           </div>

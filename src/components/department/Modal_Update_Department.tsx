@@ -244,7 +244,7 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                 <select
                   name="category"
                   onChange={handleInput}
-                  value={updateClient.category}
+                  value={updateClient.category || ""}
                   id="rec_mode"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                 >

@@ -359,7 +359,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleInput}
                   name="owner"
-                  value={updateBranch.owner}
+                  value={updateBranch.owner || ""}
                 >
                   <option value="" disabled selected>
                     Choose One
@@ -398,7 +398,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleRegionChange}
                   name="region"
-                  value={updateBranch.region}
+                  value={updateBranch.region || ""}
                 >
                   <option>Select Region</option>
                   {regionList.map((list) => (
@@ -419,7 +419,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleProvinceChange}
                   name="province"
-                  value={updateBranch.province}
+                  value={updateBranch.province || ""}
                 >
                   <option>Select Province</option>
                   {provinceList.map((list) => (
@@ -440,7 +440,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleCityChange}
                   name="city"
-                  value={updateBranch.city}
+                  value={updateBranch.city || ""}
                 >
                   <option>Select Municipality</option>
                   {cityList.map((list) => (
@@ -460,7 +460,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   onChange={handleInput}
                   name="barangay"
-                  value={updateBranch.barangay}
+                  value={updateBranch.barangay || ""}
                 >
                   <option>Select Barangay</option>
                   {barangayList.map((list) => (

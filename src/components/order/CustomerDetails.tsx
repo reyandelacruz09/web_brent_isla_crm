@@ -19,10 +19,10 @@ function CustomerDetails() {
         </div>
         <div className="pt-3 w-3/4">
           <div className="w-full">
-            <CustomerDetails_R1 />
+            <CustomerDetails_R1 orderID={orderID} />
           </div>
           <div className="w-full">
-            <CustomerDetails_R2 />
+            <CustomerDetails_R2 orderID={orderID} />
           </div>
           <div className="w-full">
             <CustomerDetails_R3 cust_id={cust_id} setOrderID={setOrderID} />
