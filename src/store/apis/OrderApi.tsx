@@ -9,6 +9,7 @@ const orderApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
+  tagTypes: ["order"],
   endpoints(builder) {
     return {
       CreateOrder: builder.mutation({
@@ -24,6 +25,7 @@ const orderApi = createApi({
             method: "POST",
           };
         },
+        invalidatesTags: ["order"],
       }),
       OrderList: builder.query({
         query: () => {
@@ -33,8 +35,8 @@ const orderApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["order"],
       }),
-      // /api/order/<cust_id>/order_list_customer
       OrderListCustomer: builder.query({
         query: (id) => {
           return {
@@ -43,8 +45,8 @@ const orderApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["order"],
       }),
-      ///api/order/<cust_id>/customer_details
       OrderCustomerDetails: builder.query({
         query: (id) => {
           return {
@@ -53,6 +55,42 @@ const orderApi = createApi({
             method: "GET",
           };
         },
+        providesTags: ["order"],
+      }),
+      OrderView: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/view_order`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      OrderUpdateStatus: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `api/order/0/update_status/`,
+            headers: {
+              // Authorization: "token " + token,
+              // "Content-Type": "application/json",
+              // Accept: "/",
+            },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["order"],
+      }),
+      OrderGetStatus: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/get_status`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
       }),
     };
   },
@@ -63,5 +101,8 @@ export const {
   useOrderListQuery,
   useOrderListCustomerQuery,
   useOrderCustomerDetailsQuery,
+  useOrderViewQuery,
+  useOrderUpdateStatusMutation,
+  useOrderGetStatusQuery,
 } = orderApi;
 export { orderApi };

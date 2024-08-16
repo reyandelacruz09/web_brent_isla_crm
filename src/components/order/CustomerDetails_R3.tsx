@@ -1,8 +1,9 @@
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, styled, ThemeProvider } from "@mui/material";
 import { useOrderListCustomerQuery } from "../../store";
 import { useEffect, useState } from "react";
 import { Order } from "./Table_All_Orders";
+import Skeleton from "@mui/material/Skeleton";
 
 const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 70 },
@@ -10,6 +11,7 @@ const columns: GridColDef[] = [
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
   { field: "amount", headerName: "Amount", width: 130 },
   { field: "ordertaker", headerName: "Order Taker", width: 150 },
+  { field: "status", headerName: "Status", width: 150, align: "center" },
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
@@ -18,11 +20,6 @@ interface cust_idProps {
   setOrderID: (orderID: string) => void;
 }
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  "& .MuiDataGrid-cell:focus": {
-    outline: "none",
-  },
-}));
 function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
   const { data, error, isLoading, isSuccess } =
     useOrderListCustomerQuery(cust_id);
@@ -70,16 +67,53 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
     }
   }, [data, isSuccess]);
 
-  // console.warn("Order List", content);
-
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Skeleton />
+      </div>
+    );
   } else if (error) {
     return <div>Error loading data</div>;
   }
 
   const handleRowClick = (params: any) => {
     setOrderID(params.row.id);
+  };
+
+  const renderCell = (params: any) => {
+    if (params.colDef.field === "status" && params.value === 1) {
+      return (
+        <span className="bg-pink-500 text-white p-2 px-3 rounded-2xl">
+          New Order
+        </span>
+      );
+    } else if (params.colDef.field === "status" && params.value === 2) {
+      return (
+        <span className="bg-blue-500 text-white p-2 px-3 rounded-2xl">
+          Received
+        </span>
+      );
+    } else if (params.colDef.field === "status" && params.value === 3) {
+      return (
+        <span className="bg-purple-700 text-white p-2 px-3 rounded-2xl">
+          In-Transit
+        </span>
+      );
+    } else if (params.colDef.field === "status" && params.value === 4) {
+      return (
+        <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
+          Completed
+        </span>
+      );
+    } else if (params.colDef.field === "status" && params.value === 5) {
+      return (
+        <span className="bg-red-700 text-white p-2 px-3 rounded-2xl">
+          Canceled
+        </span>
+      );
+    }
+    return params.value;
   };
 
   return (
@@ -92,9 +126,22 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
           <div className="p-3 bg-gray-200">
             <div className="h-100 w-4/4 flex justify-center items-center">
               <div className="w-full h-full bg-white">
-                <StyledDataGrid
+                <DataGrid
+                  sx={{
+                    [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                      {
+                        outline: "none",
+                      },
+                    [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                      {
+                        outline: "none",
+                      },
+                  }}
                   rows={content}
-                  columns={columns}
+                  columns={columns.map((col) => ({
+                    ...col,
+                    renderCell: renderCell,
+                  }))}
                   initialState={{
                     pagination: {
                       paginationModel: { page: 0, pageSize: 10 },

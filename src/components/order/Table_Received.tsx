@@ -1,6 +1,6 @@
 //import * as React from "react";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { createTheme, styled, ThemeProvider } from "@mui/material";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import { createTheme, Skeleton, styled, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useOrderListQuery } from "../../store";
 import { useEffect, useState } from "react";
@@ -21,11 +21,6 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  "& .MuiDataGrid-cell:focus": {
-    outline: "none",
-  },
-}));
 function Table_Received() {
   const { data, error, isLoading, isSuccess } = useOrderListQuery("");
   const [content, setContent] = useState<Order[]>([]);
@@ -70,17 +65,8 @@ function Table_Received() {
       }
 
       setContent(order);
-      // console.warn("Size", size);
     }
   }, [data, isSuccess]);
-
-  console.warn("Order List", content);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else if (error) {
-    return <div>Error loading data</div>;
-  }
 
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === 2) {
@@ -101,20 +87,36 @@ function Table_Received() {
   return (
     <>
       <div className="w-full h-full bg-white">
-        <StyledDataGrid
-          rows={content}
-          columns={columns.map((col) => ({
-            ...col,
-            renderCell: renderCell,
-          }))}
-          initialState={{
-            pagination: {
-              paginationModel: { page: 0, pageSize: 10 },
-            },
-          }}
-          pageSizeOptions={[5, 10]}
-          hideFooterSelectedRowCount
-        />
+        {isLoading ? (
+          <Skeleton />
+        ) : error ? (
+          "No data available"
+        ) : (
+          <DataGrid
+            sx={{
+              [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                {
+                  outline: "none",
+                },
+              [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                {
+                  outline: "none",
+                },
+            }}
+            rows={content}
+            columns={columns.map((col) => ({
+              ...col,
+              renderCell: renderCell,
+            }))}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 10 },
+              },
+            }}
+            pageSizeOptions={[5, 10]}
+            hideFooterSelectedRowCount
+          />
+        )}
       </div>
     </>
   );

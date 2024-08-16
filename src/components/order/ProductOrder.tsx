@@ -190,7 +190,7 @@ function ProductOrder({
                     <select
                       id="input-group-1"
                       className="w-full p-1.5 border-none bg-gray-50 border border-gray-300 text-gray-900 text-md"
-                      value={item.product}
+                      value={item.product || ""}
                       onChange={(e) =>
                         handleInputChange(idx, "product", e.target.value)
                       }

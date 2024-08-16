@@ -346,7 +346,7 @@ export default function Modal_Update_User({
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   name="role"
-                  value={updateUser.role}
+                  value={updateUser.role || ""}
                   onChange={handleInput}
                 >
                   <option value="0" selected disabled>
@@ -368,7 +368,7 @@ export default function Modal_Update_User({
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   name="department"
-                  value={updateUser.department}
+                  value={updateUser.department || ""}
                   onChange={handleInput}
                 >
                   <option value="0" disabled selected>
@@ -391,7 +391,7 @@ export default function Modal_Update_User({
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   name="branch"
-                  value={updateUser.branch}
+                  value={updateUser.branch || ""}
                   onChange={handleInput}
                 >
                   <option value="0" disabled selected>

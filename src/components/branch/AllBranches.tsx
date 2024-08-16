@@ -1,6 +1,12 @@
 import ListIcon from "@mui/icons-material/List";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Checkbox, createTheme, styled, ThemeProvider } from "@mui/material";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import {
+  Checkbox,
+  createTheme,
+  Skeleton,
+  styled,
+  ThemeProvider,
+} from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Branch from "./Modal_Update_Branch";
 import { useBranchListQuery } from "../../store";
@@ -33,11 +39,6 @@ const columns: GridColDef[] = [
   { field: "delete", headerName: "Delete", width: 80 },
 ];
 
-const StyledDataGrid = styled(DataGrid)(({ theme }) => ({
-  "& .MuiDataGrid-cell:focus": {
-    outline: "none",
-  },
-}));
 function AllBranches() {
   const { data, error, isLoading, isSuccess } = useBranchListQuery("");
   const [content, setContent] = useState<Branch[]>([]);
@@ -78,14 +79,6 @@ function AllBranches() {
       setContent(branches);
     }
   }, [data, isSuccess]);
-
-  //console.log(content);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else if (error) {
-    return <div>Error loading data</div>;
-  }
 
   const renderCell = (params: any) => {
     const isActive = params.colDef.field === "active";
@@ -141,20 +134,36 @@ function AllBranches() {
             </div>
             <div className="h-100 w-4/4 flex justify-center items-center">
               <div className="w-full h-full bg-white">
-                <StyledDataGrid
-                  rows={content}
-                  columns={columns.map((col) => ({
-                    ...col,
-                    renderCell: renderCell,
-                  }))}
-                  initialState={{
-                    pagination: {
-                      paginationModel: { page: 0, pageSize: 10 },
-                    },
-                  }}
-                  pageSizeOptions={[5, 10]}
-                  hideFooterSelectedRowCount
-                />
+                {isLoading ? (
+                  <Skeleton />
+                ) : error ? (
+                  "No data available"
+                ) : (
+                  <DataGrid
+                    sx={{
+                      [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                      [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                    }}
+                    rows={content}
+                    columns={columns.map((col) => ({
+                      ...col,
+                      renderCell: renderCell,
+                    }))}
+                    initialState={{
+                      pagination: {
+                        paginationModel: { page: 0, pageSize: 10 },
+                      },
+                    }}
+                    pageSizeOptions={[5, 10]}
+                    hideFooterSelectedRowCount
+                  />
+                )}
               </div>
             </div>
           </div>

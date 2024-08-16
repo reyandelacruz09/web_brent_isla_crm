@@ -41,15 +41,50 @@ function AddProduct() {
     description: "",
   });
 
+  const [validationErrors, setValidationErrors] = useState({
+    client: false,
+    owner: false,
+    category: false,
+    code: false,
+    name: false,
+    price: false,
+    discount: false,
+    description: false,
+  });
+
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setProduct({ ...product, [name]: type === "checkbox" ? checked : value });
+    setValidationErrors({ ...validationErrors, [name]: false });
+  };
+
+  const validateFields = () => {
+    const errors = {
+      client: !product.client,
+      owner: !product.owner,
+      category: !product.category,
+      code: !product.code,
+      name: !product.name,
+      price: !product.price,
+      discount: !product.discount,
+      description: !product.description,
+    };
+    setValidationErrors(errors);
+
+    return !Object.values(errors).some((error) => error === true);
   };
 
   const [addPost] = useCreateProductMutation();
 
   const saveProduct = async (e: any) => {
     e.preventDefault();
+
+    if (!validateFields()) {
+      toast.error("Please fill out all required fields.", {
+        transition: Slide,
+      });
+      return;
+    }
 
     const data1 = {
       client: product.client,
@@ -80,9 +115,6 @@ function AddProduct() {
           discount: "",
           description: "",
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
       } else {
         alert("something wrong");
       }
@@ -91,6 +123,21 @@ function AddProduct() {
         transition: Slide,
       });
     }
+  };
+
+  const clearProduct = async (e: any) => {
+    e.preventDefault();
+    setProduct({
+      client: "",
+      owner: "",
+      category: "",
+      code: "",
+      name: "",
+      active: true,
+      price: "",
+      discount: "",
+      description: "",
+    });
   };
 
   const clients = useBranchListQuery("");
@@ -131,10 +178,11 @@ function AddProduct() {
                   tabIndex={-1}
                   size="small"
                   color="inherit"
+                  onClick={clearProduct}
                 >
-                  <span className="">Cancel</span>
+                  <span className="">Clear</span>
                 </Button>
-                <Button
+                {/* <Button
                   onClick={saveProduct}
                   component="label"
                   variant="contained"
@@ -144,7 +192,7 @@ function AddProduct() {
                   color="primary"
                 >
                   <span className="">Save and Close</span>
-                </Button>
+                </Button> */}
                 <Button
                   onClick={saveProduct}
                   component="label"
@@ -154,7 +202,7 @@ function AddProduct() {
                   size="small"
                   color="primary"
                 >
-                  <span className="">Save and New</span>
+                  <span className="">Save</span>
                 </Button>
                 {/* <input type="submit" value="Submit Button" /> */}
               </div>
@@ -179,10 +227,14 @@ function AddProduct() {
                 <div className="relative mb-6">
                   <select
                     name="owner"
-                    value={product.owner}
+                    value={product.owner || ""}
                     onChange={handleInput}
                     id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    className={`bg-gray-50 border ${
+                      validationErrors.owner
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   >
                     <option value="" disabled>
                       Choose One
@@ -203,10 +255,14 @@ function AddProduct() {
                 <div className="relative mb-6">
                   <select
                     name="category"
-                    value={product.category}
+                    value={product.category || ""}
                     onChange={handleInput}
                     id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    className={`bg-gray-50 border ${
+                      validationErrors.category
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   >
                     <option value="" disabled>
                       Choose One
@@ -230,8 +286,11 @@ function AddProduct() {
                     name="code"
                     value={product.code}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    className={`bg-gray-50 border ${
+                      validationErrors.code
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                 </div>
               </div>
@@ -247,8 +306,11 @@ function AddProduct() {
                     name="name"
                     value={product.name}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    className={`bg-gray-50 border ${
+                      validationErrors.name
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                   <FormControlLabel
                     className="absolute top-0 right-0"
@@ -274,8 +336,11 @@ function AddProduct() {
                     name="price"
                     value={product.price}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    className={`bg-gray-50 border ${
+                      validationErrors.price
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                 </div>
               </div>
@@ -291,8 +356,11 @@ function AddProduct() {
                     name="discount"
                     value={product.discount}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    className={`bg-gray-50 border ${
+                      validationErrors.discount
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                 </div>
               </div>
@@ -307,8 +375,11 @@ function AddProduct() {
                     name="description"
                     value={product.description}
                     onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
+                    className={`bg-gray-50 border ${
+                      validationErrors.description
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   ></textarea>
                 </div>
               </div>

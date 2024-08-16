@@ -1,18 +1,9 @@
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
-import {
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect, useState } from "react";
 import {
   useClientCategoryListQuery,
   useCreateClientMutation,
-  useBranchListQuery,
-  useCategoryListQuery,
 } from "../../store";
 import { Slide, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -234,7 +225,7 @@ function AddDepartment() {
                   <select
                     name="category"
                     onChange={handleInput}
-                    value={client.category}
+                    value={client.category || ""}
                     id="rec_mode"
                     className={`bg-gray-50 border ${
                       validationErrors.category

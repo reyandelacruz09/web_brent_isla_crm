@@ -126,9 +126,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
         toast.success("Successfully Updated!", {
           transition: Slide,
         });
-        setTimeout(function () {
-          window.location.reload();
-        }, 2000);
+        handleClose();
       } else {
         alert("something wrong");
       }
@@ -183,18 +181,9 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                     tabIndex={-1}
                     size="small"
                     color="primary"
+                    onClick={handleClose}
                   >
                     <span className="">Cancel</span>
-                  </Button>
-                  <Button
-                    component="label"
-                    variant="contained"
-                    className="w-32 pt-2"
-                    tabIndex={-1}
-                    size="small"
-                    color="primary"
-                  >
-                    <span className="">Edit</span>
                   </Button>
                   <Button
                     component="label"
@@ -284,7 +273,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                 <div className="relative mb-6 ">
                   <select
                     name="owner"
-                    value={updateProduct.owner}
+                    value={updateProduct.owner || ""}
                     onChange={handleInput}
                     id="rec_mode"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
@@ -308,7 +297,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                 <div className="relative mb-6 ">
                   <select
                     name="category"
-                    value={updateProduct.category}
+                    value={updateProduct.category || ""}
                     onChange={handleInput}
                     id="rec_mode"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"

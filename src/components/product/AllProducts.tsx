@@ -1,6 +1,12 @@
 import ListIcon from "@mui/icons-material/List";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { Checkbox, createTheme, ThemeProvider } from "@mui/material";
+import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import {
+  Checkbox,
+  createTheme,
+  Skeleton,
+  styled,
+  ThemeProvider,
+} from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Product from "./Modal_Update_Product";
 import { useProductListQuery } from "../../store";
@@ -37,13 +43,9 @@ const columns: GridColDef[] = [
   { field: "delete", headerName: "Delete", width: 130 },
 ];
 
-const theme = createTheme();
-
 function AllProducts() {
   const { data, error, isLoading, isSuccess } = useProductListQuery("");
   const [content, setContent] = useState<Product[]>([]);
-
-  const [apiData, setApiData] = useState<any>(null); // Replace 'any' with the appropriate type for your API data
 
   useEffect(() => {
     if (isSuccess) {
@@ -61,7 +63,7 @@ function AllProducts() {
           name: result.data[i].name,
           description: result.data[i].description,
           owner: result.data[i].branch.name,
-          price: result.data[i].price,
+          price: result.data[i].price.toFixed(2),
           active: result.data[i].status,
           edit: result.data[i].id,
           delete: result.data[i].id,
@@ -72,31 +74,19 @@ function AllProducts() {
     }
   }, [data, isSuccess]);
 
-  // console.warn(content);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  } else if (error) {
-    return <div>Error loading data</div>;
-  }
-
   const renderCell = (params: any) => {
-    if (params.colDef.field === "active" && params.value === 1) {
+    const isActive = params.colDef.field === "active";
+    const isChecked = isActive && params.value === 1;
+
+    if (isActive) {
       return (
         <span className="flex justify-center items-center h-full">
-          <Checkbox defaultChecked />
-        </span>
-      );
-    } else if (params.colDef.field === "active" && params.value === 2) {
-      return (
-        <span className="flex justify-center items-center h-full">
-          <Checkbox />
+          <Checkbox checked={isChecked} className="pointer-events-none" />
         </span>
       );
     } else if (params.colDef.field === "edit") {
       return (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
-          {/* <EditOutlined /> */}
           <Modal_Update_Product modalid={params.value} />
         </span>
       );
@@ -104,8 +94,11 @@ function AllProducts() {
       return (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
           <Modal_Delete_Product modalid={params.value} />
-          {/* <DeleteForeverOutlinedIcon /> */}
         </span>
+      );
+    } else if (params.colDef.field === "price") {
+      return (
+        <span className="flex justify-center items-center">{params.value}</span>
       );
     }
     return params.value;
@@ -136,9 +129,23 @@ function AllProducts() {
               {/* <span className="font-bold text-lg">Order History</span> */}
             </div>
             <div className="h-100 w-4/4 flex justify-center items-center">
-              <ThemeProvider theme={theme}>
-                <div className="w-full h-full bg-white">
+              <div className="w-full h-full bg-white">
+                {isLoading ? (
+                  <Skeleton />
+                ) : error ? (
+                  "No Data Available"
+                ) : (
                   <DataGrid
+                    sx={{
+                      [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                      [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                        {
+                          outline: "none",
+                        },
+                    }}
                     rows={content}
                     columns={columns.map((col) => ({
                       ...col,
@@ -152,8 +159,8 @@ function AllProducts() {
                     pageSizeOptions={[5, 10, 20, 50, 100]}
                     hideFooterSelectedRowCount
                   />
-                </div>
-              </ThemeProvider>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -358,7 +358,7 @@ function AddBranch() {
                 } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                 onChange={handleInput}
                 name="owner"
-                value={branch.owner}
+                value={branch.owner || ""}
               >
                 <option value="" disabled selected>
                   Choose One
@@ -404,7 +404,7 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleRegionChange}
                   name="region"
-                  value={branch.region}
+                  value={branch.region || ""}
                 >
                   <option>Select Region</option>
                   {regionList.map((list) => (
@@ -428,7 +428,7 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleProvinceChange}
                   name="province"
-                  value={branch.province}
+                  value={branch.province || ""}
                 >
                   <option>Select Province</option>
                   {provinceList.map((list) => (
@@ -451,7 +451,7 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleCityChange}
                   name="city"
-                  value={branch.city}
+                  value={branch.city || ""}
                 >
                   <option>Select Municipality</option>
                   {cityList.map((list) => (
@@ -475,7 +475,7 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleInput}
                   name="barangay"
-                  value={branch.barangay}
+                  value={branch.barangay || ""}
                 >
                   <option>Select Barangay</option>
                   {barangayList.map((list) => (
