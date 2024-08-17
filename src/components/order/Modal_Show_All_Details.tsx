@@ -19,6 +19,10 @@ import Select from "@mui/material/Select";
 import Modal_CustomerInformation from "./Modal_CustomerInformation";
 import Modal_ProductOrder from "./Modal_ProductOrder";
 import Modal_Others from "./Modal_Others";
+import { useEffect, useState } from "react";
+import { useCustomerInfoIDQuery } from "../../store";
+import { Avatar } from "@mui/material";
+import Modal_Show_CustomerInformation from "./Modal_Show_CustomerInformation";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -29,7 +33,49 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-export default function Modal_Show_All_Details() {
+interface cust_idProps {
+  cust_id: string;
+  orderID: string;
+}
+
+interface customer {
+  fname: string;
+  lname: string;
+}
+
+function stringToColor(string: string) {
+  let hash = 0;
+  let i;
+
+  /* eslint-disable no-bitwise */
+  for (i = 0; i < string.length; i += 1) {
+    hash = string.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  let color = "#";
+
+  for (i = 0; i < 3; i += 1) {
+    const value = (hash >> (i * 8)) & 0xff;
+    color += `00${value.toString(16)}`.slice(-2);
+  }
+  return color;
+}
+
+function stringAvatar(name: string) {
+  return {
+    sx: {
+      bgcolor: stringToColor(name),
+      width: 48,
+      height: 48,
+    },
+    children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
+  };
+}
+
+export default function Modal_Show_All_Details({
+  cust_id,
+  orderID,
+}: cust_idProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -55,6 +101,23 @@ export default function Modal_Show_All_Details() {
     }
   };
 
+  const [customerInfo, setCustomerInfo] = useState<customer>({
+    fname: "",
+    lname: "",
+  });
+  const { data: custInfo, isSuccess: isCustInfoSuccess } =
+    useCustomerInfoIDQuery(cust_id || "");
+
+  useEffect(() => {
+    if (isCustInfoSuccess && custInfo) {
+      // setCustData(customer.data);
+      // console.warn(custInfo.data);
+      setCustomerInfo(custInfo.data);
+      // console.warn(custInfo.data);
+    }
+  }, [isCustInfoSuccess, custInfo]);
+
+  // console.warn("HAHAHAHHA", customerInfo);
   return (
     <React.Fragment>
       <Button
@@ -63,6 +126,7 @@ export default function Modal_Show_All_Details() {
         variant="contained"
         tabIndex={-1}
         onClick={handleClickOpen}
+        disabled={!orderID}
       >
         Show All Details
       </Button>
@@ -78,15 +142,19 @@ export default function Modal_Show_All_Details() {
             <div className="w-1/3">
               <div className="flex ">
                 <div>
-                  <img
-                    className="inline-block w-14 object-cover rounded-full"
-                    src="../../images/avatar.jpg"
-                    alt=""
+                  <Avatar
+                    {...(customerInfo
+                      ? stringAvatar(
+                          `${customerInfo.fname} ${customerInfo.lname}`
+                        )
+                      : null)}
                   />
                 </div>
                 <div className="pl-3">
-                  <span className="font-bold">Orlhie S. Almendares</span>
-                  <p>Order ID: 123456789</p>
+                  <span className="font-bold">
+                    {customerInfo.fname} {customerInfo.lname}
+                  </span>
+                  <p>Order ID: {orderID}</p>
                 </div>
               </div>
             </div>
@@ -117,12 +185,13 @@ export default function Modal_Show_All_Details() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
+                  name="demographic"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1"
-                  defaultValue="residential"
+                  // onChange={handleRadioChange}
+                  defaultValue={1}
                 >
                   <FormControlLabel
-                    value="residential"
+                    value="1"
                     control={<Radio />}
                     label={<span className="text-sm">Residential</span>}
                     sx={{
@@ -132,7 +201,7 @@ export default function Modal_Show_All_Details() {
                     }}
                   />
                   <FormControlLabel
-                    value="business"
+                    value="2"
                     control={<Radio />}
                     label={<span className="text-sm">Business</span>}
                     sx={{
@@ -154,14 +223,13 @@ export default function Modal_Show_All_Details() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
+                  name="order_type"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1"
-                  // defaultValue="callType"
-                  value={value}
-                  onChange={handleChange}
+                  // onChange={handleRadioChange}
+                  defaultValue={1}
                 >
                   <FormControlLabel
-                    value="callType"
+                    value="1"
                     control={<Radio />}
                     label={<span className="text-sm">Call Type</span>}
                     sx={{
@@ -171,7 +239,7 @@ export default function Modal_Show_All_Details() {
                     }}
                   />
                   <FormControlLabel
-                    value="complaint"
+                    value="2"
                     control={<Radio />}
                     label={<span className="text-sm">Complaint</span>}
                     sx={{
@@ -193,15 +261,20 @@ export default function Modal_Show_All_Details() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
                 >
                   <Select
                     variant="standard"
                     className="mt-0 w-full border-none"
+                    name="call_type"
+                    defaultValue={1}
+                    // onChange={handleInput}
                   >
-                    <MenuItem value="Order">
+                    <MenuItem value="1">
                       <span className="text-sm">Call</span>
+                    </MenuItem>
+                    <MenuItem value="2">
+                      <span className="text-sm">SMS</span>
                     </MenuItem>
                   </Select>
                 </RadioGroup>
@@ -218,11 +291,16 @@ export default function Modal_Show_All_Details() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
                 >
-                  <Select variant="standard" className="mt-0 w-full">
-                    <MenuItem value="Order">
+                  <Select
+                    variant="standard"
+                    className="mt-0 w-full"
+                    name="type_of_complaint"
+                    defaultValue=""
+                    // onChange={handleInput}
+                  >
+                    <MenuItem value="1">
                       <span className="text-sm">Cancelled Order</span>
                     </MenuItem>
                   </Select>
@@ -239,11 +317,16 @@ export default function Modal_Show_All_Details() {
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
-                  name="row-radio-buttons-group"
                   className="border-2 border-blue-500 rounded-md px-2 mt-1 mr-5"
                 >
-                  <Select variant="standard" className="mt-0 w-full">
-                    <MenuItem value="Order">
+                  <Select
+                    variant="standard"
+                    className="mt-0 w-full"
+                    name="reason_cancell"
+                    // onChange={handleInput}
+                    defaultValue=""
+                  >
+                    <MenuItem value="1">
                       <span className="text-sm">Late Delivery</span>
                     </MenuItem>
                   </Select>
@@ -253,13 +336,13 @@ export default function Modal_Show_All_Details() {
           </div>
 
           <hr className="mt-3" />
-          <Modal_CustomerInformation />
+          <Modal_Show_CustomerInformation cust_id={cust_id} orderID={orderID} />
 
           <hr className="mt-3" />
           <Modal_ProductOrder />
 
           <hr className="mt-5" />
-          <Modal_Others />
+          <Modal_Others orderID={orderID} />
         </DialogContent>
         <DialogActions>
           <Button autoFocus onClick={handleClose}>

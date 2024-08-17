@@ -70,6 +70,9 @@ export {
   useOrderViewQuery,
   useOrderUpdateStatusMutation,
   useOrderGetStatusQuery,
+  useCustomerInfoQuery,
+  useCustomerInfoIDQuery,
+  useCustomerOrderIDQuery,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,

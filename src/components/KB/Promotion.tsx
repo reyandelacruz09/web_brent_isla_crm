@@ -43,6 +43,12 @@ function Promotion() {
           <img src="../../images/promotion_2.png" alt="" className="w-full" />
         </div>
       </div>
+
+      <div className="flex pb-10">
+        <div className="w-full">
+          <img src="../../images/promotion_3.png" alt="" className="w-full" />
+        </div>
+      </div>
     </>
   );
 }

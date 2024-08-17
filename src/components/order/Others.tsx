@@ -6,6 +6,7 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import { useEffect } from "react";
 
 type Other = {
   mopayment: string;
@@ -17,16 +18,37 @@ type Other = {
 type OtherProps = {
   others: Other;
   setOthers: React.Dispatch<React.SetStateAction<Other>>;
+  totalamt: string;
 };
 
-function Others({ others, setOthers }: OtherProps) {
+function Others({ others, setOthers, totalamt }: OtherProps) {
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
+
     setOthers({
       ...others,
       [name]: type === "checkbox" ? checked : value,
     });
   };
+
+  useEffect(() => {
+    const changeFor = parseFloat(others.changefor) || 0;
+    const totalAmt = parseFloat(totalamt) || 0;
+
+    if (changeFor === 0) {
+      setOthers((prevOthers) => ({
+        ...prevOthers,
+        changeamount: "",
+      }));
+    } else {
+      let change = changeFor - totalAmt;
+
+      setOthers((prevOthers) => ({
+        ...prevOthers,
+        changeamount: String(change.toFixed(2)),
+      }));
+    }
+  }, [others.changefor, totalamt]);
   return (
     <>
       <div className="grid grid-cols-10 bg-gray-300">
@@ -153,7 +175,8 @@ function Others({ others, setOthers }: OtherProps) {
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
               name="changeamount"
               onChange={handleInput}
-              // value={grandTotal.gtotal}
+              value={others.changeamount}
+              disabled
             />
           </div>
         </div>

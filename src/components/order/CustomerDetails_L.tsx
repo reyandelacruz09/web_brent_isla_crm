@@ -185,7 +185,7 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
             </div>
           </div>
           <div className="py-2">
-            <Modal_Show_All_Details />
+            <Modal_Show_All_Details cust_id={cust_id} orderID={orderID} />
           </div>
 
           <div className="border-2 bg-white rounded-md px-2 mt-1">

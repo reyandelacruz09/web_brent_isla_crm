@@ -92,6 +92,37 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      // /api/order/<phone1>/cust_info
+      CustomerInfo: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/cust_info`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      CustomerInfoID: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/cust_info_id`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      CustomerOrderID: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/view_order_id`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
     };
   },
 });
@@ -104,5 +135,8 @@ export const {
   useOrderViewQuery,
   useOrderUpdateStatusMutation,
   useOrderGetStatusQuery,
+  useCustomerInfoQuery,
+  useCustomerInfoIDQuery,
+  useCustomerOrderIDQuery,
 } = orderApi;
 export { orderApi };
