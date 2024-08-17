@@ -81,7 +81,7 @@ function NavBar() {
             }
           >
             <Link to="/dashboard">
-              <DashboardOutlinedIcon className="align-top" />
+              <DashboardOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Dashboard</a>
             </Link>
           </li>
@@ -94,7 +94,10 @@ function NavBar() {
             }
           >
             <Link to="/order">
-              <ShoppingCartOutlinedIcon className="align-top" />
+              <ShoppingCartOutlinedIcon
+                className="align-top"
+                fontSize="small"
+              />
               <a className=" pl-1">Order</a>
             </Link>
           </li>
@@ -105,7 +108,7 @@ function NavBar() {
             }
           >
             <Link to="/products">
-              <LayersOutlinedIcon className="align-top" />
+              <LayersOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Products</a>
             </Link>
           </li>
@@ -116,7 +119,7 @@ function NavBar() {
             }
           >
             <Link to="/branch">
-              <AccountTreeOutlinedIcon className="align-top" />
+              <AccountTreeOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Branch</a>
             </Link>
           </li>
@@ -127,7 +130,7 @@ function NavBar() {
             }
           >
             <Link to="/order-history">
-              <HistoryOutlinedIcon className="align-top" />
+              <HistoryOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Order History</a>
             </Link>
           </li>
@@ -138,7 +141,7 @@ function NavBar() {
             }
           >
             <Link to="/inventory">
-              <InventoryOutlinedIcon className="align-top" />
+              <InventoryOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Inventory</a>
             </Link>
           </li>
@@ -149,7 +152,10 @@ function NavBar() {
             }
           >
             <Link to="/user">
-              <PersonOutlineOutlinedIcon className="align-top" />
+              <PersonOutlineOutlinedIcon
+                className="align-top"
+                fontSize="small"
+              />
               <a className=" pl-1">User</a>
             </Link>
           </li>
@@ -160,7 +166,7 @@ function NavBar() {
             }
           >
             <Link to="/department">
-              <BedOutlinedIcon className="align-top" />
+              <BedOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">Department</a>
             </Link>
           </li>
@@ -171,7 +177,7 @@ function NavBar() {
             }
           >
             <Link to="/kb">
-              <LiveHelpOutlinedIcon className="align-top" />
+              <LiveHelpOutlinedIcon className="align-top" fontSize="small" />
               <a className=" pl-1">KB</a>
             </Link>
           </li>

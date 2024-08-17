@@ -176,6 +176,7 @@ function Modal_Order_Type({ orderType, setOrderType }: OrderTypeProps) {
                 variant="standard"
                 className="mt-0 w-full"
                 name="type_of_complaint"
+                defaultValue=""
                 onChange={handleInput}
               >
                 <MenuItem value="1">
@@ -202,6 +203,7 @@ function Modal_Order_Type({ orderType, setOrderType }: OrderTypeProps) {
                 className="mt-0 w-full"
                 name="reason_cancell"
                 onChange={handleInput}
+                defaultValue=""
               >
                 <MenuItem value="1">
                   <span className="text-sm">Late Delivery</span>
