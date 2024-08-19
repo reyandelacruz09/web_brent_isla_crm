@@ -6,11 +6,42 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import { useCompleteOrderQuery } from "../../store";
+import { useEffect, useState } from "react";
 
 interface cust_idProps {
   orderID: string;
 }
+interface OrderTotal {
+  mopayment: string;
+  changefor: string;
+  changeamount: string;
+}
+interface Others {
+  special_instructions: string;
+}
 function Modal_Others({ orderID }: cust_idProps) {
+  const [others1, setOthers1] = useState<Others>({
+    special_instructions: "",
+  });
+  const [others, setOthers] = useState<OrderTotal>({
+    mopayment: "",
+    changefor: "",
+    changeamount: "",
+  });
+
+  const { data: orderInfo, isSuccess: isorderInfoSuccess } =
+    useCompleteOrderQuery(orderID || "");
+
+  useEffect(() => {
+    if (isorderInfoSuccess && orderInfo) {
+      setOthers1(orderInfo.data);
+      setOthers(orderInfo.data.order_total[0]);
+    }
+  }, [isorderInfoSuccess, orderInfo]);
+
+  // console.warn("Datas: ", others);
+
   return (
     <>
       <div className="grid grid-cols-10 bg-gray-300">
@@ -29,7 +60,7 @@ function Modal_Others({ orderID }: cust_idProps) {
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="mopayment"
-                defaultValue={1}
+                value={others.mopayment}
               >
                 <div className="w-1/3">
                   <FormControlLabel
@@ -118,6 +149,8 @@ function Modal_Others({ orderID }: cust_idProps) {
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
               name="changefor"
+              value={parseFloat(others.changefor).toFixed(2)}
+              disabled
             />
           </div>
         </div>
@@ -134,6 +167,7 @@ function Modal_Others({ orderID }: cust_idProps) {
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
               name="changeamount"
+              value={parseFloat(others.changeamount).toFixed(2)}
               disabled
             />
           </div>
@@ -150,9 +184,9 @@ function Modal_Others({ orderID }: cust_idProps) {
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               name="special_instructions"
-            >
-              {" "}
-            </textarea>
+              value={others1.special_instructions}
+              disabled
+            ></textarea>
           </div>
         </div>
       </div>
