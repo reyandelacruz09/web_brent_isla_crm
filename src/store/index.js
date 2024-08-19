@@ -73,6 +73,7 @@ export {
   useCustomerInfoQuery,
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
+  useCompleteOrderQuery,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,

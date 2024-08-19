@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -9,24 +9,64 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ListIcon from "@mui/icons-material/List";
 import { Button, styled } from "@mui/material";
+import { useCompleteOrderQuery } from "../../store";
 
-let counter = 1;
-function Modal_ProductOrder() {
-  const [array, setArray] = useState([0]);
-
-  const handleAddDiv = () => {
-    setArray((prev) => [...prev, counter++]);
-  };
-
-  const handleRemoveDiv = (idx: number) => {
-    var arrayCopy = [...array];
-    arrayCopy.splice(idx, 1); //remove the the item at the specific index
-    setArray(arrayCopy);
-  };
-
+interface cust_idProps {
+  orderID: string;
+}
+interface ProductTotal {
+  subtotal: string;
+  delcharge: string;
+  total_discount: string;
+  grandtotal: string;
+}
+interface ProductName {
+  name: string;
+}
+interface ProductList {
+  id: string;
+  product: ProductName;
+  price: string;
+  quantity: string;
+  discount: string;
+  total: string;
+}
+function Modal_ProductOrder({ orderID }: cust_idProps) {
   const StyledTableCell = styled(TableCell)({
     padding: 0,
   });
+
+  const [totals, setTotals] = useState<ProductTotal>({
+    subtotal: "",
+    delcharge: "",
+    total_discount: "",
+    grandtotal: "",
+  });
+
+  const [productList, setProductList] = useState<ProductList[]>([
+    {
+      id: "",
+      product: {
+        name: "",
+      },
+      price: "",
+      quantity: "",
+      discount: "",
+      total: "",
+    },
+  ]);
+
+  const { data: orderInfo, isSuccess: isorderInfoSuccess } =
+    useCompleteOrderQuery(orderID || "");
+
+  useEffect(() => {
+    if (isorderInfoSuccess && orderInfo) {
+      // setOthers1(orderInfo.data);
+      setTotals(orderInfo.data.order_total[0]);
+      setProductList(orderInfo.data.order_product);
+      console.warn("haha", orderInfo.data);
+    }
+  }, [isorderInfoSuccess, orderInfo]);
 
   return (
     <>
@@ -59,21 +99,14 @@ function Modal_ProductOrder() {
             </TableHead>
 
             <TableBody>
-              {array.map((item, idx) => (
-                <TableRow key={item}>
+              {productList.map((products) => (
+                <TableRow key={products.id}>
                   <StyledTableCell className="w-2/6 ">
                     <input
                       type="text"
                       id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    />
-                  </StyledTableCell>
-                  <StyledTableCell className="w-36" align="center">
-                    <input
-                      type="text"
-                      id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
+                      value={products.product.name}
                       disabled
                     />
                   </StyledTableCell>
@@ -81,29 +114,48 @@ function Modal_ProductOrder() {
                     <input
                       type="text"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      value={parseFloat(products.price).toFixed(2)}
+                      disabled
                     />
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="text"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      value={parseFloat(products.quantity).toFixed(2)}
+                      disabled
                     />
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="text"
                       id="input-group-1"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      placeholder=""
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      value={parseFloat(products.discount).toFixed(2)}
+                      disabled
+                    />
+                  </StyledTableCell>
+                  <StyledTableCell className="w-36" align="center">
+                    <input
+                      type="text"
+                      id="input-group-1"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                      value={parseFloat(products.total).toFixed(2)}
                       disabled
                     />
                   </StyledTableCell>
                 </TableRow>
               ))}
+
+              <TableRow>
+                <StyledTableCell
+                  colSpan={5}
+                  align="right"
+                  className="h-5"
+                ></StyledTableCell>
+              </TableRow>
 
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
@@ -113,8 +165,8 @@ function Modal_ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    value={parseFloat(totals.subtotal).toFixed(2)}
                     disabled
                   />
                 </StyledTableCell>
@@ -128,8 +180,8 @@ function Modal_ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    value={parseFloat(totals.delcharge).toFixed(2)}
                     disabled
                   />
                 </StyledTableCell>
@@ -143,8 +195,8 @@ function Modal_ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    value={parseFloat(totals.total_discount).toFixed(2)}
                     disabled
                   />
                 </StyledTableCell>
@@ -158,8 +210,8 @@ function Modal_ProductOrder() {
                   <input
                     type="text"
                     id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
+                    value={parseFloat(totals.grandtotal).toFixed(2)}
                     disabled
                   />
                 </StyledTableCell>

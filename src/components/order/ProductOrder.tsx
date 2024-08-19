@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,9 +7,31 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ListIcon from "@mui/icons-material/List";
-import { Button, styled } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControl,
+  IconButton,
+  Input,
+  InputAdornment,
+  InputLabel,
+  MenuItem,
+  Select,
+  styled,
+} from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { useProductListQuery, useViewProductQuery } from "../../store";
+import {
+  DataGrid,
+  gridClasses,
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface Product {
   id: string;
@@ -53,6 +75,9 @@ function ProductOrder({
 }: orderDetailsProps) {
   const product = useProductListQuery("");
   const [productList, setProductList] = useState<Product[]>([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   useEffect(() => {
     if (product.isSuccess) {
       const category_result = ((product.data as any).data as Product[]) || [];
@@ -117,7 +142,7 @@ function ProductOrder({
     setProductOrder((prev) =>
       prev.map((item, index) => {
         if (index === idx) {
-          const updatedItem = { ...item, [field]: value };
+          let updatedItem = { ...item, [field]: value };
           if (field === "product") {
             const selectedProduct = productList.find(
               (prod) => prod.id == value
@@ -128,16 +153,17 @@ function ProductOrder({
             }
           }
 
-          let price = updatedItem.unitPrice;
+          let price = updatedItem.unitPrice || "0";
           updatedItem.unitPrice = parseFloat(price).toFixed(2);
 
-          let newdiscount = updatedItem.discount;
-          updatedItem.discount = parseFloat(newdiscount).toFixed(2);
+          let newDiscount = updatedItem.discount || "0";
+          updatedItem.discount = parseFloat(newDiscount).toFixed(2);
 
           const qty = parseFloat(updatedItem.qty) || 0;
           const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
           const discount = parseFloat(updatedItem.discount) || 0;
           updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
+
           return updatedItem;
         }
         return item;
@@ -148,6 +174,60 @@ function ProductOrder({
   const StyledTableCell = styled(TableCell)({
     padding: 0,
   });
+
+  const handleOpenModal = (index: number) => {
+    setSelectedIndex(index);
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedProduct(null);
+  };
+
+  const handleSelectProduct = (productId: string) => {
+    const product = productList.find((p) => p.id === productId);
+    if (product && selectedIndex !== null) {
+      setSelectedProduct(product);
+      handleInputChange(selectedIndex, "product", product.id);
+      handleCloseModal();
+    }
+  };
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredContent = productList.filter(
+    (productList) =>
+      productList.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      productList.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const columns: GridColDef[] = [
+    {
+      field: "code",
+      headerName: "Code",
+      width: 130,
+    },
+    {
+      field: "name",
+      headerName: "Name",
+      width: 300,
+    },
+    {
+      field: "price",
+      headerName: "Price",
+      width: 130,
+    },
+    {
+      field: "stock",
+      headerName: "Stock",
+      width: 130,
+    },
+  ];
 
   return (
     <>
@@ -185,41 +265,39 @@ function ProductOrder({
             </TableHead>
             <TableBody>
               {productOrder.map((item, idx) => (
-                <TableRow key={item.id}>
+                <TableRow key={idx}>
                   <StyledTableCell className="w-2/6 ">
-                    <select
-                      id="input-group-1"
-                      className="w-full p-1.5 border-none bg-gray-50 border border-gray-300 text-gray-900 text-md"
-                      value={item.product || ""}
-                      onChange={(e) =>
-                        handleInputChange(idx, "product", e.target.value)
-                      }
+                    <button
+                      style={{
+                        backgroundColor: "#f9fafb",
+                        border: "1px solid #e2e8f0",
+                        width: "100%",
+                        textAlign: "left",
+                        padding: "6px",
+                      }}
+                      onClick={() => handleOpenModal(idx)}
                     >
-                      <option value=""></option>
-                      {productList.map((listOption: any) => (
-                        <option key={listOption.id} value={listOption.id}>
-                          {listOption.name}
-                        </option>
-                      ))}
-                    </select>
+                      {item.product
+                        ? productList.find((p) => p.id === item.product)?.name
+                        : "Select Product"}
+                    </button>
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
                       name="unitPrice"
-                      value={item.unitPrice}
+                      value={productOrder[idx].unitPrice}
                       readOnly
                     />
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center"
                       name="qty"
-                      value={item.qty}
+                      // value={item.qty}
+                      value={productOrder[idx].qty}
                       onChange={(e) =>
                         handleInputChange(idx, "qty", e.target.value)
                       }
@@ -228,7 +306,6 @@ function ProductOrder({
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
                       name="discount"
                       value={item.discount}
@@ -238,7 +315,6 @@ function ProductOrder({
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="text"
-                      id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
                       name="subtotal"
                       value={item.subtotal}
@@ -332,6 +408,82 @@ function ProductOrder({
           </Table>
         </TableContainer>
       </div>
+
+      {/* Product Selection Modal */}
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        PaperProps={{
+          sx: {
+            width: "60vw", // 80% of viewport width
+            height: "85vh", // 80% of viewport height
+            maxWidth: "none", // Override default maxWidth
+            maxHeight: "none", // Override default maxHeight
+          },
+        }}
+      >
+        <DialogTitle>
+          <Input
+            id="input-with-icon-adornment"
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            }
+            placeholder="Search Product"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent sx={{ paddingTop: 0 }}>
+          <FormControl fullWidth>
+            <div className="flex justify-center">
+              <DataGrid
+                sx={{
+                  [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                    {
+                      outline: "none",
+                    },
+                  [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                    {
+                      outline: "none",
+                    },
+                  width: "55vw",
+                  maxWidth: "none",
+                }}
+                rowHeight={35}
+                rows={filteredContent}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 10 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                hideFooterSelectedRowCount
+                onRowClick={(params: GridRowParams) =>
+                  handleSelectProduct(params.row.id)
+                }
+              />
+            </div>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseModal}>Cancel</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

@@ -105,6 +105,17 @@ export default function CustomizedDialogs() {
     special_instructions: "",
   });
 
+  const [changeamt, setChangeamt] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkchange = parseFloat(others.changeamount);
+    if (isNaN(checkchange) || checkchange < 0) {
+      setChangeamt(true);
+    } else {
+      setChangeamt(false);
+    }
+  }, [others.changeamount]);
+
   const OrderDetails = {
     fname: customerData.fname,
     lname: customerData.lname,
@@ -184,7 +195,7 @@ export default function CustomizedDialogs() {
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           <div className="flex">
-            <div className="w-1/3">Create Order</div>
+            <div className="w-1/3">Create Order {others.changeamount}</div>
             <div className="w-2/3 flex justify-end pr-10">
               <div className="flex gap-3">
                 <Button
@@ -195,19 +206,9 @@ export default function CustomizedDialogs() {
                   size="small"
                   color="primary"
                   onClick={saveOrder}
+                  disabled={changeamt}
                 >
                   <span className="">Save & Close</span>
-                </Button>
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                  onClick={saveOrder}
-                >
-                  <span className="">Save & New</span>
                 </Button>
                 <Button
                   component="label"

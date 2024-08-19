@@ -123,6 +123,16 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      CompleteOrder: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/view_complete_order`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
     };
   },
 });
@@ -138,5 +148,6 @@ export const {
   useCustomerInfoQuery,
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
+  useCompleteOrderQuery,
 } = orderApi;
 export { orderApi };

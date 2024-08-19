@@ -339,7 +339,7 @@ export default function Modal_Show_All_Details({
           <Modal_Show_CustomerInformation cust_id={cust_id} orderID={orderID} />
 
           <hr className="mt-3" />
-          <Modal_ProductOrder />
+          <Modal_ProductOrder orderID={orderID} />
 
           <hr className="mt-5" />
           <Modal_Others orderID={orderID} />
