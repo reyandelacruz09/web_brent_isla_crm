@@ -42,7 +42,6 @@ function AddProduct() {
   });
 
   const [validationErrors, setValidationErrors] = useState({
-    client: false,
     owner: false,
     category: false,
     code: false,
@@ -60,7 +59,6 @@ function AddProduct() {
 
   const validateFields = () => {
     const errors = {
-      client: !product.client,
       owner: !product.owner,
       category: !product.category,
       code: !product.code,

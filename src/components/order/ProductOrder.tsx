@@ -48,7 +48,7 @@ type OrderDetails = {
   id: number;
   product: string;
   unitPrice: string;
-  qty: string;
+  qty: number;
   discount: string;
   subtotal: string;
 };
@@ -127,7 +127,7 @@ function ProductOrder({
         id: prev.length,
         product: "",
         unitPrice: "",
-        qty: "",
+        qty: 0,
         discount: "",
         subtotal: "",
       },
@@ -139,36 +139,39 @@ function ProductOrder({
   };
 
   const handleInputChange = (idx: number, field: string, value: string) => {
-    setProductOrder((prev) =>
-      prev.map((item, index) => {
-        if (index === idx) {
-          let updatedItem = { ...item, [field]: value };
-          if (field === "product") {
-            const selectedProduct = productList.find(
-              (prod) => prod.id == value
-            );
-            if (selectedProduct) {
-              updatedItem.unitPrice = selectedProduct.price;
-              updatedItem.discount = selectedProduct.discount;
+    // const newValue = [ ...productOrder] as typeof productOrder;
+    // newValue[idx][field] = value
+    if (field === "qty") {
+      console.warn("ano ba yannnn");
+      // setProductOrder({ ...productOrder, qty: value });
+    } else {
+      setProductOrder((prev) =>
+        prev.map((item, index) => {
+          if (index === idx) {
+            let updatedItem = { ...item, [field]: value };
+            if (field === "product") {
+              const selectedProduct = productList.find(
+                (prod) => prod.id == value
+              );
+              if (selectedProduct) {
+                updatedItem.unitPrice = selectedProduct.price;
+                updatedItem.discount = selectedProduct.discount;
+              }
             }
+            // let price = updatedItem.unitPrice || "0";
+            // updatedItem.unitPrice = parseFloat(price).toFixed(2);
+            // let newDiscount = updatedItem.discount || "0";
+            // updatedItem.discount = parseFloat(newDiscount).toFixed(2);
+            // const qty = updatedItem.qty || 0;
+            // const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
+            // const discount = parseFloat(updatedItem.discount) || 0;
+            // updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
+            return updatedItem;
           }
-
-          let price = updatedItem.unitPrice || "0";
-          updatedItem.unitPrice = parseFloat(price).toFixed(2);
-
-          let newDiscount = updatedItem.discount || "0";
-          updatedItem.discount = parseFloat(newDiscount).toFixed(2);
-
-          const qty = parseFloat(updatedItem.qty) || 0;
-          const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
-          const discount = parseFloat(updatedItem.discount) || 0;
-          updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
-
-          return updatedItem;
-        }
-        return item;
-      })
-    );
+          return item;
+        })
+      );
+    }
   };
 
   const StyledTableCell = styled(TableCell)({

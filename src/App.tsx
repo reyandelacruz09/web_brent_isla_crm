@@ -13,6 +13,9 @@ import Testing_Only from "./components/order/Testing";
 import Department from "./pages/Department";
 import KB from "./pages/KB";
 import { ToastContainer } from "react-toastify";
+import Settings from "./pages/Settings";
+import Profiles from "./components/settings/Profiles";
+import Roles_Access from "./components/settings/Roles_Access";
 
 function App() {
   return (
@@ -41,9 +44,10 @@ function App() {
           <Route path="/user" element={<User />} />
           <Route path="/department" element={<Department />} />
           <Route path="/kb" element={<KB />} />
-          {/* <Route path="/modal" element={<Modal_Create_Order />} /> */}
           <Route path="/customer-details" element={<CustomerDetails />} />
-          {/* <Route path="/testing" element={<Testing_Only />} /> */}
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/settings/profile" element={<Profiles />} />
+          <Route path="/settings/roles" element={<Roles_Access />} />
         </Routes>
       </BrowserRouter>
     </>
