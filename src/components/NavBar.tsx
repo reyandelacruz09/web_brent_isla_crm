@@ -81,7 +81,10 @@ function NavBar() {
             }
           >
             <Link to="/dashboard">
-              <DashboardOutlinedIcon className="align-top" fontSize="small" />
+              <DashboardOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">Dashboard</a>
             </Link>
           </li>
@@ -95,7 +98,7 @@ function NavBar() {
           >
             <Link to="/order">
               <ShoppingCartOutlinedIcon
-                className="align-top"
+                className="align-top wiggle"
                 fontSize="small"
               />
               <a className=" pl-1">Order</a>
@@ -108,7 +111,10 @@ function NavBar() {
             }
           >
             <Link to="/products">
-              <LayersOutlinedIcon className="align-top" fontSize="small" />
+              <LayersOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">Products</a>
             </Link>
           </li>
@@ -119,7 +125,10 @@ function NavBar() {
             }
           >
             <Link to="/branch">
-              <AccountTreeOutlinedIcon className="align-top" fontSize="small" />
+              <AccountTreeOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">Branch</a>
             </Link>
           </li>
@@ -130,7 +139,10 @@ function NavBar() {
             }
           >
             <Link to="/order-history">
-              <HistoryOutlinedIcon className="align-top" fontSize="small" />
+              <HistoryOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">Order History</a>
             </Link>
           </li>
@@ -141,7 +153,10 @@ function NavBar() {
             }
           >
             <Link to="/inventory">
-              <InventoryOutlinedIcon className="align-top" fontSize="small" />
+              <InventoryOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">Inventory</a>
             </Link>
           </li>
@@ -153,7 +168,7 @@ function NavBar() {
           >
             <Link to="/user">
               <PersonOutlineOutlinedIcon
-                className="align-top"
+                className="align-top wiggle"
                 fontSize="small"
               />
               <a className=" pl-1">User</a>
@@ -166,7 +181,7 @@ function NavBar() {
             }
           >
             <Link to="/department">
-              <BedOutlinedIcon className="align-top" fontSize="small" />
+              <BedOutlinedIcon className="align-top wiggle" fontSize="small" />
               <a className=" pl-1">Department</a>
             </Link>
           </li>
@@ -177,18 +192,31 @@ function NavBar() {
             }
           >
             <Link to="/kb">
-              <LiveHelpOutlinedIcon className="align-top" fontSize="small" />
+              <LiveHelpOutlinedIcon
+                className="align-top wiggle"
+                fontSize="small"
+              />
               <a className=" pl-1">KB</a>
             </Link>
           </li>
         </ul>
 
         <div className="flex items-center gap-5">
-          <div>
-            <SettingsOutlinedIcon className="cursor-pointer" />
+          <div
+            className={
+              url === "/settings" ||
+              url === "/settings/profile" ||
+              url === "/settings/roles"
+                ? " activenavbar"
+                : ""
+            }
+          >
+            <Link to="/settings">
+              <SettingsOutlinedIcon className="cursor-pointer wiggle" />
+            </Link>
           </div>
           <div>
-            <NotificationsNoneOutlinedIcon className="cursor-pointer" />
+            <NotificationsNoneOutlinedIcon className="cursor-pointer wiggle" />
           </div>
           <div>
             <img
@@ -197,11 +225,6 @@ function NavBar() {
               alt=""
               onClick={handleOpenUserMenu}
             />
-            {/* <div>
-              <div className="bg-red-200 absolute p-3 mr-40">
-                <a>Logout</a>
-              </div>
-            </div> */}
             <Menu
               sx={{ mt: "45px" }}
               id="menu-appbar"
