@@ -85,7 +85,7 @@ export default function CustomizedDialogs() {
       id: 0,
       product: "",
       unitPrice: "",
-      qty: 0,
+      qty: "",
       discount: "",
       subtotal: "",
     },

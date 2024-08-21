@@ -102,22 +102,22 @@ function Settings_Info() {
                   Profiles
                 </Typography>
               </Link>
-              <Link to="/settings/roles">
-                <Typography
-                  variant="body1"
-                  component="div"
-                  className="pl-5 py-1"
-                  sx={{
-                    textDecoration: "none",
-                    color: "black",
-                    "&:hover": {
-                      color: "blue",
-                    },
-                  }}
-                >
-                  Roles and Sharing
-                </Typography>
-              </Link>
+              {/* <Link to="/settings/roles"> */}
+              <Typography
+                variant="body1"
+                component="div"
+                className="pl-5 py-1"
+                sx={{
+                  textDecoration: "none",
+                  color: "black",
+                  "&:hover": {
+                    color: "blue",
+                  },
+                }}
+              >
+                Roles and Sharing
+              </Typography>
+              {/* </Link> */}
             </CardContent>
             <CardActions></CardActions>
           </Card>

@@ -1,5 +1,10 @@
 import ListIcon from "@mui/icons-material/List";
-import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  gridClasses,
+  GridColDef,
+  GridToolbar,
+} from "@mui/x-data-grid";
 import { Checkbox, Skeleton } from "@mui/material";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Modal_Update_Department from "./Modal_Update_Department";
@@ -19,14 +24,21 @@ interface Client {
 }
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "Department Code", width: 130 },
+  // { field: "id", headerName: "Department Code", width: 130 },
   { field: "depname", headerName: "Department Name", width: 200 },
-  { field: "category", headerName: "Category", width: 200 },
+  { field: "cperson", headerName: "Contact Person", width: 200 },
+  { field: "email", headerName: "Email", width: 200 },
   { field: "validity", headerName: "Validity", width: 200 },
-  { field: "dephead", headerName: "Department Head", width: 180 },
-  { field: "active", headerName: "Active", width: 100 },
+  { field: "rdate", headerName: "Renewal Date", width: 130 },
+  { field: "plan", headerName: "Plan", width: 100 },
+  { field: "license", headerName: "No of Licenses", width: 100 },
+
+  // { field: "category", headerName: "Category", width: 200 },
+  // { field: "validity", headerName: "Validity", width: 200 },
+  // { field: "dephead", headerName: "Department Head", width: 180 },
+  // { field: "active", headerName: "Active", width: 100 },
   { field: "edit", headerName: "Edit", width: 100 },
-  { field: "delete", headerName: "Delete", width: 100 },
+  // { field: "delete", headerName: "Delete", width: 100 },
 ];
 
 function AllDepartment() {
@@ -152,6 +164,7 @@ function AllDepartment() {
                     }}
                     pageSizeOptions={[5, 10]}
                     hideFooterSelectedRowCount
+                    slots={{ toolbar: GridToolbar }}
                   />
                 )}
               </div>

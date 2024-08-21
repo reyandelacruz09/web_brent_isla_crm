@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import Settings from "./pages/Settings";
 import Profiles from "./components/settings/Profiles";
 import Roles_Access from "./components/settings/Roles_Access";
+import Modal_Create_Profile from "./components/settings/Modal_Create_Profile";
 
 function App() {
   return (

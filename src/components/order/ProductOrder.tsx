@@ -42,13 +42,14 @@ interface Product {
   price: string;
   active: string;
   discount: string;
+  stock: string;
 }
 
 type OrderDetails = {
   id: number;
   product: string;
   unitPrice: string;
-  qty: number;
+  qty: string;
   discount: string;
   subtotal: string;
 };
@@ -127,7 +128,7 @@ function ProductOrder({
         id: prev.length,
         product: "",
         unitPrice: "",
-        qty: 0,
+        qty: "",
         discount: "",
         subtotal: "",
       },
@@ -141,37 +142,37 @@ function ProductOrder({
   const handleInputChange = (idx: number, field: string, value: string) => {
     // const newValue = [ ...productOrder] as typeof productOrder;
     // newValue[idx][field] = value
-    if (field === "qty") {
-      console.warn("ano ba yannnn");
-      // setProductOrder({ ...productOrder, qty: value });
-    } else {
-      setProductOrder((prev) =>
-        prev.map((item, index) => {
-          if (index === idx) {
-            let updatedItem = { ...item, [field]: value };
-            if (field === "product") {
-              const selectedProduct = productList.find(
-                (prod) => prod.id == value
-              );
-              if (selectedProduct) {
-                updatedItem.unitPrice = selectedProduct.price;
-                updatedItem.discount = selectedProduct.discount;
-              }
+    // if (field === "qty") {
+    //   console.warn("ano ba yannnn");
+    // setProductOrder({ ...productOrder, qty: value });
+    // } else {
+    setProductOrder((prev) =>
+      prev.map((item, index) => {
+        if (index === idx) {
+          let updatedItem = { ...item, [field]: value };
+          if (field === "product") {
+            const selectedProduct = productList.find(
+              (prod) => prod.id == value
+            );
+            if (selectedProduct) {
+              updatedItem.unitPrice = selectedProduct.price;
+              updatedItem.discount = selectedProduct.discount;
             }
-            // let price = updatedItem.unitPrice || "0";
-            // updatedItem.unitPrice = parseFloat(price).toFixed(2);
-            // let newDiscount = updatedItem.discount || "0";
-            // updatedItem.discount = parseFloat(newDiscount).toFixed(2);
-            // const qty = updatedItem.qty || 0;
-            // const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
-            // const discount = parseFloat(updatedItem.discount) || 0;
-            // updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
-            return updatedItem;
           }
-          return item;
-        })
-      );
-    }
+          let price = updatedItem.unitPrice || "0";
+          updatedItem.unitPrice = parseFloat(price).toFixed(2);
+          let newDiscount = updatedItem.discount || "0";
+          updatedItem.discount = parseFloat(newDiscount).toFixed(2);
+          const qty = parseFloat(updatedItem.qty) || 0;
+          const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
+          const discount = parseFloat(updatedItem.discount) || 0;
+          updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
+          return updatedItem;
+        }
+        return item;
+      })
+    );
+    // }
   };
 
   const StyledTableCell = styled(TableCell)({
@@ -474,7 +475,7 @@ function ProductOrder({
                     paginationModel: { page: 0, pageSize: 10 },
                   },
                 }}
-                pageSizeOptions={[5, 10]}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
                 hideFooterSelectedRowCount
                 onRowClick={(params: GridRowParams) =>
                   handleSelectProduct(params.row.id)
