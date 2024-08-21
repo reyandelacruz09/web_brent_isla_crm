@@ -8,8 +8,6 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 
-import AddIcon from "@mui/icons-material/Add";
-
 import { useEffect, useState } from "react";
 
 import "react-datepicker/dist/react-datepicker.css";

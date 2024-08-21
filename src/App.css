@@ -2,6 +2,11 @@
   color: #007bc1;
 }
 
+li:hover .nav,
+.nav:hover {
+  color: #007bc1;
+}
+
 .kbImage {
   position: relative;
   /* width: 1176px;

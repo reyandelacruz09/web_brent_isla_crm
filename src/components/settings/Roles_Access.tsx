@@ -59,27 +59,6 @@ function createData(
   return { name, calories, fat, carbs };
 }
 
-const rows = [
-  createData(
-    "Administrator",
-    "This profile will have all the permissions. Users with Administrator profile will be able to view and manage all the data within the organization account by default.",
-    "Dec 25, 2023",
-    "Orlhie S Almendares"
-  ),
-  createData(
-    "Standard",
-    "This profile will have all the permissions except administrative privileges.",
-    "Dec 25, 2023",
-    "Orlhie S Almendares"
-  ),
-  createData(
-    "Agents",
-    "Burger Machine Branch",
-    "Dec 25, 2023",
-    "Orlhie S Almendares"
-  ),
-];
-
 const modules = [
   "Dashboard",
   "Order",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import NavBar from "../NavBar";
 import Modal_Create_Profile from "./Modal_Create_Profile";
 import Table from "@mui/material/Table";
@@ -11,6 +11,8 @@ import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { styled } from "@mui/material";
+import { useAccountRoleListQuery } from "../../store";
+import Modal_Edit_Roles from "./Modal_Edit_Roles";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -26,42 +28,53 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
+interface added_by {
+  fullname: string;
+}
+
+interface roles {
+  id: string;
+  name: string;
+  description: string;
+  date_created: string;
+  added_by: added_by;
+}
+
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  };
+  return date.toLocaleDateString("en-US", options);
+};
+
 function Profiles() {
+  const [roleList, setroleList] = useState<roles[]>([]);
+
   function createData(
     name: string,
-    calories: string,
-    fat: string,
-    carbs: string
+    description: string,
+    date_created: string,
+    added_by: string
   ) {
-    return { name, calories, fat, carbs };
+    return { name, description, date_created, added_by };
   }
 
-  const rows = [
-    createData(
-      "Administrator",
-      "This profile will have all the permissions. Users with Administrator profile will be able to view and manage all the data within the organization account by default.",
-      "Dec 25, 2023",
-      "Orlhie S Almendares"
-    ),
-    createData(
-      "Standard",
-      "This profile will have all the permissions except administrative privileges.",
-      "Dec 25, 2023",
-      "Orlhie S Almendares"
-    ),
-    createData(
-      "Agents",
-      "Burger Machine Branch",
-      "Dec 25, 2023",
-      "Orlhie S Almendares"
-    ),
-  ];
+  const { data: roles, isSuccess: isRolesSuccess } =
+    useAccountRoleListQuery("");
+  useEffect(() => {
+    if (isRolesSuccess && roles) {
+      setroleList(roles.data);
+    }
+  }, [isRolesSuccess, roles]);
+
   return (
     <>
       <NavBar />
@@ -99,17 +112,21 @@ function Profiles() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {rows.map((row) => (
+                {roleList.map((roles) => (
                   <StyledTableRow
-                    key={row.name}
+                    key={roles.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.name}
+                      <Modal_Edit_Roles id={roles.id} name={roles.name} />
                     </TableCell>
-                    <TableCell align="center">{row.calories}</TableCell>
-                    <TableCell align="center">{row.fat}</TableCell>
-                    <TableCell align="center">{row.carbs}</TableCell>
+                    <TableCell align="center">{roles.description}</TableCell>
+                    <TableCell align="center">
+                      {formatDate(roles.date_created)}
+                    </TableCell>
+                    <TableCell align="center">
+                      {roles.added_by.fullname}
+                    </TableCell>
                   </StyledTableRow>
                 ))}
               </TableBody>

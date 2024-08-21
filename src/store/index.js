@@ -6,6 +6,7 @@ import { addressApi } from "../store/apis/AddressApi";
 import { branchApi } from "../store/apis/BranchApi";
 import { orderApi } from "../store/apis/OrderApi";
 import { userApi } from "../store/apis/UserApi";
+import { settingsApi } from "../store/apis/SettingsApi";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -16,6 +17,7 @@ export const store = configureStore({
     [branchApi.reducerPath]: branchApi.reducer,
     [orderApi.reducerPath]: orderApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [settingsApi.reducerPath]: settingsApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -24,7 +26,8 @@ export const store = configureStore({
       .concat(addressApi.middleware)
       .concat(branchApi.middleware)
       .concat(orderApi.middleware)
-      .concat(userApi.middleware);
+      .concat(userApi.middleware)
+      .concat(settingsApi.middleware);
   },
 });
 
@@ -82,3 +85,7 @@ export {
   useUpdateUserMutation,
   useDeleteUserMutation,
 } from "../store/apis/UserApi";
+export {
+  useAccountRoleListQuery,
+  useEditRolesQuery,
+} from "../store/apis/SettingsApi";

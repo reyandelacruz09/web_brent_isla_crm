@@ -76,7 +76,7 @@ function NavBar() {
         <ul className="list-none text-center">
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 md:text-sm mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 md:text-sm mx-1.5 text-sm cursor-pointer" +
               (url === "/dashboard" ? " activenavbar" : "")
             }
           >
@@ -90,7 +90,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/order" || url === "/customer-details"
                 ? " activenavbar"
                 : "")
@@ -106,7 +106,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/products" ? " activenavbar" : "")
             }
           >
@@ -120,7 +120,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/branch" ? " activenavbar" : "")
             }
           >
@@ -134,7 +134,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/order-history" ? " activenavbar" : "")
             }
           >
@@ -148,7 +148,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/inventory" ? " activenavbar" : "")
             }
           >
@@ -162,7 +162,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/user" ? " activenavbar" : "")
             }
           >
@@ -176,7 +176,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/department" ? " activenavbar" : "")
             }
           >
@@ -187,7 +187,7 @@ function NavBar() {
           </li>
           <li
             className={
-              "inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
+              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/kb" ? " activenavbar" : "")
             }
           >
@@ -212,11 +212,11 @@ function NavBar() {
             }
           >
             <Link to="/settings">
-              <SettingsOutlinedIcon className="cursor-pointer wiggle" />
+              <SettingsOutlinedIcon className="cursor-pointer wiggle nav" />
             </Link>
           </div>
           <div>
-            <NotificationsNoneOutlinedIcon className="cursor-pointer wiggle" />
+            <NotificationsNoneOutlinedIcon className="cursor-pointer wiggle nav" />
           </div>
           <div>
             <img
