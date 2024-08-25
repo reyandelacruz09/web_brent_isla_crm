@@ -17,13 +17,6 @@ function Settings_Info() {
     <>
       <div className="flex justify-center gap-10 p-5">
         <div className="w-1/3 pt-5">
-          {/* <input
-            type="text"
-            id="input-group-1"
-            name="discount"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
-            placeholder="Search"
-          /> */}
           <TextField
             id="input-with-icon-textfield"
             placeholder="Search"

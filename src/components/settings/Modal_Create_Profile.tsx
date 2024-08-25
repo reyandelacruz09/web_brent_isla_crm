@@ -13,6 +13,10 @@ import { useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { Slide, toast } from "react-toastify";
 import { Typography } from "@mui/material";
+import {
+  useAccountRoleListQuery,
+  useAddAccountRoleMutation,
+} from "../../store";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialog-paper": {
@@ -30,8 +34,19 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
+interface roles {
+  id: string;
+  name: string;
+}
+
 export default function Modal_Create_Profile() {
+  const account_detailed = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   const [open, setOpen] = React.useState(false);
+  const [roleList, setroleList] = useState<roles[]>([]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -39,9 +54,53 @@ export default function Modal_Create_Profile() {
     setOpen(false);
   };
 
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("user_info") || "{}"
-  );
+  const [profiles, setProfiles] = useState({
+    name: "",
+    clone: "",
+    description: "",
+    added_by: account_detailed.id,
+  });
+
+  const handleInput = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    setProfiles({ ...profiles, [name]: value });
+  };
+
+  const { data: roles, isSuccess: isRolesSuccess } =
+    useAccountRoleListQuery("");
+  useEffect(() => {
+    if (isRolesSuccess && roles) {
+      setroleList(roles.data);
+    }
+  }, [isRolesSuccess, roles]);
+
+  const [addProfile] = useAddAccountRoleMutation();
+
+  const addRole = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      const checkstat = await addProfile(profiles).unwrap();
+      if (checkstat.success === true) {
+        toast.success("Successfully Added!", {
+          transition: Slide,
+        });
+        setProfiles({
+          name: "",
+          clone: "",
+          description: "",
+          added_by: account_detailed.id,
+        });
+        handleClose();
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
+    }
+  };
 
   return (
     <React.Fragment>
@@ -88,15 +147,27 @@ export default function Modal_Create_Profile() {
               type="text"
               id="input-group-1"
               className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={handleInput}
+              name="name"
             />
           </div>
           <div>
             <Typography className="pt-4 pb-2">Clone Profile:</Typography>
-            <input
-              type="text"
+            <select
               id="input-group-1"
               className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            />
+              onChange={handleInput}
+              name="clone"
+            >
+              <option value="" selected disabled>
+                Choose one
+              </option>
+              {roleList.slice(0, 3).map((role) => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <Typography className="pt-4 pb-2">Profile Description:</Typography>
@@ -104,6 +175,8 @@ export default function Modal_Create_Profile() {
               type="text"
               id="input-group-1"
               className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              onChange={handleInput}
+              name="description"
             />
           </div>
           {/* <hr className="mt-3" /> */}
@@ -127,6 +200,7 @@ export default function Modal_Create_Profile() {
             tabIndex={-1}
             size="small"
             color="primary"
+            onClick={addRole}
           >
             <span className="">Create</span>
           </Button>

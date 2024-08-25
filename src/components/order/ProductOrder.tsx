@@ -1,12 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import ListIcon from "@mui/icons-material/List";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Dialog,
@@ -17,78 +9,88 @@ import {
   IconButton,
   Input,
   InputAdornment,
-  InputLabel,
-  MenuItem,
-  Select,
+  Paper,
   styled,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { useProductListQuery, useViewProductQuery } from "../../store";
+import ListIcon from "@mui/icons-material/List";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   DataGrid,
   gridClasses,
   GridColDef,
   GridRowParams,
 } from "@mui/x-data-grid";
-import SearchIcon from "@mui/icons-material/Search";
-import CloseIcon from "@mui/icons-material/Close";
+import { useProductListQuery } from "../../store"; // Adjust this import based on your actual query hook
 
+// Define interfaces for the props and state
 interface Product {
-  id: string;
+  id: number;
   code: string;
   name: string;
-  description: string;
-  owner: string;
   price: string;
-  active: string;
-  discount: string;
   stock: string;
+  discount: string;
 }
 
-type OrderDetails = {
+interface ProductOrderItem {
   id: number;
   product: string;
   unitPrice: string;
   qty: string;
   discount: string;
   subtotal: string;
-};
+}
 
-type ProductOrderTotal = {
-  gsubtotal: string;
-  gdelcharge: string;
-  gdiscount: string;
-  gtotal: string;
-};
+interface ProductOrderProps {
+  productOrder: ProductOrderItem[];
+  setProductOrder: React.Dispatch<React.SetStateAction<ProductOrderItem[]>>;
+  productOrderTotal: {
+    gsubtotal: string;
+    gdelcharge: string;
+    gdiscount: string;
+    gtotal: string;
+  };
+  setProductOrderTotal: React.Dispatch<
+    React.SetStateAction<{
+      gsubtotal: string;
+      gdelcharge: string;
+      gdiscount: string;
+      gtotal: string;
+    }>
+  >;
+}
 
-type orderDetailsProps = {
-  productOrder: OrderDetails[];
-  setProductOrder: React.Dispatch<React.SetStateAction<OrderDetails[]>>;
-  productOrderTotal: ProductOrderTotal;
-  setProductOrderTotal: React.Dispatch<React.SetStateAction<ProductOrderTotal>>;
-};
+const StyledTableCell = styled(TableCell)({
+  padding: 0,
+});
 
-function ProductOrder({
+const ProductOrder: React.FC<ProductOrderProps> = ({
   productOrder,
   setProductOrder,
   productOrderTotal,
   setProductOrderTotal,
-}: orderDetailsProps) {
+}) => {
   const product = useProductListQuery("");
   const [productList, setProductList] = useState<Product[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
   useEffect(() => {
     if (product.isSuccess) {
       const category_result = ((product.data as any).data as Product[]) || [];
       setProductList(category_result);
     }
   }, [product.isSuccess, product.data]);
-
-  // const [array, setArray] = useState([
-  //   { id: 0, product: "", unitPrice: "", qty: "", discount: "", subtotal: "" },
-  // ]);
 
   const [totalSubtotal, setTotalSubtotal] = useState("0.00");
   const [deliveryCharge, setDeliveryCharge] = useState("0.00");
@@ -100,7 +102,12 @@ function ProductOrder({
       (acc, item) => acc + parseFloat(item.subtotal || "0"),
       0
     );
+    const discountTotal = productOrder.reduce(
+      (acc, item) => acc + parseFloat(item.discount || "0"),
+      0
+    );
     setTotalSubtotal(subtotalTotal.toFixed(2));
+    setTotalDiscount(discountTotal.toFixed(2));
     setDeliveryCharge("49.00");
   }, [productOrder]);
 
@@ -139,46 +146,6 @@ function ProductOrder({
     setProductOrder((prev) => prev.filter((_, index) => index !== idx));
   };
 
-  const handleInputChange = (idx: number, field: string, value: string) => {
-    // const newValue = [ ...productOrder] as typeof productOrder;
-    // newValue[idx][field] = value
-    // if (field === "qty") {
-    //   console.warn("ano ba yannnn");
-    // setProductOrder({ ...productOrder, qty: value });
-    // } else {
-    setProductOrder((prev) =>
-      prev.map((item, index) => {
-        if (index === idx) {
-          let updatedItem = { ...item, [field]: value };
-          if (field === "product") {
-            const selectedProduct = productList.find(
-              (prod) => prod.id == value
-            );
-            if (selectedProduct) {
-              updatedItem.unitPrice = selectedProduct.price;
-              updatedItem.discount = selectedProduct.discount;
-            }
-          }
-          let price = updatedItem.unitPrice || "0";
-          updatedItem.unitPrice = parseFloat(price).toFixed(2);
-          let newDiscount = updatedItem.discount || "0";
-          updatedItem.discount = parseFloat(newDiscount).toFixed(2);
-          const qty = parseFloat(updatedItem.qty) || 0;
-          const unitPrice = parseFloat(updatedItem.unitPrice) || 0;
-          const discount = parseFloat(updatedItem.discount) || 0;
-          updatedItem.subtotal = (qty * unitPrice - discount).toFixed(2);
-          return updatedItem;
-        }
-        return item;
-      })
-    );
-    // }
-  };
-
-  const StyledTableCell = styled(TableCell)({
-    padding: 0,
-  });
-
   const handleOpenModal = (index: number) => {
     setSelectedIndex(index);
     setOpenModal(true);
@@ -189,49 +156,70 @@ function ProductOrder({
     setSelectedProduct(null);
   };
 
-  const handleSelectProduct = (productId: string) => {
+  const handleSelectProduct = (productId: number) => {
     const product = productList.find((p) => p.id === productId);
     if (product && selectedIndex !== null) {
       setSelectedProduct(product);
-      handleInputChange(selectedIndex, "product", product.id);
+      //.replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      setProductOrder((prev) => {
+        const newProductOrder = [...prev];
+        newProductOrder[selectedIndex] = {
+          ...newProductOrder[selectedIndex],
+          product: product.id.toString(),
+          unitPrice: parseFloat(product.price).toFixed(2).toString(),
+          discount: parseFloat(product.discount).toFixed(2).toString(),
+          qty: "1",
+          subtotal: (
+            parseFloat(product.price) *
+              parseFloat(newProductOrder[selectedIndex].qty || "1") -
+            parseFloat(product.discount)
+          ).toFixed(2),
+        };
+        return newProductOrder;
+      });
       handleCloseModal();
     }
   };
-
-  const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
   const filteredContent = productList.filter(
-    (productList) =>
-      productList.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      productList.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (product) =>
+      product.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const columns: GridColDef[] = [
-    {
-      field: "code",
-      headerName: "Code",
-      width: 130,
-    },
-    {
-      field: "name",
-      headerName: "Name",
-      width: 300,
-    },
-    {
-      field: "price",
-      headerName: "Price",
-      width: 130,
-    },
-    {
-      field: "stock",
-      headerName: "Stock",
-      width: 130,
-    },
+    { field: "code", headerName: "Code", width: 130 },
+    { field: "name", headerName: "Name", width: 300 },
+    { field: "price", headerName: "Price", width: 130 },
+    { field: "stock", headerName: "Stock", width: 130 },
   ];
+
+  const renderCell = (params: any) => {
+    if (params.colDef.field === "price") {
+      return (
+        <div className="text-right pr-5">
+          <span>
+            {new Intl.NumberFormat("en-US", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            }).format(parseFloat(params.value ? params.value : "0"))}
+          </span>
+        </div>
+      );
+    } else if (params.colDef.field === "stock") {
+      return (
+        <div className="text-right pr-5">
+          <span>{params.value}</span>
+        </div>
+      );
+    }
+
+    return params.value;
+  };
 
   return (
     <>
@@ -269,8 +257,8 @@ function ProductOrder({
             </TableHead>
             <TableBody>
               {productOrder.map((item, idx) => (
-                <TableRow key={idx}>
-                  <StyledTableCell className="w-2/6 ">
+                <TableRow key={item.id || idx}>
+                  <StyledTableCell className="w-2/6">
                     <button
                       style={{
                         backgroundColor: "#f9fafb",
@@ -281,37 +269,55 @@ function ProductOrder({
                       }}
                       onClick={() => handleOpenModal(idx)}
                     >
-                      {item.product
+                      {/* {item.product
                         ? productList.find((p) => p.id === item.product)?.name
+                        : "Select Product"} */}
+                      {item.product
+                        ? productList.find(
+                            (p) => p.id === parseInt(item.product)
+                          )?.name
                         : "Select Product"}
                     </button>
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      name="unitPrice"
-                      value={productOrder[idx].unitPrice}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                      value={item.unitPrice}
                       readOnly
                     />
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-center"
-                      name="qty"
-                      // value={item.qty}
-                      value={productOrder[idx].qty}
-                      onChange={(e) =>
-                        handleInputChange(idx, "qty", e.target.value)
-                      }
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-center"
+                      value={item.qty}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        setProductOrder((prev) => {
+                          const newProductOrder = [...prev];
+                          newProductOrder[idx] = {
+                            ...newProductOrder[idx],
+                            qty: value,
+                            subtotal: (
+                              (parseFloat(
+                                newProductOrder[idx].unitPrice || "0"
+                              ) -
+                                parseFloat(
+                                  newProductOrder[idx].discount || "0"
+                                )) *
+                              parseFloat(value || "0")
+                            ).toFixed(2),
+                          };
+                          return newProductOrder;
+                        });
+                      }}
                     />
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="number"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      name="discount"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
                       value={item.discount}
                       readOnly
                     />
@@ -319,9 +325,13 @@ function ProductOrder({
                   <StyledTableCell className="w-36" align="center">
                     <input
                       type="text"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      name="subtotal"
-                      value={item.subtotal}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                      value={new Intl.NumberFormat("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(item.subtotal ? item.subtotal : "0")
+                      )}
                       readOnly
                     />
                   </StyledTableCell>
@@ -354,10 +364,11 @@ function ProductOrder({
                 <StyledTableCell colSpan={1}>
                   <input
                     type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    name="total_subtotal"
-                    value={totalSubtotal}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(parseFloat(totalSubtotal ? totalSubtotal : "0"))}
                     disabled
                   />
                 </StyledTableCell>
@@ -369,10 +380,13 @@ function ProductOrder({
                 <StyledTableCell colSpan={1}>
                   <input
                     type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    name="total_delcharge"
-                    value={deliveryCharge}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      parseFloat(deliveryCharge ? deliveryCharge : "0")
+                    )}
                     disabled
                   />
                 </StyledTableCell>
@@ -384,15 +398,15 @@ function ProductOrder({
                 <StyledTableCell colSpan={1}>
                   <input
                     type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    name="total_discount"
-                    value={totalDiscount}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(parseFloat(totalDiscount ? totalDiscount : "0"))}
                     disabled
                   />
                 </StyledTableCell>
               </TableRow>
-
               <TableRow>
                 <StyledTableCell colSpan={4} align="right">
                   <span className="pr-5">Total</span>
@@ -400,10 +414,11 @@ function ProductOrder({
                 <StyledTableCell colSpan={1}>
                   <input
                     type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    name="total_grandtotal"
-                    value={grandTotal}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5 text-right"
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(parseFloat(grandTotal ? grandTotal : "0"))}
                     disabled
                   />
                 </StyledTableCell>
@@ -413,22 +428,20 @@ function ProductOrder({
         </TableContainer>
       </div>
 
-      {/* Product Selection Modal */}
       <Dialog
         open={openModal}
         onClose={handleCloseModal}
         PaperProps={{
           sx: {
-            width: "60vw", // 80% of viewport width
-            height: "85vh", // 80% of viewport height
-            maxWidth: "none", // Override default maxWidth
-            maxHeight: "none", // Override default maxHeight
+            width: "60vw",
+            height: "85vh",
+            maxWidth: "none",
+            maxHeight: "none",
           },
         }}
       >
         <DialogTitle>
           <Input
-            id="input-with-icon-adornment"
             startAdornment={
               <InputAdornment position="start">
                 <SearchIcon />
@@ -469,7 +482,10 @@ function ProductOrder({
                 }}
                 rowHeight={35}
                 rows={filteredContent}
-                columns={columns}
+                columns={columns.map((col) => ({
+                  ...col,
+                  renderCell: renderCell,
+                }))}
                 initialState={{
                   pagination: {
                     paginationModel: { page: 0, pageSize: 10 },
@@ -490,6 +506,6 @@ function ProductOrder({
       </Dialog>
     </>
   );
-}
+};
 
 export default ProductOrder;

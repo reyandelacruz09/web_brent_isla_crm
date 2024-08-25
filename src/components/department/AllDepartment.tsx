@@ -15,12 +15,15 @@ import Modal_Delete_Client from "./Modal_Delete_Client";
 interface Client {
   id: string;
   depname: string;
-  category: string;
+  cperson: string;
+  email: string;
   validity: string;
-  dephead: string;
-  active: string;
+  rdate: string;
+  plan: string;
+  license: string;
+  // active: string;
   edit: string;
-  delete: string;
+  // delete: string;
 }
 
 const columns: GridColDef[] = [
@@ -56,14 +59,16 @@ function AllDepartment() {
 
       for (let i = 0; i < size; i++) {
         branches.push({
-          id: result.data[i].code,
+          id: result.data[i].id,
           depname: result.data[i].name,
-          category: result.data[i].category.name,
+          cperson: result.data[i].contact_person,
+          email: result.data[i].email,
           validity: result.data[i].start_date + " - " + result.data[i].end_date,
-          dephead: result.data[i].head,
-          active: result.data[i].status,
+          rdate: result.data[i].date_renewal,
+          plan: result.data[i].plan_subscription,
+          license: result.data[i].no_license,
           edit: result.data[i].id,
-          delete: result.data[i].id,
+          // delete: result.data[i].id,
         });
       }
 
@@ -76,11 +81,8 @@ function AllDepartment() {
     setSearchQuery(event.target.value);
   };
 
-  const filteredContent = content.filter(
-    (client) =>
-      client.depname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      client.dephead.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredContent = content.filter((client) =>
+    client.depname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderCell = (params: any) => {
@@ -99,13 +101,14 @@ function AllDepartment() {
           <Modal_Update_Department modalid={params.value} />
         </span>
       );
-    } else if (params.colDef.field === "delete") {
-      return (
-        <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
-          <Modal_Delete_Client modalid={params.value} />
-        </span>
-      );
     }
+    // else if (params.colDef.field === "delete") {
+    //   return (
+    //     <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
+    //       <Modal_Delete_Client modalid={params.value} />
+    //     </span>
+    //   );
+    // }
 
     return params.value;
   };

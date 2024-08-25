@@ -51,7 +51,7 @@ export default function CustomizedDialogs() {
   };
 
   const account_detailed1 = JSON.parse(
-    localStorage.getItem("user_info") || "{}"
+    localStorage.getItem("account_detail") || "{}"
   );
 
   const [orderType, setOrderType] = React.useState({
@@ -195,7 +195,7 @@ export default function CustomizedDialogs() {
       >
         <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
           <div className="flex">
-            <div className="w-1/3">Create Order {others.changeamount}</div>
+            <div className="w-1/3">Create Order</div>
             <div className="w-2/3 flex justify-end pr-10">
               <div className="flex gap-3">
                 <Button
