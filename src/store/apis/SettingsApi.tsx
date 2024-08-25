@@ -12,6 +12,21 @@ const settingsApi = createApi({
   tagTypes: ["settings"],
   endpoints(builder) {
     return {
+      AddAccountRole: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `/api/settings/add_AccountRoles/`,
+            headers: {
+              // Authorization: "token " + token,
+              // "Content-Type": "application/json",
+              // Accept: "/",
+            },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["settings"],
+      }),
       AccountRoleList: builder.query({
         query: () => {
           return {
@@ -32,9 +47,29 @@ const settingsApi = createApi({
         },
         providesTags: ["settings"],
       }),
+      UpdateRole: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `/api/settings/update_role/`,
+            headers: {
+              // Authorization: "token " + token,
+              // "Content-Type": "application/json",
+              // Accept: "/",
+            },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["settings"],
+      }),
     };
   },
 });
 
-export const { useAccountRoleListQuery, useEditRolesQuery } = settingsApi;
+export const {
+  useAccountRoleListQuery,
+  useEditRolesQuery,
+  useAddAccountRoleMutation,
+  useUpdateRoleMutation,
+} = settingsApi;
 export { settingsApi };

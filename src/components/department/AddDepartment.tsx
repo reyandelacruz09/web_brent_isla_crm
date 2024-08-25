@@ -38,12 +38,9 @@ function AddDepartment() {
   });
 
   const [validationErrors, setValidationErrors] = useState({
-    code: false,
     name: false,
-    category: false,
     start_date: false,
     end_date: false,
-    head: false,
     contact_person: false,
     email: false,
     contract_term: false,
@@ -62,12 +59,9 @@ function AddDepartment() {
 
   const validateFields = () => {
     const errors = {
-      code: !client.code,
       name: !client.name,
-      category: !client.category,
       start_date: !client.start_date,
       end_date: !client.end_date,
-      head: !client.head,
       contact_person: !client.contact_person,
       email: !client.email,
       contract_term: !client.contract_term,
@@ -140,15 +134,15 @@ function AddDepartment() {
     });
   };
 
-  const productcategory = useClientCategoryListQuery("");
-  const [listCategory, setListCategory] = useState<ClientCategory[]>([]);
-  useEffect(() => {
-    if (productcategory.isSuccess) {
-      const category_result =
-        ((productcategory.data as any).data as ClientCategory[]) || [];
-      setListCategory(category_result);
-    }
-  }, [productcategory.isSuccess, productcategory.data]);
+  // const productcategory = useClientCategoryListQuery("");
+  // const [listCategory, setListCategory] = useState<ClientCategory[]>([]);
+  // useEffect(() => {
+  //   if (productcategory.isSuccess) {
+  //     const category_result =
+  //       ((productcategory.data as any).data as ClientCategory[]) || [];
+  //     setListCategory(category_result);
+  //   }
+  // }, [productcategory.isSuccess, productcategory.data]);
 
   return (
     <>
@@ -260,8 +254,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.code}
+                    onChange={handleInput}
+                    value={client.contact_person}
                   />
                 </div>
               </div>
@@ -279,8 +273,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.code}
+                    onChange={handleInput}
+                    value={client.email}
                   />
                 </div>
               </div>
@@ -327,8 +321,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.head}
+                    onChange={handleInput}
+                    value={client.contract_term}
                   />
                 </div>
               </div>
@@ -387,8 +381,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.head}
+                    onChange={handleInput}
+                    value={client.no_licenses}
                   />
                 </div>
               </div>
@@ -407,8 +401,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.head}
+                    onChange={handleInput}
+                    value={client.plan_subscription}
                   />
                 </div>
               </div>
@@ -427,8 +421,8 @@ function AddDepartment() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
-                    // onChange={handleInput}
-                    // value={client.head}
+                    onChange={handleInput}
+                    value={client.date_renewal}
                   />
                 </div>
               </div>

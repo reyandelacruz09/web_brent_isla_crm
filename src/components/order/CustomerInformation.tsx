@@ -138,7 +138,7 @@ function CustomerInformation({
           fname: custInfo.data?.fname,
           lname: custInfo.data?.lname,
           phone2: custInfo.data?.phone2,
-          landline: custInfo.data?.barangay.city.province.id,
+          landline: custInfo.data?.landline,
           email: custInfo.data?.email,
           block_unit: custInfo.data?.block_unit,
           barangay: custInfo.data?.barangay.id,

@@ -48,13 +48,16 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
 
   const [updateClient, setUpdateClient] = React.useState({
     id: "",
-    code: "",
     name: "",
     status: "",
-    category: "",
+    contact_person: "",
+    email: "",
+    contract_term: "",
     start_date: "",
     end_date: "",
-    head: "",
+    no_license: "",
+    plan_subscription: "",
+    date_renewal: "",
   });
 
   const handleInput = (e: any) => {
@@ -76,13 +79,16 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
 
       setUpdateClient({
         id: result.data.id || "",
-        code: result.data.code || "",
         name: result.data.name || "",
         status: result.data.status || "",
-        category: result.data.category.id || "",
+        contact_person: result.data.contact_person || "",
+        email: result.data.email || "",
+        contract_term: result.data.contract_term || "",
         start_date: result.data.start_date || "",
         end_date: result.data.end_date || "",
-        head: result.data.head || "",
+        no_license: result.data.no_license || "",
+        plan_subscription: result.data.plan_subscription || "",
+        date_renewal: result.data.date_renewal || "",
       });
 
       if (result.data.status === 2) {
@@ -149,16 +155,6 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                 >
                   <span className="">Cancel</span>
                 </Button>
-                {/* <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Edit</span>
-                </Button> */}
                 <Button
                   component="label"
                   variant="contained"
@@ -197,20 +193,6 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
 
             <div className="pt-3 mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                Department Code
-              </label>
-              <div className="relative mb-6">
-                <input
-                  name="code"
-                  value={updateClient.code}
-                  disabled
-                  id="rec_mode"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                />
-              </div>
-            </div>
-            <div className="pt-3 mr-5">
-              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
                 Department Name
               </label>
               <div className="relative mb-6">
@@ -226,9 +208,9 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                   className="absolute top-0 right-0"
                   control={
                     <Checkbox
-                      name="status"
-                      defaultChecked={condition}
                       onChange={handleInput}
+                      defaultChecked
+                      name="status"
                     />
                   }
                   label="Active"
@@ -238,25 +220,47 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
 
             <div className="pt-3 mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                Category
+                Contact Person
               </label>
               <div className="relative mb-6">
-                <select
-                  name="category"
-                  onChange={handleInput}
-                  value={updateClient.category || ""}
+                <input
+                  name="contact_person"
                   id="rec_mode"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                >
-                  <option value="" selected>
-                    Choose One
-                  </option>
-                  {listCategory.map((listcate: any) => (
-                    <option key={listcate.id} value={listcate.id}>
-                      {listcate.name}
-                    </option>
-                  ))}
-                </select>
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.contact_person}
+                />
+              </div>
+            </div>
+
+            <div className="pt-3 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Email
+              </label>
+              <div className="relative mb-6">
+                <input
+                  name="email"
+                  id="rec_mode"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.email}
+                />
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Contract Term
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  name="contract_term"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.contract_term}
+                />
               </div>
             </div>
 
@@ -269,9 +273,9 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                   type="date"
                   id="input-group-1"
                   name="start_date"
-                  onChange={handleInput}
                   value={updateClient.start_date}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
                 />
               </div>
             </div>
@@ -285,25 +289,57 @@ const Modal_Update_Department: React.FC<ModalUpdateDepartmentProps> = ({
                   type="date"
                   id="input-group-1"
                   name="end_date"
-                  onChange={handleInput}
                   value={updateClient.end_date}
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
                 />
               </div>
             </div>
 
             <div className="mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                Department Head
+                No of Licenses
               </label>
               <div className="relative mb-6">
                 <input
                   type="text"
                   id="input-group-1"
-                  name="head"
-                  onChange={handleInput}
-                  value={updateClient.head}
+                  name="no_license"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.no_license}
+                />
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Plan Subscription
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  name="plan_subscription"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.plan_subscription}
+                />
+              </div>
+            </div>
+
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Date of Renewal
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="date"
+                  id="input-group-1"
+                  name="date_renewal"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                  onChange={handleInput}
+                  value={updateClient.date_renewal}
                 />
               </div>
             </div>

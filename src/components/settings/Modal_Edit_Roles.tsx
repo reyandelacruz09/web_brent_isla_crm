@@ -20,7 +20,7 @@ import Paper from "@mui/material/Paper";
 import { Link } from "react-router-dom";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { Button, Checkbox, styled, Switch, Typography } from "@mui/material";
-import { useEditRolesQuery } from "../../store";
+import { useEditRolesQuery, useUpdateRoleMutation } from "../../store";
 import { log } from "console";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -107,7 +107,7 @@ export default function Modal_Edit_Roles({ name, id }: name) {
   const handleClose = () => {
     setOpen(false);
   };
-  const [roleList, setroleList] = useState<roles[]>([]);
+  const [roleList, setRoleList] = useState<roles[]>([]);
 
   const [btnsave, setbtnsave] = useState(true);
   const [btnedit, setbtnedit] = useState(false);
@@ -125,7 +125,7 @@ export default function Modal_Edit_Roles({ name, id }: name) {
 
   useEffect(() => {
     if (isRolesSuccess && roles) {
-      setroleList(roles.data);
+      setRoleList(roles.data);
     }
   }, [isRolesSuccess, roles]);
   console.warn(roleList);
@@ -136,10 +136,58 @@ export default function Modal_Edit_Roles({ name, id }: name) {
     setAllDisabled(false);
   };
 
-  const handleSave = () => {
-    setbtnsave(true);
-    setbtnedit(false);
-    setAllDisabled(true);
+  const handleSwitchChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { checked } = event.target;
+      setRoleList((prevList) =>
+        prevList.map((role, i) =>
+          i === index
+            ? {
+                ...role,
+                access: checked,
+                view: checked ? role.view : false,
+                create: checked ? role.create : false,
+                edit: checked ? role.edit : false,
+                delete: checked ? role.delete : false,
+              }
+            : role
+        )
+      );
+    };
+
+  const handleCheckboxChange =
+    (index: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
+      const { name, checked } = event.target;
+      setRoleList((prevList) =>
+        prevList.map((role, i) =>
+          i === index ? { ...role, [name]: checked } : role
+        )
+      );
+    };
+
+  const [updateRole] = useUpdateRoleMutation();
+
+  const upRole = async (e: any) => {
+    e.preventDefault();
+
+    try {
+      const checkstat = await updateRole(roleList).unwrap();
+      if (checkstat.success === true) {
+        toast.success("Successfully Updated!", {
+          transition: Slide,
+        });
+        setbtnsave(true);
+        setbtnedit(false);
+        setAllDisabled(true);
+        // handleClose();
+      } else {
+        alert("something wrong");
+      }
+    } catch (error) {
+      toast.error("Something went wrong 🥺", {
+        transition: Slide,
+      });
+    }
   };
 
   return (
@@ -170,7 +218,7 @@ export default function Modal_Edit_Roles({ name, id }: name) {
                 <Button
                   variant="contained"
                   className=""
-                  onClick={handleSave}
+                  onClick={upRole}
                   disabled={btnsave}
                 >
                   Save
@@ -221,43 +269,53 @@ export default function Modal_Edit_Roles({ name, id }: name) {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {roleList.map((roles, i) => {
+                    {roleList.map((roles, index) => {
                       console.log(roles.access);
                       return (
                         <>
-                          <StyledTableRow>
+                          <StyledTableRow key={index}>
                             <TableCell component="th" scope="row">
-                              Dashboard {roles.id}
+                              {roles.name}
                             </TableCell>
                             <TableCell align="center">
                               <CustomSwitch
                                 size="small"
-                                defaultChecked={roles.access}
+                                checked={roles.access}
                                 disabled={allDisabled}
+                                name="access"
+                                onChange={handleSwitchChange(index)}
                               />
                             </TableCell>
                             <TableCell align="center">
                               <CustomCheckbox
-                                defaultChecked={roles.view}
+                                checked={roles.view}
                                 disabled={allDisabled}
+                                name="view"
+                                onChange={handleCheckboxChange(index)}
                               />
                             </TableCell>
                             <TableCell align="center">
                               <CustomCheckbox
-                                defaultChecked={roles.create}
+                                checked={roles.create}
                                 disabled={allDisabled}
+                                name="create"
+                                onChange={handleCheckboxChange(index)}
                               />
                             </TableCell>
                             <TableCell align="center">
                               <CustomCheckbox
-                                defaultChecked={roles.edit}
+                                checked={roles.edit}
                                 disabled={allDisabled}
+                                name="edit"
+                                onChange={handleCheckboxChange(index)}
                               />
                             </TableCell>
                             <TableCell align="center">
                               <CustomCheckbox
-                                defaultChecked={roles.delete}
+                                checked={roles.delete}
                                 disabled={allDisabled}
+                                name="delete"
+                                onChange={handleCheckboxChange(index)}
                               />
                             </TableCell>
                           </StyledTableRow>
