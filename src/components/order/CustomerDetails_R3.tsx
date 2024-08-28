@@ -57,7 +57,7 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
             result.data[i].orderID.customerID.lname,
           assignedbranch: result.data[i].orderID.branch.name,
           amount: result.data[i].grandtotal.toFixed(2),
-          ordertaker: result.data[i].orderID.added_by.first_name,
+          ordertaker: result.data[i].orderID.added_by.fullname,
           edt: formattedDate,
           cid: result.data[i].orderID.customerID.id,
         });
@@ -112,6 +112,17 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
           Canceled
         </span>
       );
+    } else if (params.colDef.field === "amount") {
+      return (
+        <div className="text-right">
+          {new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }).format(parseFloat(params.value ? params.value : "0"))}
+        </div>
+      );
+    } else if (params.colDef.field === "ordertaker") {
+      return <div className="text-center">{params.value}</div>;
     }
     return params.value;
   };

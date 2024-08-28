@@ -6,7 +6,10 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import { useCompleteOrderQuery } from "../../store";
+import {
+  useCompleteOrderTotalQuery,
+  useCustomerOrderIDQuery,
+} from "../../store";
 import { useEffect, useState } from "react";
 
 interface cust_idProps {
@@ -31,16 +34,23 @@ function Modal_Others({ orderID }: cust_idProps) {
   });
 
   const { data: orderInfo, isSuccess: isorderInfoSuccess } =
-    useCompleteOrderQuery(orderID || "");
+    useCompleteOrderTotalQuery(orderID || "");
 
   useEffect(() => {
     if (isorderInfoSuccess && orderInfo) {
-      setOthers1(orderInfo.data);
-      setOthers(orderInfo.data.order_total[0]);
+      setOthers(orderInfo.data);
     }
   }, [isorderInfoSuccess, orderInfo]);
 
-  // console.warn("Datas: ", others);
+  const { data: other, isSuccess: isotherSuccess } = useCustomerOrderIDQuery(
+    orderID || ""
+  );
+
+  useEffect(() => {
+    if (isotherSuccess && other) {
+      setOthers1(other.data);
+    }
+  }, [isotherSuccess, other]);
 
   return (
     <>
@@ -60,12 +70,13 @@ function Modal_Others({ orderID }: cust_idProps) {
                 row
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="mopayment"
-                value={others.mopayment}
               >
                 <div className="w-1/3">
                   <FormControlLabel
                     value="1"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "1" ? true : false} />
+                    }
                     label={<span className="text-sm">Cash</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -77,7 +88,9 @@ function Modal_Others({ orderID }: cust_idProps) {
                 <div className="w-1/3">
                   <FormControlLabel
                     value="2"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "2" ? true : false} />
+                    }
                     label={<span className="text-sm">Gcash</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -89,7 +102,9 @@ function Modal_Others({ orderID }: cust_idProps) {
                 <div className="w-1/3">
                   <FormControlLabel
                     value="3"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "3" ? true : false} />
+                    }
                     label={<span className="text-sm">PayMaya</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -101,7 +116,9 @@ function Modal_Others({ orderID }: cust_idProps) {
                 <div className="w-1/3">
                   <FormControlLabel
                     value="4"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "4" ? true : false} />
+                    }
                     label={<span className="text-sm">Visa</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -113,7 +130,9 @@ function Modal_Others({ orderID }: cust_idProps) {
                 <div className="w-1/3">
                   <FormControlLabel
                     value="5"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "5" ? true : false} />
+                    }
                     label={<span className="text-sm">Mastercard</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -125,7 +144,9 @@ function Modal_Others({ orderID }: cust_idProps) {
                 <div className="w-1/3">
                   <FormControlLabel
                     value="6"
-                    control={<Radio />}
+                    control={
+                      <Radio checked={others.mopayment == "6" ? true : false} />
+                    }
                     label={<span className="text-sm">AMEX</span>}
                     sx={{
                       "& .MuiSvgIcon-root": {
@@ -149,7 +170,10 @@ function Modal_Others({ orderID }: cust_idProps) {
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
               name="changefor"
-              value={parseFloat(others.changefor).toFixed(2)}
+              value={new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(parseFloat(others.changefor ? others.changefor : "0"))}
               disabled
             />
           </div>
@@ -167,7 +191,12 @@ function Modal_Others({ orderID }: cust_idProps) {
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right pr-3"
               name="changeamount"
-              value={parseFloat(others.changeamount).toFixed(2)}
+              value={new Intl.NumberFormat("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              }).format(
+                parseFloat(others.changeamount ? others.changeamount : "0")
+              )}
               disabled
             />
           </div>

@@ -98,3 +98,12 @@ li:hover .wiggle {
 .wiggle:hover {
   animation: wiggle 0.5s ease;
 }
+
+@media print {
+  .hide-on-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+}

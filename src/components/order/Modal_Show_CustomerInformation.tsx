@@ -45,6 +45,8 @@ interface Order {
   branch: branch;
   expected_deltime: string;
   time_deliver: string;
+  sendsms: string;
+  sendemail: string;
 }
 
 function formatDate(isoDateTime: string | number | Date) {
@@ -52,20 +54,16 @@ function formatDate(isoDateTime: string | number | Date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
-  //   return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
   return `${year}/${month}/${day}`;
 }
 function formatTime(isoDateTime: string | number | Date) {
   const date = new Date(isoDateTime);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
+  // const year = date.getFullYear();
+  // const month = String(date.getMonth() + 1).padStart(2, "0");
+  // const day = String(date.getDate()).padStart(2, "0");
   const hours = String(date.getHours()).padStart(2, "0");
   const minutes = String(date.getMinutes()).padStart(2, "0");
-  const seconds = String(date.getSeconds()).padStart(2, "0");
+  // const seconds = String(date.getSeconds()).padStart(2, "0");
   //   return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
   return `${hours}:${minutes}`;
 }
@@ -104,6 +102,8 @@ function Modal_Show_CustomerInformation({ cust_id, orderID }: cust_idProps) {
     },
     expected_deltime: "",
     time_deliver: "",
+    sendsms: "",
+    sendemail: "",
   });
 
   const { data: custInfo, isSuccess: isCustInfoSuccess } =
@@ -182,7 +182,12 @@ function Modal_Show_CustomerInformation({ cust_id, orderID }: cust_idProps) {
             />
             <FormControlLabel
               className="absolute top-0 right-0"
-              control={<Checkbox disabled />}
+              control={
+                <Checkbox
+                  disabled
+                  checked={customerOrder.sendsms === "Y" ? true : false}
+                />
+              }
               label="Send SMS"
               name="sendsms"
             />
@@ -236,7 +241,12 @@ function Modal_Show_CustomerInformation({ cust_id, orderID }: cust_idProps) {
             />
             <FormControlLabel
               className="absolute top-0 right-0"
-              control={<Checkbox disabled />}
+              control={
+                <Checkbox
+                  disabled
+                  checked={customerOrder.sendemail === "Y" ? true : false}
+                />
+              }
               label="Send Email"
               name="sendemail"
             />

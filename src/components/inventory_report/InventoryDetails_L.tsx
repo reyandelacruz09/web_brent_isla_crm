@@ -38,7 +38,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
     }
   }, [isInventProSuccess, inventPro]);
 
-  console.warn("Products", inProduct);
+  // console.warn("Products", inProduct);
 
   return (
     <>

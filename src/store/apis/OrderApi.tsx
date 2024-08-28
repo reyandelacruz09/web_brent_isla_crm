@@ -133,6 +133,28 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      CompleteOrderTotal: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/view_complete_order_total`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      ///api/order/<id>/update_order
+      UpdateOrder: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `api/order/0/update_order/`,
+            headers: { Authorization: "token " + token },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["order"],
+      }),
     };
   },
 });
@@ -149,5 +171,7 @@ export const {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
   useCompleteOrderQuery,
+  useCompleteOrderTotalQuery,
+  useUpdateOrderMutation,
 } = orderApi;
 export { orderApi };

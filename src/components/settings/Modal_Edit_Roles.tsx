@@ -128,7 +128,7 @@ export default function Modal_Edit_Roles({ name, id }: name) {
       setRoleList(roles.data);
     }
   }, [isRolesSuccess, roles]);
-  console.warn(roleList);
+  // console.warn(roleList);
 
   const handleEdit = () => {
     setbtnsave(false);
@@ -192,9 +192,10 @@ export default function Modal_Edit_Roles({ name, id }: name) {
 
   return (
     <React.Fragment>
-      <span onClick={handleClickOpen} className="cursor-pointer nav">
-        {name}
-      </span>
+      <Button variant="contained" size="small" onClick={handleClickOpen}>
+        Edit
+      </Button>
+      {/* </span> */}
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"

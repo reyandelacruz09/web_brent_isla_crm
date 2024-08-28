@@ -13,12 +13,12 @@ interface cust_idProps {
 
 interface order {
   id: string;
-  status: string;
+  status: number;
 }
 interface status {
   id: string;
   orderID: string;
-  status: string;
+  status: number;
   date_created: string;
   date_accepted: string;
   date_dispatched: string;
@@ -75,105 +75,140 @@ function CustomerDetails_R2({ orderID }: cust_idProps) {
 
   useEffect(() => {
     if (orderStatus.length > 0) {
+      let date_created_s = "";
+      let date_accepted_s = "";
+      let date_dispatched_s = "";
+      let date_completed_s = "";
+      let date_canceled_s = "";
+      for (const statusItem of orderStatus) {
+        switch (statusItem.status) {
+          case 1:
+            date_created_s = statusItem.date_created;
+            break;
+          case 2:
+            date_accepted_s = statusItem.date_accepted;
+            break;
+          case 3:
+            date_dispatched_s = statusItem.date_dispatched;
+            break;
+          case 4:
+            date_completed_s = statusItem.date_completed;
+            break;
+          case 5:
+            date_canceled_s = statusItem.date_canceled;
+            break;
+          default:
+            break;
+        }
+      }
       setStyle((prev) => ({
         ...prev,
-        date_created: orderStatus[0]?.date_created ?? "\xa0",
-        date_accepted: orderStatus[1]?.date_accepted ?? "\xa0",
-        date_dispatched: orderStatus[2]?.date_dispatched ?? "\xa0",
-        date_completed: orderStatus[3]?.date_completed ?? "\xa0",
-        date_canceled: orderStatus[4]?.date_canceled ?? "\xa0",
+        date_created: date_created_s ?? "\xa0",
+        date_accepted: date_accepted_s ?? "\xa0",
+        date_dispatched: date_dispatched_s ?? "\xa0",
+        date_completed: date_completed_s ?? "\xa0",
+        date_canceled: date_canceled_s ?? "\xa0",
       }));
     }
   }, [orderStatus]);
 
   useEffect(() => {
-    // console.warn("length", orderDetails.length);
     if (orderDetails.length > 0) {
-      // console.warn("Order Status", orderDetails[0].status);
-      if (orderDetails[0].status == "1") {
-        setStyle((prev) => ({
-          ...prev,
-          created:
-            "border-dashed border-2 border-slate-300 relative -top-4 w-1/2 -z-10",
-          acceptL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          acceptR:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          dispatchL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          dispatchR:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          completeL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          createdIcon: "text-white bg-orange-500 p-3 rounded-full",
-          acceptIcon: "text-white bg-slate-300 p-3 rounded-full",
-          dispatchIcon: "text-white bg-slate-300 p-3 rounded-full",
-          completeIcon: "text-white bg-slate-300 p-3 rounded-full",
-          cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
-        }));
-      } else if (orderDetails[0].status == "2") {
-        setStyle((prev) => ({
-          ...prev,
-          created:
-            "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
-          acceptL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          acceptR:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          dispatchL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          dispatchR:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          completeL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          createdIcon: "text-white bg-orange-500 p-3 rounded-full",
-          acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
-          dispatchIcon: "text-white bg-slate-300 p-3 rounded-full",
-          completeIcon: "text-white bg-slate-300 p-3 rounded-full",
-          cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
-        }));
-      } else if (orderDetails[0].status == "3") {
-        setStyle((prev) => ({
-          ...prev,
-          created:
-            "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
-          acceptL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          acceptR:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          dispatchL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          dispatchR:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          completeL:
-            "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
-          createdIcon: "text-white bg-orange-500 p-3 rounded-full",
-          acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
-          dispatchIcon: "text-white bg-purple-500 p-3 rounded-full",
-          completeIcon: "text-white bg-slate-300 p-3 rounded-full",
-          cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
-        }));
-      } else if (orderDetails[0].status == "4") {
-        setStyle((prev) => ({
-          ...prev,
-          created:
-            "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
-          acceptL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          acceptR:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          dispatchL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          dispatchR:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          completeL:
-            "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
-          createdIcon: "text-white bg-orange-500 p-3 rounded-full",
-          acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
-          dispatchIcon: "text-white bg-purple-500 p-3 rounded-full",
-          completeIcon: "text-white bg-green-500 p-3 rounded-full",
-          cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
-        }));
+      for (const statusItem of orderDetails) {
+        switch (statusItem.status) {
+          case 1:
+            setStyle((prev) => ({
+              ...prev,
+              created:
+                "border-dashed border-2 border-slate-300 relative -top-4 w-1/2 -z-10",
+              acceptL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              acceptR:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              dispatchL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              dispatchR:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              completeL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              createdIcon: "text-white bg-orange-500 p-3 rounded-full",
+              acceptIcon: "text-white bg-slate-300 p-3 rounded-full",
+              dispatchIcon: "text-white bg-slate-300 p-3 rounded-full",
+              completeIcon: "text-white bg-slate-300 p-3 rounded-full",
+              cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
+            }));
+            break;
+          case 2:
+            setStyle((prev) => ({
+              ...prev,
+              created:
+                "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
+              acceptL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              acceptR:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              dispatchL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              dispatchR:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              completeL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              createdIcon: "text-white bg-orange-500 p-3 rounded-full",
+              acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
+              dispatchIcon: "text-white bg-slate-300 p-3 rounded-full",
+              completeIcon: "text-white bg-slate-300 p-3 rounded-full",
+              cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
+            }));
+            break;
+          case 3:
+            setStyle((prev) => ({
+              ...prev,
+              created:
+                "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
+              acceptL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              acceptR:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              dispatchL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              dispatchR:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              completeL:
+                "border-dashed border-2 border-slate-300 relative -top-4 -z-10 ml-1",
+              createdIcon: "text-white bg-orange-500 p-3 rounded-full",
+              acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
+              dispatchIcon: "text-white bg-purple-500 p-3 rounded-full",
+              completeIcon: "text-white bg-slate-300 p-3 rounded-full",
+              cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
+            }));
+            break;
+          case 4:
+            setStyle((prev) => ({
+              ...prev,
+              created:
+                "border-dashed border-2 border-slate-500 relative -top-4 w-1/2 -z-10",
+              acceptL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              acceptR:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              dispatchL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              dispatchR:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              completeL:
+                "border-dashed border-2 border-slate-500 relative -top-4 -z-10 ml-1",
+              createdIcon: "text-white bg-orange-500 p-3 rounded-full",
+              acceptIcon: "text-white bg-blue-500 p-3 rounded-full",
+              dispatchIcon: "text-white bg-purple-500 p-3 rounded-full",
+              completeIcon: "text-white bg-green-500 p-3 rounded-full",
+              cancelIcon: "text-white bg-slate-300 p-3 rounded-full",
+            }));
+            break;
+          case 5:
+            break;
+          default:
+            break;
+        }
       }
     }
   }, [orderDetails]);
