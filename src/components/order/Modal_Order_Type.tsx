@@ -37,6 +37,12 @@ function Modal_Order_Type({ orderType, setOrderType }: OrderTypeProps) {
       if (value === "1") {
         setotypeCall("");
         setotypeComplaint("hidden");
+        setOrderType({
+          ...orderType,
+          order_type: "1",
+          reason_cancell: "0",
+          type_of_complaint: "0",
+        });
       } else {
         setotypeComplaint("");
         setotypeCall("hidden");

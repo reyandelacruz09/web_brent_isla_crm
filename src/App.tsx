@@ -17,6 +17,8 @@ import Settings from "./pages/Settings";
 import Profiles from "./components/settings/Profiles";
 import Roles_Access from "./components/settings/Roles_Access";
 import Modal_Create_Profile from "./components/settings/Modal_Create_Profile";
+import Roles_and_Sharing from "./components/settings/Roles_and_Sharing";
+import Telephony from "./components/settings/Telephony";
 
 function App() {
   return (
@@ -48,7 +50,10 @@ function App() {
           <Route path="/customer-details" element={<CustomerDetails />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/settings/profile" element={<Profiles />} />
-          <Route path="/settings/roles" element={<Roles_Access />} />
+          <Route path="/settings/roles" element={<Roles_and_Sharing />} />
+
+          <Route path="/testing" element={<Testing_Only />} />
+          <Route path="/telephony" element={<Telephony />} />
         </Routes>
       </BrowserRouter>
     </>

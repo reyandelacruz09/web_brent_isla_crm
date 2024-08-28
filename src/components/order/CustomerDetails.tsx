@@ -10,6 +10,17 @@ function CustomerDetails() {
 
   const [orderID, setOrderID] = useState<string>("");
 
+  const printStyles = `
+  @media print {
+    .hide-on-print {
+      display: none !important;
+    }
+    .print-only {
+      display: block !important;
+    }
+  }
+`;
+
   return (
     <>
       <NavBar />

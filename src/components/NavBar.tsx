@@ -60,7 +60,7 @@ function NavBar() {
 
   return (
     <>
-      <div className="w-full flex items-center justify-between px-15 py-2 border-b-2">
+      <div className="w-full flex items-center justify-between px-15 py-2 border-b-2 hide-on-print">
         {/* sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 */}
         <img
           src="../../images/OODC_logo.png"

@@ -132,7 +132,7 @@ function CustomerInformation({
   useEffect(() => {
     if (isCustInfoSuccess && custInfo) {
       if (custInfo.data.phone1 != "") {
-        console.warn(custInfo.data);
+        // console.warn(custInfo.data);
         setCustomerData({
           ...customerData,
           fname: custInfo.data?.fname,

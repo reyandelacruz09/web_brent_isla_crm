@@ -115,6 +115,11 @@ function CustomerDetails_R1({ orderID }: cust_idProps) {
         setDispatch(true);
         setComplete(true);
         setCancel(false);
+      } else if (orderDetails[0].status == "5") {
+        setAccept(true);
+        setDispatch(true);
+        setComplete(true);
+        setCancel(true);
       }
     }
   });

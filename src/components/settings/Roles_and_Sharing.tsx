@@ -55,16 +55,11 @@ const formatDate = (dateString: string): string => {
   return date.toLocaleDateString("en-US", options);
 };
 
-function Profiles() {
+function Roles_and_Sharing() {
   const [roleList, setroleList] = useState<roles[]>([]);
 
-  function createData(
-    name: string,
-    description: string,
-    date_created: string,
-    added_by: string
-  ) {
-    return { name, description, date_created, added_by };
+  function createData(name: string, edit: string) {
+    return { name, edit };
   }
 
   const { data: roles, isSuccess: isRolesSuccess } =
@@ -88,9 +83,7 @@ function Profiles() {
             </Link>
           </div>
           <div className="flex-grow"></div>
-          <div className="flex-shrink-0">
-            <Modal_Create_Profile />
-          </div>
+          <div className="flex-shrink-0"></div>
         </div>
       </div>
       <div className="flex justify-center">
@@ -101,13 +94,7 @@ function Profiles() {
                 <TableRow>
                   <StyledTableCell width="20%">Profile Name</StyledTableCell>
                   <StyledTableCell align="center" width="50%">
-                    Description
-                  </StyledTableCell>
-                  <StyledTableCell align="center" width="15%">
-                    Date Created
-                  </StyledTableCell>
-                  <StyledTableCell align="center" width="15%">
-                    Created by
+                    Edit
                   </StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -120,12 +107,8 @@ function Profiles() {
                     <TableCell component="th" scope="row">
                       {roles.name}
                     </TableCell>
-                    <TableCell align="center">{roles.description}</TableCell>
                     <TableCell align="center">
-                      {formatDate(roles.date_created)}
-                    </TableCell>
-                    <TableCell align="center">
-                      {roles.added_by.fullname}
+                      <Modal_Edit_Roles id={roles.id} name={roles.name} />
                     </TableCell>
                   </StyledTableRow>
                 ))}
@@ -138,4 +121,4 @@ function Profiles() {
   );
 }
 
-export default Profiles;
+export default Roles_and_Sharing;

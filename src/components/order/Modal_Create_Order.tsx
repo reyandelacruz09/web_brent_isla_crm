@@ -58,8 +58,8 @@ export default function CustomizedDialogs() {
     demographic: "1",
     order_type: "1",
     call_type: "1",
-    type_of_complaint: "1",
-    reason_cancell: "1",
+    type_of_complaint: "0",
+    reason_cancell: "0",
   });
 
   const [customerData, setCustomerData] = React.useState({

@@ -9,7 +9,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import ListIcon from "@mui/icons-material/List";
 import { Button, styled } from "@mui/material";
-import { useCompleteOrderQuery } from "../../store";
+import { useCompleteOrderQuery, useCompleteOrderTotalQuery } from "../../store";
 
 interface cust_idProps {
   orderID: string;
@@ -61,12 +61,19 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
 
   useEffect(() => {
     if (isorderInfoSuccess && orderInfo) {
-      // setOthers1(orderInfo.data);
-      setTotals(orderInfo.data.order_total[0]);
-      setProductList(orderInfo.data.order_product);
-      console.warn("haha", orderInfo.data);
+      setProductList(orderInfo.data);
     }
   }, [isorderInfoSuccess, orderInfo]);
+
+  const { data: orderTotal, isSuccess: isorderTotalSuccess } =
+    useCompleteOrderTotalQuery(orderID || "");
+
+  useEffect(() => {
+    if (isorderTotalSuccess && orderTotal) {
+      setTotals(orderTotal.data);
+      // console.warn("dsa", orderTotal.data);
+    }
+  }, [isorderTotalSuccess, orderTotal]);
 
   return (
     <>
@@ -115,7 +122,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                       type="text"
                       id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      value={parseFloat(products.price).toFixed(2)}
+                      value={new Intl.NumberFormat("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(products.price ? products.price : "0")
+                      )}
                       disabled
                     />
                   </StyledTableCell>
@@ -133,7 +145,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                       type="text"
                       id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      value={parseFloat(products.discount).toFixed(2)}
+                      value={new Intl.NumberFormat("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(products.discount ? products.discount : "0")
+                      )}
                       disabled
                     />
                   </StyledTableCell>
@@ -142,7 +159,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                       type="text"
                       id="input-group-1"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                      value={parseFloat(products.total).toFixed(2)}
+                      value={new Intl.NumberFormat("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }).format(
+                        parseFloat(products.total ? products.total : "0")
+                      )}
                       disabled
                     />
                   </StyledTableCell>
@@ -166,7 +188,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                     type="text"
                     id="input-group-1"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    value={parseFloat(totals.subtotal).toFixed(2)}
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      parseFloat(totals.subtotal ? totals.subtotal : "0")
+                    )}
                     disabled
                   />
                 </StyledTableCell>
@@ -181,7 +208,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                     type="text"
                     id="input-group-1"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    value={parseFloat(totals.delcharge).toFixed(2)}
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      parseFloat(totals.delcharge ? totals.delcharge : "0")
+                    )}
                     disabled
                   />
                 </StyledTableCell>
@@ -196,7 +228,14 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                     type="text"
                     id="input-group-1"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    value={parseFloat(totals.total_discount).toFixed(2)}
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      parseFloat(
+                        totals.total_discount ? totals.total_discount : "0"
+                      )
+                    )}
                     disabled
                   />
                 </StyledTableCell>
@@ -211,7 +250,12 @@ function Modal_ProductOrder({ orderID }: cust_idProps) {
                     type="text"
                     id="input-group-1"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 text-right"
-                    value={parseFloat(totals.grandtotal).toFixed(2)}
+                    value={new Intl.NumberFormat("en-US", {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    }).format(
+                      parseFloat(totals.grandtotal ? totals.grandtotal : "0")
+                    )}
                     disabled
                   />
                 </StyledTableCell>
