@@ -23,7 +23,7 @@ const columns: GridColDef[] = [
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
   { field: "amount", headerName: "Amount", width: 130 },
   { field: "ordertaker", headerName: "Order Taker", width: 150 },
-  { field: "edt", headerName: "Call Type", width: 130 },
+  { field: "edt", headerName: "EDT", width: 130 },
 ];
 
 function Table_All_History() {
@@ -63,7 +63,7 @@ function Table_All_History() {
           assignedbranch: result.data[i].orderID.branch.name,
           amount: result.data[i].grandtotal.toFixed(2),
           ordertaker: result.data[i].orderID.added_by.fullname,
-          edt: result.data[i].orderID.call_type,
+          edt: formattedDate,
           cid: result.data[i].orderID.customerID.id,
         });
       }

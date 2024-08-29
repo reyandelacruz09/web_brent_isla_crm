@@ -2,48 +2,92 @@
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, ThemeProvider } from "@mui/material";
 import { Link } from "react-router-dom";
+import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
+import { useEffect, useState } from "react";
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 150 },
-  { field: "id", headerName: "ID", width: 70 },
+  { field: "idorder", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
-  { field: "amount", headerName: "Amount", width: 130 },
+  { field: "owner", headerName: "Owner", width: 130 },
   { field: "ordertaker", headerName: "Order Taker", width: 150 },
-  { field: "edt", headerName: "EDT", width: 130 },
+  { field: "edt", headerName: "Type", width: 130 },
 ];
 
-const rows = [
-  {
-    status: "Cancelled Order",
-    id: "4",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-  {
-    status: "Cancelled Order",
-    id: "11",
-    name: "Orlhie Almendares",
-    assignedbranch: "Makati Branch",
-    amount: "100",
-    ordertaker: "Superman",
-    edt: "6/23/2024 14:25",
-  },
-];
-
+interface complaint {
+  status: string;
+  id: string;
+  name: string;
+  assignedbranch: string;
+  owner: string;
+  ordertaker: string;
+  edt: string;
+  idorder: string;
+}
 function Table_Inquiries_History() {
+  const { data, error, isLoading, isSuccess } = useViewComplaintsQuery("");
+  const [listComplaint, setListComplaint] = useState<complaint[]>([]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      let result: any = [];
+      result = data;
+
+      const size = Object.keys(result.data).length;
+      const complaint: complaint[] = [];
+
+      for (let i = 0; i < size; i++) {
+        const dateStr = result.data[i].orderID.expected_deltime;
+        const date = new Date(dateStr);
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const formattedDate = `${month}/${day}/${year} ${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+        complaint.push({
+          status: result.data[i].complaint == "Canceled Order" ? "1" : "2",
+          idorder: result.data[i].orderID.id,
+          name:
+            result.data[i].orderID.customerID.fname +
+            " " +
+            result.data[i].orderID.customerID.lname,
+          assignedbranch: result.data[i].orderID.branch.name,
+          owner: result.data[i].orderID.branch.owner.name,
+          ordertaker: result.data[i].orderID.added_by.fullname,
+          // edt: result.data[i].complaint + " " + result.data[i].id,
+          edt:
+            result.data[i].complaint == "Canceled Order" ? "Order" : "Inquiry",
+
+          id: result.data[i].id,
+        });
+      }
+
+      setListComplaint(complaint);
+    }
+  }, [data, isSuccess]);
+
+  console.log("Data passed to DataGrid:", listComplaint);
+
   const renderCell = (params: any) => {
-    if (
-      params.colDef.field === "status" &&
-      params.value === "Cancelled Order"
-    ) {
+    if (params.colDef.field === "status" && params.value === "1") {
       return (
         <span className="bg-red-500 text-white p-2 px-3 rounded-2xl">
-          {params.value}
+          Canceled Order
         </span>
+      );
+    } else if (params.colDef.field === "status" && params.value === "2") {
+      return (
+        <div className="text-center">
+          <span className="bg-slate-400 text-white p-2 px-3 rounded-2xl">
+            &emsp;&emsp;Inquiry&emsp;&emsp;
+          </span>
+        </div>
       );
     }
     return params.value;
@@ -62,7 +106,7 @@ function Table_Inquiries_History() {
                 outline: "none",
               },
           }}
-          rows={rows}
+          rows={listComplaint}
           columns={columns.map((col) => ({
             ...col,
             renderCell: renderCell,

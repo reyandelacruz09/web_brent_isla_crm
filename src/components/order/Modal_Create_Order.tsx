@@ -15,7 +15,12 @@ import Others from "./Others";
 
 import { useEffect, useState } from "react";
 import { adress } from "../branch/AddBranch";
-import { useBranchListQuery, useCreateOrderMutation } from "../../store";
+import {
+  useBranchListQuery,
+  useCreateOrderMutation,
+  useViewBranchQuery,
+  useCustomerInfoQuery,
+} from "../../store";
 import { Client } from "../product/AddProduct";
 
 import "react-datepicker/dist/react-datepicker.css";
@@ -31,6 +36,41 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
+interface Region {
+  name: string;
+}
+interface Province {
+  id: number;
+  name: string;
+  region: Region;
+}
+interface City {
+  name: string;
+  province: Province;
+}
+interface Barangay {
+  name: string;
+  city: City;
+}
+interface baddress {
+  name: string;
+  barangay: Barangay;
+  block_street: string;
+}
+
+interface customer {
+  block_unit: string;
+  barangay: Barangay;
+}
+
+function toProperCase(str: string) {
+  if (!str) return "";
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
 export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
 
@@ -174,6 +214,136 @@ export default function CustomizedDialogs() {
     }
   };
 
+  const [baddress, setBaddress] = useState<baddress>({
+    name: "",
+    block_street: "",
+    barangay: {
+      name: "",
+      city: {
+        name: "",
+        province: {
+          id: 0,
+          name: "",
+          region: {
+            name: "",
+          },
+        },
+      },
+    },
+  });
+  const { data: dbaddress, isSuccess: isdbaddressSuccess } = useViewBranchQuery(
+    OrderDetails.branch
+  );
+
+  useEffect(() => {
+    if (isdbaddressSuccess && dbaddress) {
+      setBaddress({
+        name: dbaddress.data.name,
+        block_street: dbaddress.data.block_street,
+        barangay: {
+          name: dbaddress.data.barangay.name,
+          city: {
+            name: dbaddress.data.barangay.city.name,
+            province: {
+              id: dbaddress.data.barangay.city.province.id,
+              name: dbaddress.data.barangay.city.province.name,
+              region: {
+                name: dbaddress.data.barangay.city.province.region.name,
+              },
+            },
+          },
+        },
+      });
+      console.log(dbaddress.data);
+    }
+  }, [isdbaddressSuccess, dbaddress]);
+
+  const [customerInfo, setCustomerInfo] = useState<customer>({
+    block_unit: "",
+    barangay: {
+      name: "",
+      city: {
+        name: "",
+        province: {
+          id: 0,
+          name: "",
+          region: {
+            name: "",
+          },
+        },
+      },
+    },
+  });
+  const { data: custInfo, isSuccess: isCustInfoSuccess } = useCustomerInfoQuery(
+    OrderDetails.phone1 || ""
+  );
+
+  useEffect(() => {
+    if (isCustInfoSuccess && custInfo) {
+      setCustomerInfo(custInfo.data);
+    }
+  }, [isCustInfoSuccess, custInfo]);
+
+  const locateAddress = () => {
+    let customerProvince = "";
+    if (
+      customerInfo.barangay.city.province.id < 86 &&
+      customerInfo.barangay.city.province.id > 81
+    ) {
+      customerProvince = "NCR";
+    } else {
+      customerProvince = customerInfo.barangay.city.province.name;
+    }
+
+    let branchProvince = "";
+    if (
+      baddress.barangay.city.province.id < 86 &&
+      baddress.barangay.city.province.id > 81
+    ) {
+      branchProvince = "NCR";
+    } else {
+      branchProvince = baddress.barangay.city.province.name;
+    }
+
+    let customerAddress =
+      customerInfo.block_unit +
+      ", " +
+      customerInfo.barangay.name +
+      ", " +
+      customerInfo.barangay.city.name +
+      ", " +
+      customerProvince;
+
+    let branchAddress =
+      baddress.block_street +
+      ", " +
+      baddress.barangay.name +
+      ", " +
+      baddress.barangay.city.name +
+      ", " +
+      branchProvince;
+
+    if (customerAddress === ", , , ") {
+      toast.warning("Customer Not Found!", {
+        transition: Slide,
+      });
+    }
+    if (branchAddress === ", , , ") {
+      toast.warning("Branch is not selected!", {
+        transition: Slide,
+      });
+    }
+    if (customerAddress !== ", , , " && branchAddress !== ", , , ") {
+      window.open(
+        "https://www.google.com/maps/dir/?api=1&origin=" +
+          customerAddress +
+          "&destination=" +
+          branchAddress,
+        "_blank"
+      );
+    }
+  };
+
   return (
     <React.Fragment>
       <Button
@@ -217,10 +387,11 @@ export default function CustomizedDialogs() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  onClick={locateAddress}
                 >
                   <span className="">Locate Address</span>
                 </Button>
-                <Button
+                {/* <Button
                   component="label"
                   variant="contained"
                   className="w-32 pt-2"
@@ -229,7 +400,7 @@ export default function CustomizedDialogs() {
                   color="primary"
                 >
                   <span className="">Print Preview</span>
-                </Button>
+                </Button> */}
               </div>
             </div>
           </div>
