@@ -143,7 +143,6 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
-      ///api/order/<id>/update_order
       UpdateOrder: builder.mutation({
         query: (formBody) => {
           return {
@@ -154,6 +153,17 @@ const orderApi = createApi({
           };
         },
         invalidatesTags: ["order"],
+      }),
+      ///api/order/view_complaints
+      ViewComplaints: builder.query({
+        query: () => {
+          return {
+            url: `api/order/view_complaints`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
       }),
     };
   },
@@ -173,5 +183,6 @@ export const {
   useCompleteOrderQuery,
   useCompleteOrderTotalQuery,
   useUpdateOrderMutation,
+  useViewComplaintsQuery,
 } = orderApi;
 export { orderApi };

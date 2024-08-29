@@ -79,6 +79,7 @@ export {
   useCompleteOrderQuery,
   useCompleteOrderTotalQuery,
   useUpdateOrderMutation,
+  useViewComplaintsQuery,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,
