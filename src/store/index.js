@@ -93,4 +93,5 @@ export {
   useEditRolesQuery,
   useAddAccountRoleMutation,
   useUpdateRoleMutation,
+  useGetRolesQuery,
 } from "../store/apis/SettingsApi";

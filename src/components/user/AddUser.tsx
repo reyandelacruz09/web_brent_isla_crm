@@ -339,9 +339,9 @@ function AddUser() {
                   <option value="0" selected disabled>
                     Choose One
                   </option>
-                  <option value="1">Admin</option>
+                  <option value="3">Admin</option>
                   <option value="2">Supervisor</option>
-                  <option value="3">Agent</option>
+                  <option value="1">Agent</option>
                 </select>
               </div>
             </div>

@@ -19,6 +19,7 @@ import Roles_Access from "./components/settings/Roles_Access";
 import Modal_Create_Profile from "./components/settings/Modal_Create_Profile";
 import Roles_and_Sharing from "./components/settings/Roles_and_Sharing";
 import Telephony from "./components/settings/Telephony";
+import Restricted from "./pages/Restricted";
 
 function App() {
   return (
