@@ -46,6 +46,7 @@ function Login_Form() {
           "account_detail",
           JSON.stringify(result.data.data)
         );
+        localStorage.setItem("date", new Date().toISOString());
         navigate("/dashboard");
       })
       .catch((error) => {
@@ -57,8 +58,22 @@ function Login_Form() {
 
   React.useEffect(() => {
     const token = localStorage.getItem("mytoken");
+    const logDateStr = localStorage.getItem("date");
+    let differenceInHours = 0;
+
+    if (logDateStr) {
+      const logDate = new Date(logDateStr);
+      const currentDate = new Date();
+      const differenceInMs = currentDate.getTime() - logDate.getTime();
+      differenceInHours = differenceInMs / (1000 * 60 * 60);
+    }
+
     if (token) {
-      navigate("/dashboard");
+      console.log(differenceInHours);
+      if (differenceInHours > 4) {
+      } else {
+        //navigate("/dashboard");
+      }
     }
   }, [navigate]);
 

@@ -62,6 +62,17 @@ const settingsApi = createApi({
         },
         invalidatesTags: ["settings"],
       }),
+      // /api/settings/get_roles/?client=1&role=3
+      GetRoles: builder.query({
+        query: ({ client, role }) => {
+          return {
+            url: `/api/settings/get_roles/?client=${client}&role=${role}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["settings"],
+      }),
     };
   },
 });
@@ -71,5 +82,6 @@ export const {
   useEditRolesQuery,
   useAddAccountRoleMutation,
   useUpdateRoleMutation,
+  useGetRolesQuery,
 } = settingsApi;
 export { settingsApi };

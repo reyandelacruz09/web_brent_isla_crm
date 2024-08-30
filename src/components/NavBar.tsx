@@ -14,8 +14,9 @@ import "../App.css";
 import { useEffect, useState } from "react";
 import { Menu, MenuItem, Typography } from "@mui/material";
 import React from "react";
+import { useGetRolesQuery } from "../store";
+import { access_roles } from "../Types";
 
-const account_detailed = JSON.parse(localStorage.getItem("user_info") || "{}");
 interface AccountDetails {
   id?: string;
   first_name?: string;
@@ -58,6 +59,108 @@ function NavBar() {
     }
   }, [account_detailed.id, navigate]);
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+  const [roleList, setroleList] = useState<access_roles>({
+    id: 0,
+    dashboard: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    order: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    products: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    branch: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    order_history: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    inventory: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    user: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    department: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    kb: {
+      id: 0,
+      name: false,
+      access: false,
+      view: false,
+      create: false,
+      edit: false,
+      delete: false,
+    },
+    client: "",
+    role: "",
+  });
+
+  const { data: roles, isSuccess: isRolesSuccess } = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+  useEffect(() => {
+    if (isRolesSuccess && roles) {
+      setroleList(roles.data);
+    }
+  }, [isRolesSuccess, roles]);
+
+  // console.log("RoleList", roleList);
+
   return (
     <>
       <div className="w-full flex items-center justify-between px-15 py-2 border-b-2 hide-on-print">
@@ -93,7 +196,8 @@ function NavBar() {
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
               (url === "/order" || url === "/customer-details"
                 ? " activenavbar"
-                : "")
+                : "") +
+              (roleList.order.access === true ? "" : " hidden")
             }
           >
             <Link to="/order">
@@ -107,7 +211,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/products" ? " activenavbar" : "")
+              (url === "/products" ? " activenavbar" : "") +
+              (roleList.products.access === true ? "" : " hidden")
             }
           >
             <Link to="/products">
@@ -121,7 +226,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/branch" ? " activenavbar" : "")
+              (url === "/branch" ? " activenavbar" : "") +
+              (roleList.branch.access === true ? "" : " hidden")
             }
           >
             <Link to="/branch">
@@ -135,7 +241,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/order-history" ? " activenavbar" : "")
+              (url === "/order-history" ? " activenavbar" : "") +
+              (roleList.order_history.access === true ? "" : " hidden")
             }
           >
             <Link to="/order-history">
@@ -149,7 +256,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/inventory" ? " activenavbar" : "")
+              (url === "/inventory" ? " activenavbar" : "") +
+              (roleList.inventory.access === true ? "" : " hidden")
             }
           >
             <Link to="/inventory">
@@ -163,7 +271,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/user" ? " activenavbar" : "")
+              (url === "/user" ? " activenavbar" : "") +
+              (roleList.user.access === true ? "" : " hidden")
             }
           >
             <Link to="/user">
@@ -177,7 +286,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/department" ? " activenavbar" : "")
+              (url === "/department" ? " activenavbar" : "") +
+              (roleList.department.access === true ? "" : " hidden")
             }
           >
             <Link to="/department">
@@ -188,7 +298,8 @@ function NavBar() {
           <li
             className={
               "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/kb" ? " activenavbar" : "")
+              (url === "/kb" ? " activenavbar" : "") +
+              (roleList.kb.access === true ? "" : " hidden")
             }
           >
             <Link to="/kb">
