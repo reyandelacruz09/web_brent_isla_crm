@@ -128,14 +128,14 @@ function Products() {
   return (
     <>
       <NavBar />
-      {roleList.products.access ? (
-        <>
-          <AddProduct />
-          <AllProducts />
-        </>
+      {/* {roleList.products.access ? (
+        <> */}
+      <AddProduct />
+      <AllProducts />
+      {/* </>
       ) : (
         <Restricted />
-      )}
+      )} */}
     </>
   );
 }
