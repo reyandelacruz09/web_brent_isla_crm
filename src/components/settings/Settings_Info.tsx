@@ -151,7 +151,7 @@ function Settings_Info() {
                     Voice Link
                   </Typography>
                 </a>
-                <a>
+                <a href="/sms" target="_blank">
                   <Typography
                     variant="body1"
                     component="div"
