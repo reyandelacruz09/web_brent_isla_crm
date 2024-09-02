@@ -21,6 +21,7 @@ import Roles_and_Sharing from "./components/settings/Roles_and_Sharing";
 import Telephony from "./components/settings/Telephony";
 import Restricted from "./pages/Restricted";
 import Ticketing from "./components/settings/ticketing";
+import SMS from "./components/settings/SMS";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="/settings/roles" element={<Roles_and_Sharing />} />
 
           <Route path="/ticketing" element={<Ticketing />} />
+          <Route path="/sms" element={<SMS />} />
           <Route path="/telephony" element={<Telephony />} />
         </Routes>
       </BrowserRouter>
