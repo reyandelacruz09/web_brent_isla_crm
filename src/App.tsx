@@ -20,6 +20,7 @@ import Modal_Create_Profile from "./components/settings/Modal_Create_Profile";
 import Roles_and_Sharing from "./components/settings/Roles_and_Sharing";
 import Telephony from "./components/settings/Telephony";
 import Restricted from "./pages/Restricted";
+import Ticketing from "./components/settings/ticketing";
 
 function App() {
   return (
@@ -53,7 +54,7 @@ function App() {
           <Route path="/settings/profile" element={<Profiles />} />
           <Route path="/settings/roles" element={<Roles_and_Sharing />} />
 
-          <Route path="/testing" element={<Testing_Only />} />
+          <Route path="/ticketing" element={<Ticketing />} />
           <Route path="/telephony" element={<Telephony />} />
         </Routes>
       </BrowserRouter>

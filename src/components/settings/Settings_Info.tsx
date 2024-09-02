@@ -167,7 +167,7 @@ function Settings_Info() {
                     SMS
                   </Typography>
                 </a>
-                <a>
+                <a href="/ticketing" target="_blank">
                   <Typography
                     variant="body1"
                     component="div"
