@@ -71,7 +71,7 @@ const settingsApi = createApi({
             method: "GET",
           };
         },
-        providesTags: ["settings"],
+        // providesTags: ["settings"],
       }),
     };
   },
