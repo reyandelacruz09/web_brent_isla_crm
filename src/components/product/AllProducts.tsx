@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Product from "./Modal_Update_Product";
-import { useProductListQuery } from "../../store";
+import { useGetRolesQuery, useProductListQuery } from "../../store";
 import {
   ReactElement,
   JSXElementConstructor,
@@ -19,6 +19,8 @@ import {
   useEffect,
 } from "react";
 import Modal_Delete_Product from "./Modal_Delete_Product";
+import { EditOutlined } from "@mui/icons-material";
+import { Slide, toast } from "react-toastify";
 
 export interface Product {
   id: string;
@@ -74,6 +76,15 @@ function AllProducts() {
     }
   }, [data, isSuccess]);
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   const renderCell = (params: any) => {
     const isActive = params.colDef.field === "active";
     const isChecked = isActive && params.value === 1;
@@ -85,15 +96,37 @@ function AllProducts() {
         </span>
       );
     } else if (params.colDef.field === "edit") {
-      return (
+      return getRolesAPI.data?.data.products.edit === true ? (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
           <Modal_Update_Product modalid={params.value} />
         </span>
+      ) : (
+        <span
+          className="flex justify-center items-center h-full text-blue-500 cursor-pointer"
+          onClick={() =>
+            toast.warning("You dont have access with your current license!", {
+              transition: Slide,
+            })
+          }
+        >
+          <EditOutlined />
+        </span>
       );
     } else if (params.colDef.field === "delete") {
-      return (
+      return getRolesAPI.data?.data.products.delete === true ? (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
           <Modal_Delete_Product modalid={params.value} />
+        </span>
+      ) : (
+        <span
+          className="flex justify-center items-center h-full text-red-500 cursor-pointer"
+          onClick={() =>
+            toast.warning("You dont have access with your current license!", {
+              transition: Slide,
+            })
+          }
+        >
+          <DeleteForeverOutlinedIcon />
         </span>
       );
     } else if (params.colDef.field === "price") {

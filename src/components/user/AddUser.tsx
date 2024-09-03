@@ -1,6 +1,10 @@
 import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
-import { useBranchListQuery, useClientListQuery } from "../../store";
+import {
+  useBranchListQuery,
+  useClientListQuery,
+  useGetRolesQuery,
+} from "../../store";
 import { useEffect, useState } from "react";
 import { useCreateUserMutation } from "../../store";
 import { Slide, toast } from "react-toastify";
@@ -151,6 +155,14 @@ function AddUser() {
     });
   };
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
   return (
     <>
       <div className="w-full pt-5">
@@ -179,6 +191,9 @@ function AddUser() {
                 size="small"
                 color="primary"
                 onClick={saveUser}
+                disabled={
+                  getRolesAPI.data?.data.user.create === true ? false : true
+                }
               >
                 <span className="">Save</span>
               </Button>

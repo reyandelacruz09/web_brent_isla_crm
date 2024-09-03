@@ -9,13 +9,12 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNoneOutlined";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import LiveHelpOutlinedIcon from "@mui/icons-material/LiveHelpOutlined";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "../App.css";
 import { useEffect, useState } from "react";
-import { Menu, MenuItem, Typography } from "@mui/material";
+import { Menu, MenuItem, Skeleton, Typography } from "@mui/material";
 import React from "react";
 import { useGetRolesQuery } from "../store";
-import { access_roles } from "../Types";
 
 interface AccountDetails {
   id?: string;
@@ -24,8 +23,6 @@ interface AccountDetails {
 }
 
 function NavBar() {
-  let url = window.location.pathname;
-
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
     null
   );
@@ -45,13 +42,9 @@ function NavBar() {
     navigate("/");
   };
 
-  let account_detailed: AccountDetails = {};
-
-  try {
-    account_detailed = JSON.parse(localStorage.getItem("user_info") || "{}");
-  } catch (e) {
-    console.error("Error parsing user info from localStorage", e);
-  }
+  const account_detailed: AccountDetails = JSON.parse(
+    localStorage.getItem("user_info") || "{}"
+  );
 
   useEffect(() => {
     if (!account_detailed.id) {
@@ -59,116 +52,147 @@ function NavBar() {
     }
   }, [account_detailed.id, navigate]);
 
+  const logDateStr = localStorage.getItem("date");
+  let differenceInHours = 0;
+
+  if (logDateStr) {
+    const logDate = new Date(logDateStr);
+    const currentDate = new Date();
+    const differenceInMs = currentDate.getTime() - logDate.getTime();
+    differenceInHours = differenceInMs / (1000 * 60 * 60);
+    if (differenceInHours > 4) {
+      localStorage.clear();
+      navigate("/");
+    } else {
+      localStorage.setItem("date", new Date().toISOString());
+    }
+  }
+
+  const location = useLocation();
+
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
-  const [r_dashboard, setR_dashboard] = useState(true);
-  // const [roleList, setroleList] = useState<access_roles>({
-  //   id: 0,
-  //   dashboard: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   order: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   products: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   branch: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   order_history: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   inventory: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   user: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   department: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   kb: {
-  //     id: 0,
-  //     name: false,
-  //     access: false,
-  //     view: false,
-  //     create: false,
-  //     edit: false,
-  //     delete: false,
-  //   },
-  //   client: "",
-  //   role: "",
-  // });
 
-  const { data: roles, isSuccess: isRolesSuccess } = useGetRolesQuery({
+  const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,
     role: account_detailed1.role || 0,
   });
-  useEffect(() => {
-    if (isRolesSuccess && roles) {
-      // setroleList(roles.data);
-      if (roles.data.products.access === false) {
-        setR_dashboard(false);
-      }
-    }
-  }, [isRolesSuccess, roles]);
 
-  // console.log("RoleList", r_dashboard);
+  const navigation =
+    [
+      {
+        id: 1,
+        path: "/dashboard",
+        label: "Dashboard",
+        icon: (
+          <DashboardOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.dashboard.access,
+      },
+      {
+        id: 2,
+        path: "/order",
+        label: "Order",
+        icon: (
+          <ShoppingCartOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.order.access,
+      },
+      {
+        id: 3,
+        path: "/products",
+        label: "Products",
+        icon: (
+          <LayersOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.products.access,
+      },
+      {
+        id: 4,
+        path: "/branch",
+        label: "Branch",
+        icon: (
+          <AccountTreeOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.branch.access,
+      },
+      {
+        id: 5,
+        path: "/order-history",
+        label: "Order History",
+        icon: (
+          <HistoryOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.order_history.access,
+      },
+      {
+        id: 6,
+        path: "/inventory",
+        label: "Inventory",
+        icon: (
+          <InventoryOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.inventory.access,
+      },
+      {
+        id: 7,
+        path: "/user",
+        label: "User",
+        icon: (
+          <PersonOutlineOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.user.access,
+      },
+      {
+        id: 8,
+        path: "/department",
+        label: "Department",
+        icon: (
+          <BedOutlinedIcon className="align-top wiggle pr-1" fontSize="small" />
+        ),
+        access: getRolesAPI.data?.data.department.access,
+      },
+      {
+        id: 9,
+        path: "/kb",
+        label: "KB",
+        icon: (
+          <LiveHelpOutlinedIcon
+            className="align-top wiggle pr-1"
+            fontSize="small"
+          />
+        ),
+        access: getRolesAPI.data?.data.kb.access,
+      },
+    ] || [];
+
+  const filteredNavigation = navigation.filter((nav) => nav.access);
 
   return (
     <>
       <div className="w-full flex items-center justify-between px-15 py-2 border-b-2 hide-on-print">
-        {/* sm:bg-blue-500 md:bg-green-500 lg:bg-yellow-500 xl:bg-orange-500 2xl:bg-red-500 */}
         <img
           src="../../images/OODC_logo.png"
           alt=""
@@ -181,142 +205,43 @@ function NavBar() {
         />
 
         <ul className="list-none text-center">
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 md:text-sm mx-1.5 text-sm cursor-pointer" +
-              (url === "/dashboard" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/dashboard">
-              <DashboardOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Dashboard</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/order" || url === "/customer-details"
-                ? " activenavbar"
-                : "")
-            }
-          >
-            <Link to="/order">
-              <ShoppingCartOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Order</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer " +
-              (url === "/products" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/products">
-              <LayersOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Products</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/branch" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/branch">
-              <AccountTreeOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Branch</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/order-history" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/order-history">
-              <HistoryOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Order History</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/inventory" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/inventory">
-              <InventoryOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">Inventory</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/user" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/user">
-              <PersonOutlineOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">User</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/department" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/department">
-              <BedOutlinedIcon className="align-top wiggle" fontSize="small" />
-              <a className=" pl-1">Department</a>
-            </Link>
-          </li>
-          <li
-            className={
-              "nav inline-block 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer" +
-              (url === "/kb" ? " activenavbar" : "")
-            }
-          >
-            <Link to="/kb">
-              <LiveHelpOutlinedIcon
-                className="align-top wiggle"
-                fontSize="small"
-              />
-              <a className=" pl-1">KB</a>
-            </Link>
-          </li>
+          {getRolesAPI.isLoading ? (
+            <Skeleton />
+          ) : getRolesAPI.error ? (
+            "No data available"
+          ) : (
+            filteredNavigation.map((entry: any) => {
+              let classStyle: string;
+              entry.path !== location.pathname
+                ? entry.path === "/order" &&
+                  location.pathname === "/customer-details"
+                  ? (classStyle =
+                      " inline-block nav 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer activenavbar")
+                  : (classStyle =
+                      " inline-block nav 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer")
+                : (classStyle =
+                    " inline-block nav 2xl:mx-4 2xl:py-2 xl:mx-3 xl:py-2 lg:mx-2 md:mx-2 mx-1.5 text-sm cursor-pointer activenavbar");
+              return (
+                <li key={entry.id} className={classStyle}>
+                  <Link to={entry.path}>
+                    {entry.icon}
+                    {entry.label}
+                  </Link>
+                </li>
+              );
+            })
+          )}
         </ul>
 
         <div className="flex items-center gap-5">
           <div
-            className={
-              url === "/settings" ||
-              url === "/settings/profile" ||
-              url === "/settings/roles"
+            className={`cursor-pointer ${
+              window.location.pathname === "/settings" ||
+              window.location.pathname === "/settings/profile" ||
+              window.location.pathname === "/settings/roles"
                 ? " activenavbar"
                 : ""
-            }
+            }`}
           >
             <Link to="/settings">
               <SettingsOutlinedIcon className="cursor-pointer wiggle nav" />

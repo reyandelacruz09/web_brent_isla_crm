@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {
   useClientCategoryListQuery,
   useCreateClientMutation,
+  useGetRolesQuery,
 } from "../../store";
 import { Slide, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -134,15 +135,14 @@ function AddDepartment() {
     });
   };
 
-  // const productcategory = useClientCategoryListQuery("");
-  // const [listCategory, setListCategory] = useState<ClientCategory[]>([]);
-  // useEffect(() => {
-  //   if (productcategory.isSuccess) {
-  //     const category_result =
-  //       ((productcategory.data as any).data as ClientCategory[]) || [];
-  //     setListCategory(category_result);
-  //   }
-  // }, [productcategory.isSuccess, productcategory.data]);
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
 
   return (
     <>
@@ -173,6 +173,11 @@ function AddDepartment() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  disabled={
+                    getRolesAPI.data?.data.department.create === true
+                      ? false
+                      : true
+                  }
                 >
                   <span className="">Save</span>
                 </Button>

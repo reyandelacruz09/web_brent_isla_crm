@@ -7,6 +7,7 @@ import {
   useBarangayListQuery,
   useClientListQuery,
   useCreateBranchMutation,
+  useGetRolesQuery,
 } from "../../store";
 import { useEffect, useState } from "react";
 import Branch from "../../pages/Branch";
@@ -255,6 +256,15 @@ function AddBranch() {
     setSelectedCityId("0");
   };
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   return (
     <>
       <div className="w-full pt-5">
@@ -283,6 +293,9 @@ function AddBranch() {
                 size="small"
                 color="primary"
                 onClick={saveBranch}
+                disabled={
+                  getRolesAPI.data?.data.branch.create === true ? false : true
+                }
               >
                 <span className="">Save</span>
               </Button>

@@ -20,6 +20,7 @@ import {
   useCreateOrderMutation,
   useViewBranchQuery,
   useCustomerInfoQuery,
+  useGetRolesQuery,
 } from "../../store";
 import { Client } from "../product/AddProduct";
 
@@ -344,6 +345,11 @@ export default function CustomizedDialogs() {
     }
   };
 
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   return (
     <React.Fragment>
       <Button
@@ -353,6 +359,7 @@ export default function CustomizedDialogs() {
         tabIndex={-1}
         startIcon={<AddIcon />}
         onClick={handleClickOpen}
+        disabled={getRolesAPI.data?.data.order.create === true ? false : true}
       >
         Create New Order
       </Button>
@@ -391,16 +398,6 @@ export default function CustomizedDialogs() {
                 >
                   <span className="">Locate Address</span>
                 </Button>
-                {/* <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                >
-                  <span className="">Print Preview</span>
-                </Button> */}
               </div>
             </div>
           </div>
@@ -462,11 +459,6 @@ export default function CustomizedDialogs() {
             </Button>
           </div>
         </DialogContent>
-        {/* <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Save changes
-          </Button>
-        </DialogActions> */}
       </BootstrapDialog>
     </React.Fragment>
   );
