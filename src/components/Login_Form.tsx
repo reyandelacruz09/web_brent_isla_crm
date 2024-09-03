@@ -55,27 +55,21 @@ function Login_Form() {
   };
 
   let navigate = useNavigate();
+  const logDateStr = localStorage.getItem("date");
+  let differenceInHours = 0;
 
-  React.useEffect(() => {
-    const token = localStorage.getItem("mytoken");
-    const logDateStr = localStorage.getItem("date");
-    let differenceInHours = 0;
-
-    if (logDateStr) {
-      const logDate = new Date(logDateStr);
-      const currentDate = new Date();
-      const differenceInMs = currentDate.getTime() - logDate.getTime();
-      differenceInHours = differenceInMs / (1000 * 60 * 60);
+  if (logDateStr) {
+    const logDate = new Date(logDateStr);
+    const currentDate = new Date();
+    const differenceInMs = currentDate.getTime() - logDate.getTime();
+    differenceInHours = differenceInMs / (1000 * 60 * 60);
+    if (differenceInHours > 4) {
+      localStorage.clear();
+      navigate("/");
+    } else {
+      localStorage.setItem("date", new Date().toISOString());
     }
-
-    if (token) {
-      console.log(differenceInHours);
-      if (differenceInHours > 4) {
-      } else {
-        //navigate("/dashboard");
-      }
-    }
-  }, [navigate]);
+  }
 
   let email = username;
   const login = async (event: { preventDefault: () => void }) => {

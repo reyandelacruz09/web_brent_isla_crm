@@ -23,6 +23,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
+  useGetRolesQuery,
   useUpdateOrderMutation,
 } from "../../store";
 import { Avatar } from "@mui/material";
@@ -247,6 +248,11 @@ export default function Modal_Show_All_Details({
     }
   };
 
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   return (
     <React.Fragment>
       <div className="hide-on-print">
@@ -388,7 +394,15 @@ export default function Modal_Show_All_Details({
                   >
                     <FormControlLabel
                       value="1"
-                      control={<Radio />}
+                      control={
+                        <Radio
+                          disabled={
+                            getRolesAPI.data?.data.order.edit === true
+                              ? false
+                              : true
+                          }
+                        />
+                      }
                       label={<span className="text-sm">Call Type</span>}
                       sx={{
                         "& .MuiSvgIcon-root": {
@@ -398,7 +412,15 @@ export default function Modal_Show_All_Details({
                     />
                     <FormControlLabel
                       value="2"
-                      control={<Radio />}
+                      control={
+                        <Radio
+                          disabled={
+                            getRolesAPI.data?.data.order.edit === true
+                              ? false
+                              : true
+                          }
+                        />
+                      }
                       label={<span className="text-sm">Complaint</span>}
                       sx={{
                         "& .MuiSvgIcon-root": {
@@ -426,7 +448,11 @@ export default function Modal_Show_All_Details({
                       variant="standard"
                       className="mt-0 w-full border-none"
                       name="call_type"
-                      disabled={disabledButton}
+                      disabled={
+                        getRolesAPI.data?.data.order.edit === true
+                          ? false
+                          : true
+                      }
                       value={orderType.call_type}
                       onChange={handleInput}
                     >

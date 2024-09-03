@@ -4,29 +4,35 @@ import AddDepartment from "../components/department/AddDepartment";
 import AllDepartment from "../components/department/AllDepartment";
 import { Slide, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Restricted from "./Restricted";
+import { useGetRolesQuery } from "../store";
 
 function Department() {
-  const logDateStr = localStorage.getItem("date");
-  let differenceInHours = 0;
-  let navigate = useNavigate();
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
 
-  if (logDateStr) {
-    const logDate = new Date(logDateStr);
-    const currentDate = new Date();
-    const differenceInMs = currentDate.getTime() - logDate.getTime();
-    differenceInHours = differenceInMs / (1000 * 60 * 60);
-    if (differenceInHours > 4) {
-      localStorage.clear();
-      navigate("/");
-    } else {
-      localStorage.setItem("date", new Date().toISOString());
-    }
-  }
+  const content =
+    getRolesAPI.data?.data.department.access === true ? (
+      <div>
+        <AddDepartment />
+        <AllDepartment />
+      </div>
+    ) : getRolesAPI.data?.data.department.access === false ? (
+      <div>
+        <Restricted />
+      </div>
+    ) : (
+      <div></div>
+    );
   return (
     <>
       <NavBar />
-      <AddDepartment />
-      <AllDepartment />
+      {content}
     </>
   );
 }

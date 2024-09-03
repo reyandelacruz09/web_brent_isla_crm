@@ -8,7 +8,7 @@ import DialogActions from "@mui/material/DialogActions";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
-import { useAddInventoryMutation } from "../../store";
+import { useAddInventoryMutation, useGetRolesQuery } from "../../store";
 import { Slide, toast } from "react-toastify";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
@@ -87,10 +87,28 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
     }
   };
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   return (
     <React.Fragment>
       <div className="pb-5 pt-2 flex justify-end">
-        <Button variant="contained" onClick={handleClickOpen} disabled={!pid}>
+        <Button
+          variant="contained"
+          onClick={handleClickOpen}
+          //disabled={!pid}
+          disabled={
+            getRolesAPI.data?.data.inventory.create === true && pid
+              ? false
+              : true
+          }
+        >
           Add Quantity
         </Button>
       </div>

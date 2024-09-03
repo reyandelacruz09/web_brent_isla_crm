@@ -13,6 +13,7 @@ import {
   useClientListQuery,
   useBranchListQuery,
   useCategoryListQuery,
+  useGetRolesQuery,
 } from "../../store";
 import { Slide, toast } from "react-toastify";
 
@@ -157,8 +158,14 @@ function AddProduct() {
     }
   }, [productcategory.isSuccess, productcategory.data]);
 
-  // console.warn(listCategory);
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
 
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
   return (
     <>
       <form onSubmit={saveProduct}>
@@ -199,6 +206,11 @@ function AddProduct() {
                   tabIndex={-1}
                   size="small"
                   color="primary"
+                  disabled={
+                    getRolesAPI.data?.data.products.create === true
+                      ? false
+                      : true
+                  }
                 >
                   <span className="">Save</span>
                 </Button>
@@ -255,7 +267,6 @@ function AddProduct() {
                     name="category"
                     value={product.category || ""}
                     onChange={handleInput}
-                    id="rec_mode"
                     className={`bg-gray-50 border ${
                       validationErrors.category
                         ? "border-red-500"
@@ -280,7 +291,6 @@ function AddProduct() {
                 <div className="relative mb-6 ">
                   <input
                     type="text"
-                    id="input-group-1"
                     name="code"
                     value={product.code}
                     onChange={handleInput}
@@ -300,7 +310,6 @@ function AddProduct() {
                 <div className="relative mb-6">
                   <input
                     type="text"
-                    id="input-group-1"
                     name="name"
                     value={product.name}
                     onChange={handleInput}
@@ -309,6 +318,7 @@ function AddProduct() {
                         ? "border-red-500"
                         : "border-gray-300"
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
+                    autoComplete="false"
                   />
                   <FormControlLabel
                     className="absolute top-0 right-0"
@@ -330,7 +340,6 @@ function AddProduct() {
                 <div className="relative mb-6">
                   <input
                     type="number"
-                    id="input-group-1"
                     name="price"
                     value={product.price}
                     onChange={handleInput}
@@ -350,7 +359,6 @@ function AddProduct() {
                 <div className="relative mb-6">
                   <input
                     type="number"
-                    id="input-group-1"
                     name="discount"
                     value={product.discount}
                     onChange={handleInput}
@@ -369,7 +377,6 @@ function AddProduct() {
                 </label>
                 <div className="relative mb-6 ">
                   <textarea
-                    id="input-group-1"
                     name="description"
                     value={product.description}
                     onChange={handleInput}

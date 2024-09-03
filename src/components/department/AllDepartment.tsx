@@ -8,9 +8,11 @@ import {
 import { Checkbox, Skeleton } from "@mui/material";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import Modal_Update_Department from "./Modal_Update_Department";
-import { useClientListQuery } from "../../store";
+import { useClientListQuery, useGetRolesQuery } from "../../store";
 import { useEffect, useState } from "react";
 import Modal_Delete_Client from "./Modal_Delete_Client";
+import { Slide, toast } from "react-toastify";
+import { EditOutlined } from "@mui/icons-material";
 
 interface Client {
   id: string;
@@ -85,6 +87,15 @@ function AllDepartment() {
     client.depname.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
   const renderCell = (params: any) => {
     const isActive = params.colDef.field === "active";
     const isChecked = isActive && params.value === 1;
@@ -96,9 +107,20 @@ function AllDepartment() {
         </span>
       );
     } else if (params.colDef.field === "edit") {
-      return (
+      return getRolesAPI.data?.data.department.edit === true ? (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
           <Modal_Update_Department modalid={params.value} />
+        </span>
+      ) : (
+        <span
+          className="flex justify-center items-center h-full text-blue-500 cursor-pointer"
+          onClick={() =>
+            toast.warning("You dont have access with your current license!", {
+              transition: Slide,
+            })
+          }
+        >
+          <EditOutlined />
         </span>
       );
     }

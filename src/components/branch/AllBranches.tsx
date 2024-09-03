@@ -9,9 +9,11 @@ import {
 } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import Modal_Update_Branch from "./Modal_Update_Branch";
-import { useBranchListQuery } from "../../store";
+import { useBranchListQuery, useGetRolesQuery } from "../../store";
 import { useEffect, useState } from "react";
 import Modal_Delete_Branch from "./Modal_Delete_Branch";
+import { Slide, toast } from "react-toastify";
+import { EditOutlined } from "@mui/icons-material";
 
 interface Branch {
   data: any;
@@ -73,12 +75,18 @@ function AllBranches() {
           data: undefined,
         });
       }
-
-      //console.warn(size);
-
       setContent(branches);
     }
   }, [data, isSuccess]);
+
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
 
   const renderCell = (params: any) => {
     const isActive = params.colDef.field === "active";
@@ -91,16 +99,37 @@ function AllBranches() {
         </span>
       );
     } else if (params.colDef.field === "edit") {
-      return (
+      return getRolesAPI.data?.data.branch.edit === true ? (
         <span className="flex justify-center items-center h-full text-blue-500 cursor-pointer">
           <Modal_Update_Branch modalid={params.value} />
         </span>
+      ) : (
+        <span
+          className="flex justify-center items-center h-full text-blue-500 cursor-pointer"
+          onClick={() =>
+            toast.warning("You dont have access with your current license!", {
+              transition: Slide,
+            })
+          }
+        >
+          <EditOutlined />
+        </span>
       );
     } else if (params.colDef.field === "delete") {
-      return (
+      return getRolesAPI.data?.data.branch.delete === true ? (
         <span className="flex justify-center items-center h-full text-red-500 cursor-pointer">
           <Modal_Delete_Branch modalid={params.value} />
-          {/* <DeleteForeverOutlinedIcon /> */}
+        </span>
+      ) : (
+        <span
+          className="flex justify-center items-center h-full text-red-500 cursor-pointer"
+          onClick={() =>
+            toast.warning("You dont have access with your current license!", {
+              transition: Slide,
+            })
+          }
+        >
+          <DeleteForeverOutlinedIcon />
         </span>
       );
     }

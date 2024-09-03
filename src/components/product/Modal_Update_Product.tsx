@@ -11,12 +11,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import EditOutlined from "@mui/icons-material/EditOutlined";
 import ProductInformation from "./ProductInformation";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import { Checkbox, FormControlLabel, Skeleton } from "@mui/material";
 import {
   useViewProductQuery,
   useUpdateProductMutation,
   useBranchListQuery,
   useCategoryListQuery,
+  useGetRolesQuery,
 } from "../../store";
 
 import { useEffect, useState } from "react";
@@ -73,6 +74,18 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     setOpen(false);
   };
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
+
+  console.log(getRolesAPI.data?.data.products.edit);
+  console.log("Hello from other me");
+
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setUpdateProduct({
@@ -90,7 +103,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   result = data;
 
   React.useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && data) {
       let result: any = [];
       let content: any = [];
       result = data;
@@ -140,7 +153,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   const clients = useBranchListQuery("");
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
-    if (clients.isSuccess) {
+    if (clients.isSuccess && clients.data) {
       const result = clients.data?.data || [];
       setContent(result);
     }
@@ -149,7 +162,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   const productcategory = useCategoryListQuery("");
   const [listCategory, setListCategory] = useState<PCategory[]>([]);
   useEffect(() => {
-    if (productcategory.isSuccess) {
+    if (productcategory.isSuccess && productcategory.data) {
       const category_result =
         ((productcategory.data as any).data as PCategory[]) || [];
       setListCategory(category_result);
@@ -157,229 +170,233 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   }, [productcategory.isSuccess, productcategory.data]);
 
   return (
-    <form>
-      <React.Fragment>
-        <EditOutlined onClick={handleClickOpen} />
-        <BootstrapDialog
-          onClose={handleClose}
-          aria-labelledby="customized-dialog-title"
-          open={open}
-          fullWidth
-          maxWidth="lg"
-        >
-          <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
-            <div className="flex">
-              <div className="w-1/3">
-                <p>ID: {modalid}</p>
-              </div>
-              <div className="w-2/3 flex justify-end pr-10">
-                <div className="flex gap-3">
-                  <Button
-                    component="label"
-                    variant="contained"
-                    className="w-32 pt-2"
-                    tabIndex={-1}
-                    size="small"
-                    color="primary"
-                    onClick={handleClose}
-                  >
-                    <span className="">Cancel</span>
-                  </Button>
-                  <Button
-                    component="label"
-                    variant="contained"
-                    className="w-36 pt-2"
-                    tabIndex={-1}
-                    size="small"
-                    color="primary"
-                    onClick={saveProduct}
-                  >
-                    <span className="">Save and Close</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </DialogTitle>
-          <IconButton
-            aria-label="close"
-            onClick={handleClose}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
+    <>
+      <form>
+        <React.Fragment>
+          <EditOutlined onClick={handleClickOpen} />
+          {/* {getRolesAPI.data?.data.products.edit === false ? (
+            toast.warn(
+              "You dont have permission to edit with your current license!",
+              {
+                transition: Slide,
+              }
+            )
+          ) : ( */}
+          <BootstrapDialog
+            onClose={handleClose}
+            aria-labelledby="customized-dialog-title"
+            open={open}
+            fullWidth
+            maxWidth="lg"
           >
-            <CloseIcon />
-          </IconButton>
-          <DialogContent dividers>
-            {/* <hr className="mt-3" /> */}
-            <div className="grid grid-cols-3">
-              <div className="col-span-3">
-                <span className="text-lg font-bold">
-                  <KeyboardAltOutlinedIcon className="align-top" /> Product
-                  Information
-                </span>
-              </div>
-
-              <div className="pt-5 mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Code
-                </label>
-                <div className="relative mb-6">
-                  <input
-                    type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
-                    name="code"
-                    value={updateProduct.code}
-                    disabled
-                  />
+            <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
+              <div className="flex">
+                <div className="w-1/3">
+                  <p>ID: {modalid}</p>
+                </div>
+                <div className="w-2/3 flex justify-end pr-10">
+                  <div className="flex gap-3">
+                    <Button
+                      component="label"
+                      variant="contained"
+                      className="w-32 pt-2"
+                      tabIndex={-1}
+                      size="small"
+                      color="primary"
+                      onClick={handleClose}
+                    >
+                      <span className="">Cancel</span>
+                    </Button>
+                    <Button
+                      component="label"
+                      variant="contained"
+                      className="w-36 pt-2"
+                      tabIndex={-1}
+                      size="small"
+                      color="primary"
+                      onClick={saveProduct}
+                    >
+                      <span className="">Save and Close</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
-              <div className="pt-5 mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Name
-                </label>
-                <div className="relative mb-6">
-                  <input
-                    type="text"
-                    id="input-group-1"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pr-24"
-                    placeholder=""
-                    name="name"
-                    value={updateProduct.name}
-                    onChange={handleInput}
-                  />
-                  <FormControlLabel
-                    className="absolute top-0 right-0"
-                    control={
-                      <Checkbox
-                        onChange={handleInput}
-                        defaultChecked={condition}
-                        name="active"
-                      />
-                    }
-                    label="Active"
-                  />
+            </DialogTitle>
+            <IconButton
+              aria-label="close"
+              onClick={handleClose}
+              sx={{
+                position: "absolute",
+                right: 8,
+                top: 8,
+                color: (theme) => theme.palette.grey[500],
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+            <DialogContent dividers>
+              {/* <hr className="mt-3" /> */}
+              <div className="grid grid-cols-3">
+                <div className="col-span-3">
+                  <span className="text-lg font-bold">
+                    <KeyboardAltOutlinedIcon className="align-top" /> Product
+                    Information
+                  </span>
                 </div>
-              </div>
 
-              <div className="pt-5 mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Owner
-                </label>
-                <div className="relative mb-6 ">
-                  <select
-                    name="owner"
-                    value={updateProduct.owner || ""}
-                    onChange={handleInput}
-                    id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                  >
-                    <option value="" disabled>
-                      Choose One
-                    </option>
-                    {content.map((listOption: any) => (
-                      <option key={listOption.id} value={listOption.id}>
-                        {listOption.name}
+                <div className="pt-5 mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Product Code
+                  </label>
+                  <div className="relative mb-6">
+                    <input
+                      type="text"
+                      id="input-group-1"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                      name="code"
+                      value={updateProduct.code}
+                      disabled
+                    />
+                  </div>
+                </div>
+                <div className="pt-5 mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Product Name
+                  </label>
+                  <div className="relative mb-6">
+                    <input
+                      type="text"
+                      id="input-group-1"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 pr-24"
+                      placeholder=""
+                      name="name"
+                      value={updateProduct.name}
+                      onChange={handleInput}
+                    />
+                    <FormControlLabel
+                      className="absolute top-0 right-0"
+                      control={
+                        <Checkbox
+                          onChange={handleInput}
+                          defaultChecked={condition}
+                          name="active"
+                        />
+                      }
+                      label="Active"
+                    />
+                  </div>
+                </div>
+
+                <div className="pt-5 mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Product Owner
+                  </label>
+                  <div className="relative mb-6 ">
+                    <select
+                      name="owner"
+                      value={updateProduct.owner || ""}
+                      onChange={handleInput}
+                      id="rec_mode"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    >
+                      <option value="" disabled>
+                        Choose One
                       </option>
-                    ))}
-                  </select>
+                      {content.map((listOption: any) => (
+                        <option key={listOption.id} value={listOption.id}>
+                          {listOption.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-              </div>
 
-              <div className="mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Category
-                </label>
-                <div className="relative mb-6 ">
-                  <select
-                    name="category"
-                    value={updateProduct.category || ""}
-                    onChange={handleInput}
-                    id="rec_mode"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                  >
-                    <option value="" disabled>
-                      Choose One
-                    </option>
-                    {listCategory.map((listcate: any) => (
-                      <option key={listcate.id} value={listcate.id}>
-                        {listcate.name}
+                <div className="mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Product Category
+                  </label>
+                  <div className="relative mb-6 ">
+                    <select
+                      name="category"
+                      value={updateProduct.category || ""}
+                      onChange={handleInput}
+                      id="rec_mode"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                    >
+                      <option value="" disabled>
+                        Choose One
                       </option>
-                    ))}
-                  </select>
+                      {listCategory.map((listcate: any) => (
+                        <option key={listcate.id} value={listcate.id}>
+                          {listcate.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                <div className="mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Unit Price
+                  </label>
+                  <div className="relative mb-6">
+                    <input
+                      type="number"
+                      id="input-group-1"
+                      className="text-right bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                      name="price"
+                      value={updateProduct.price}
+                      onChange={handleInput}
+                    />
+                  </div>
+                </div>
+
+                <div className="mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Discount
+                  </label>
+                  <div className="relative mb-6">
+                    <input
+                      type="number"
+                      id="input-group-1"
+                      className="text-right bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                      placeholder=""
+                      name="discount"
+                      value={updateProduct.discount}
+                      onChange={handleInput}
+                    />
+                  </div>
+                </div>
+
+                <div className=" mr-5">
+                  <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                    Product Description
+                  </label>
+                  <div className="relative mb-6">
+                    <textarea
+                      id="input-group-1"
+                      name="description"
+                      value={updateProduct.description}
+                      onChange={handleInput}
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                      placeholder=""
+                    ></textarea>
+                  </div>
                 </div>
               </div>
-
-              <div className="mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Unit Price
-                </label>
-                <div className="relative mb-6">
-                  <input
-                    type="number"
-                    id="input-group-1"
-                    className="text-right bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
-                    name="price"
-                    value={updateProduct.price}
-                    onChange={handleInput}
-                  />
-                </div>
-              </div>
-
-              <div className="mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Discount
-                </label>
-                <div className="relative mb-6">
-                  <input
-                    type="number"
-                    id="input-group-1"
-                    className="text-right bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder=""
-                    name="discount"
-                    value={updateProduct.discount}
-                    onChange={handleInput}
-                  />
-                </div>
-              </div>
-
-              <div className=" mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Description
-                </label>
-                <div className="relative mb-6">
-                  <textarea
-                    id="input-group-1"
-                    name="description"
-                    value={updateProduct.description}
-                    onChange={handleInput}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
-                    placeholder=""
-                  ></textarea>
-                </div>
-              </div>
-
-              {/* <div className=" mr-5">
-                <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Bar Code
-                </label>
-                <div className="relative mb-6"></div>
-              </div> */}
-            </div>
-          </DialogContent>
-          <DialogActions>
-            <Button autoFocus onClick={saveProduct}>
-              Save changes
-            </Button>
-          </DialogActions>
-        </BootstrapDialog>
-      </React.Fragment>
-    </form>
+            </DialogContent>
+            <DialogActions>
+              <Button autoFocus onClick={saveProduct}>
+                Save changes
+              </Button>
+            </DialogActions>
+          </BootstrapDialog>
+          {/* )} */}
+        </React.Fragment>
+      </form>
+    </>
   );
 };
 
