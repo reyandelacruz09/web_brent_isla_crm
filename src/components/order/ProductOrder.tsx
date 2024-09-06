@@ -28,7 +28,7 @@ import {
   GridColDef,
   GridRowParams,
 } from "@mui/x-data-grid";
-import { useProductListQuery } from "../../store"; // Adjust this import based on your actual query hook
+import { useProductListQuery, useProductListBranchQuery } from "../../store"; // Adjust this import based on your actual query hook
 
 // Define interfaces for the props and state
 interface Product {
@@ -50,6 +50,7 @@ interface ProductOrderItem {
 }
 
 interface ProductOrderProps {
+  branch: string;
   productOrder: ProductOrderItem[];
   setProductOrder: React.Dispatch<React.SetStateAction<ProductOrderItem[]>>;
   productOrderTotal: {
@@ -73,12 +74,13 @@ const StyledTableCell = styled(TableCell)({
 });
 
 const ProductOrder: React.FC<ProductOrderProps> = ({
+  branch,
   productOrder,
   setProductOrder,
   productOrderTotal,
   setProductOrderTotal,
 }) => {
-  const product = useProductListQuery("");
+  const product = useProductListBranchQuery({ branch: branch });
   const [productList, setProductList] = useState<Product[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

@@ -14,34 +14,52 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { usePieChartQuery, useProductChartQuery } from "../../store";
 
 function Chart1() {
-  const Products = [
-    { name: "Product1", value: 4 },
-    { name: "Product2", value: 3 },
-    { name: "Product3", value: 6 },
-    { name: "Product4", value: 7 },
-    { name: "Product5", value: 8 },
-    { name: "Product6", value: 3 },
-    { name: "Product7", value: 9 },
-    { name: "Product8", value: 15 },
-    { name: "Product9", value: 20 },
-    { name: "Product10", value: 3 },
-  ];
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
 
-  const PaymentType = [
-    { name: "Cash", value: 16 },
-    { name: "Gcash", value: 10 },
-    { name: "PayMaya", value: 25 },
-    { name: "Card", value: 5 },
-  ];
+  const getChart1Api = usePieChartQuery({
+    branch: account_detailed1.branch.id,
+  });
+  const getProductChart = useProductChartQuery({
+    branch: account_detailed1.branch.id,
+  });
 
-  const PieData = [
-    { name: "Cash", value: 16 },
-    { name: "Gcash", value: 10 },
-    { name: "PayMaya", value: 25 },
-    { name: "Card", value: 5 },
+  const Products: any = [];
+  const PaymentType: any = [];
+  const PieData: any = [];
+
+  const Products1: any = [
+    {
+      name: "Lays",
+      value: 5,
+      value1: 7,
+    },
+    {
+      name: "Coke",
+      value: 2,
+      value1: 6,
+    },
   ];
+  if (getChart1Api.isSuccess) {
+    const Data = getChart1Api.data?.data;
+
+    Data.forEach((item: any) => {
+      PaymentType.push({ name: item.name, value: item.value });
+      PieData.push({ name: item.name, value: item.value });
+    });
+  }
+
+  if (getProductChart.isSuccess) {
+    const Data = getProductChart.data?.data;
+
+    Data.forEach((item: any) => {
+      Products.push({ name: item.name, value: item.value });
+    });
+  }
 
   return (
     <div className="w-full pt-5 flex justify-center">
@@ -57,10 +75,10 @@ function Chart1() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   className=""
-                  width={600}
+                  width={500}
                   height={300}
                   data={Products}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
@@ -72,7 +90,9 @@ function Chart1() {
                   />
                   <YAxis />
                   <Tooltip />
-                  <Bar dataKey="value" fill="#8884d8" />
+                  <Bar dataKey="value" fill="#82ca9d" maxBarSize={50}>
+                    <LabelList dataKey="value" position="top" />
+                  </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -84,11 +104,10 @@ function Chart1() {
               </div>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
-                  className=""
                   width={300}
                   height={300}
                   data={PaymentType}
-                  margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                 >
                   <XAxis
                     dataKey="name"
@@ -99,7 +118,7 @@ function Chart1() {
                   />
                   {/* <YAxis /> */}
                   <Tooltip />
-                  <Bar dataKey="value" fill="#8884d8">
+                  <Bar dataKey="value" fill="#8884d8" maxBarSize={50}>
                     <LabelList dataKey="value" position="top" />
                   </Bar>
                 </BarChart>
@@ -122,7 +141,7 @@ function Chart1() {
                     outerRadius={80}
                     fill="#8884d8"
                   >
-                    {PieData.map((entry, index) => (
+                    {PieData.map((entry: any, index: any) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={

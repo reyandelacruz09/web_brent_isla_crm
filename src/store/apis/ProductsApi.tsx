@@ -41,6 +41,16 @@ const productApi = createApi({
         },
         providesTags: ["products"],
       }),
+      ProductListBranch: builder.query({
+        query: ({ branch }) => {
+          return {
+            url: `/api/products/product_list_branch/?branch=${branch}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["products"],
+      }),
       CreateProduct: builder.mutation({
         query: (formBody) => {
           return {
@@ -139,6 +149,7 @@ const productApi = createApi({
 
 export const {
   useProductListQuery,
+  useProductListBranchQuery,
   useCreateProductMutation,
   useViewProductQuery,
   useUpdateProductMutation,

@@ -7,6 +7,7 @@ import { branchApi } from "../store/apis/BranchApi";
 import { orderApi } from "../store/apis/OrderApi";
 import { userApi } from "../store/apis/UserApi";
 import { settingsApi } from "../store/apis/SettingsApi";
+import { dashboardApi } from "./apis/DashboardAPI";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -18,6 +19,7 @@ export const store = configureStore({
     [orderApi.reducerPath]: orderApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
+    [dashboardApi.reducerPath]: dashboardApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -27,13 +29,15 @@ export const store = configureStore({
       .concat(branchApi.middleware)
       .concat(orderApi.middleware)
       .concat(userApi.middleware)
-      .concat(settingsApi.middleware);
+      .concat(settingsApi.middleware)
+      .concat(dashboardApi.middleware);
   },
 });
 
 setupListeners(store.dispatch);
 export {
   useProductListQuery,
+  useProductListBranchQuery,
   useCreateProductMutation,
   useViewProductQuery,
   useUpdateProductMutation,
@@ -95,3 +99,8 @@ export {
   useUpdateRoleMutation,
   useGetRolesQuery,
 } from "../store/apis/SettingsApi";
+export {
+  useDashTotalProductsQuery,
+  usePieChartQuery,
+  useProductChartQuery,
+} from "../store/apis/DashboardAPI";
