@@ -48,6 +48,7 @@ const columns: GridColDef[] = [
 function AllProducts() {
   const { data, error, isLoading, isSuccess } = useProductListQuery("");
   const [content, setContent] = useState<Product[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     if (isSuccess) {
@@ -84,6 +85,17 @@ function AllProducts() {
     client: account_detailed1.department?.id || 0,
     role: account_detailed1.role || 0,
   });
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredContent = content.filter(
+    (product) =>
+      product.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.owner.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const renderCell = (params: any) => {
     const isActive = params.colDef.field === "active";
@@ -154,6 +166,8 @@ function AllProducts() {
                 name="discount"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
                 placeholder="Search Product"
+                value={searchQuery}
+                onChange={handleSearch}
               />
             </div>
           </div>
@@ -179,7 +193,7 @@ function AllProducts() {
                           outline: "none",
                         },
                     }}
-                    rows={content}
+                    rows={filteredContent}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,

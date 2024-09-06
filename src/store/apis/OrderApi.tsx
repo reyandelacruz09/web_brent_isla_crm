@@ -9,7 +9,7 @@ const orderApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
-  tagTypes: ["order"],
+  tagTypes: ["order", "dashboard"],
   endpoints(builder) {
     return {
       CreateOrder: builder.mutation({
@@ -25,7 +25,7 @@ const orderApi = createApi({
             method: "POST",
           };
         },
-        invalidatesTags: ["order"],
+        invalidatesTags: ["order", "dashboard"],
       }),
       OrderList: builder.query({
         query: () => {
@@ -80,7 +80,7 @@ const orderApi = createApi({
             method: "POST",
           };
         },
-        invalidatesTags: ["order"],
+        invalidatesTags: ["order", "dashboard"],
       }),
       OrderGetStatus: builder.query({
         query: (id) => {
@@ -152,7 +152,7 @@ const orderApi = createApi({
             method: "POST",
           };
         },
-        invalidatesTags: ["order"],
+        invalidatesTags: ["order", "dashboard"],
       }),
       ///api/order/view_complaints
       ViewComplaints: builder.query({

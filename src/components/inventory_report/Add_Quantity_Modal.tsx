@@ -10,6 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { useAddInventoryMutation, useGetRolesQuery } from "../../store";
 import { Slide, toast } from "react-toastify";
+import { Typography } from "@mui/material";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -41,6 +42,7 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
   const [addQuantity, setAddQuantity] = useState({
     product: "",
     quantity: "",
+    price: "",
     issuedby: "",
     type: 1,
   });
@@ -133,14 +135,38 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers className="flex justify-center">
-          <input
-            type="number"
-            id="input-group-1"
-            className="bg-gray-100 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-right"
-            autoComplete="off"
-            onChange={handleInput}
-            name="quantity"
-          />
+          <div className="flex gap-5">
+            <div className="flex w-full">
+              <div className="grid place-items-center pr-5">
+                <Typography>Quantity: </Typography>
+              </div>
+              <div className="w-3/4 bg-green-100">
+                <input
+                  type="number"
+                  id="quantity"
+                  className="bg-gray-100 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-right"
+                  autoComplete="off"
+                  onChange={handleInput}
+                  name="quantity"
+                />
+              </div>
+            </div>
+            <div className="flex w-full">
+              <div className="grid place-items-center pr-5">
+                <Typography>Price: </Typography>
+              </div>
+              <div className="w-3/4 bg-green-100">
+                <input
+                  type="number"
+                  id="price"
+                  className="bg-gray-100 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 w-full text-right"
+                  autoComplete="off"
+                  onChange={handleInput}
+                  name="price"
+                />
+              </div>
+            </div>
+          </div>
         </DialogContent>
         <DialogActions>
           <div className="w-full flex">

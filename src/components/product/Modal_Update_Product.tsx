@@ -84,7 +84,6 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   });
 
   console.log(getRolesAPI.data?.data.products.edit);
-  console.log("Hello from other me");
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;

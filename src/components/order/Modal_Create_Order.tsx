@@ -426,6 +426,7 @@ export default function CustomizedDialogs() {
 
           <hr className="mt-3" />
           <ProductOrder
+            branch={customerData.branch}
             productOrder={productOrder}
             setProductOrder={setProductOrder}
             productOrderTotal={productOrderTotal}
