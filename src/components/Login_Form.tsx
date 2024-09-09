@@ -112,7 +112,7 @@ function Login_Form() {
 
             <div className="flex justify-center">
               <div className="w-5/6 pb-5">
-                <Typography>Sign in to OOG Ordering System</Typography>
+                <Typography>Sign in to OOG System</Typography>
               </div>
             </div>
             <div className="flex justify-center">
