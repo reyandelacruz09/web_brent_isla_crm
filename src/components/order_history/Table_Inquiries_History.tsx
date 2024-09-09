@@ -34,37 +34,41 @@ function Table_Inquiries_History() {
       let result: any = [];
       result = data;
 
-      const size = Object.keys(result.data).length;
+      const size = result.data?.length || 0;
       const complaint: complaint[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.expected_deltime;
-        const date = new Date(dateStr);
+        const orderID = result.data[i]?.orderID;
+        const expectedDeltime = orderID?.expected_deltime || "";
 
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
+        let formattedDate = "";
+        if (expectedDeltime) {
+          const date = new Date(expectedDeltime);
+          const day = date.getDate();
+          const month = date.getMonth() + 1;
+          const year = date.getFullYear();
+          const hours = date.getHours();
+          const minutes = date.getMinutes();
 
-        const formattedDate = `${month}/${day}/${year} ${hours
-          .toString()
-          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+          formattedDate = `${month}/${day}/${year} ${hours
+            .toString()
+            .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+        }
         complaint.push({
-          status: result.data[i].complaint == "Canceled Order" ? "1" : "2",
-          idorder: result.data[i].orderID.id,
+          status: result.data[i]?.complaint === "Canceled Order" ? "1" : "2",
+          idorder: result.data[i]?.id || "", // Safeguard against undefined orderID
           name:
-            result.data[i].orderID.customerID.fname +
-            " " +
-            result.data[i].orderID.customerID.lname,
-          assignedbranch: result.data[i].orderID.branch.name,
-          owner: result.data[i].orderID.branch.owner.name,
-          ordertaker: result.data[i].orderID.added_by.fullname,
-          // edt: result.data[i].complaint + " " + result.data[i].id,
+            result.data[i]?.orderID.customerID.fname +
+              " " +
+              result.data[i]?.orderID.customerID?.lname || "",
+          assignedbranch: result.data[i]?.orderID.branch.name || "",
+          owner: result.data[i]?.orderID.branch.owner.name || "",
+          ordertaker: result.data[i]?.added_by?.fullname || "",
           edt:
-            result.data[i].complaint == "Canceled Order" ? "Order" : "Inquiry",
-
-          id: result.data[i].id,
+            result.data[i]?.complaint === "Canceled Order"
+              ? "Order"
+              : "Inquiry",
+          id: result.data[i]?.id || "", // Safeguard against undefined id
         });
       }
 

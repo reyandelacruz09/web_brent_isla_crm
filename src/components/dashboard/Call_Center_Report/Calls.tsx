@@ -7,11 +7,14 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import Profit_Hourly from "./Profit_Hourly";
-import Profit_Daily from "./Profit_Daily";
-import Profit_Monthly from "./Profit_Monthly";
+import Profit_Hourly from "../Hatid_Bahay/Profit_Hourly";
+import Profit_Daily from "../Hatid_Bahay/Profit_Daily";
+import Profit_Monthly from "../Hatid_Bahay/Profit_Monthly";
+import Calls_Hourly from "./Calls_Hourly";
+import Calls_Daily from "./Calls_Daily";
+import Calls_Monthly from "./Calls_Monthly";
 
-function Profit() {
+function Calls() {
   const [radioVal, setRadioVal] = useState("hourly");
   const [content, setContent] = useState(<Profit_Hourly />);
 
@@ -21,25 +24,25 @@ function Profit() {
 
     switch (newValue) {
       case "hourly":
-        setContent(<Profit_Hourly />);
+        setContent(<Calls_Hourly />);
         break;
       case "daily":
-        setContent(<Profit_Daily />);
+        setContent(<Calls_Daily />);
         break;
       case "monthly":
-        setContent(<Profit_Monthly />);
+        setContent(<Calls_Monthly />);
         break;
       default:
-        setContent(<Profit_Hourly />);
+        setContent(<Calls_Hourly />);
     }
   };
   return (
-    <div className="w-full flex justify-center py-5">
-      <div className=" w-5/6">
+    <div className="w-full flex justify-center py-5 ">
+      <div className=" w-full">
         <div className="bg-white rounded-lg">
           <div className="w-full pt-5 pl-10">
             <Typography>
-              <b>Profit</b>
+              <b>Calls Received</b>
             </Typography>
           </div>
           <div className="flex gap-3">
@@ -85,4 +88,4 @@ function Profit() {
   );
 }
 
-export default Profit;
+export default Calls;
