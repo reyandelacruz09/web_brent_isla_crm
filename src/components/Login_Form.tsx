@@ -47,7 +47,7 @@ function Login_Form() {
           JSON.stringify(result.data.data)
         );
         localStorage.setItem("date", new Date().toISOString());
-        navigate("/dashboard");
+        navigate("/login2");
       })
       .catch((error) => {
         console.log(error);
@@ -82,7 +82,7 @@ function Login_Form() {
       .then(function (response) {
         localStorage.setItem("mytoken", response.data.token);
         localStorage.setItem("user_info", JSON.stringify(response.data.user));
-        navigate("/dashboard");
+        navigate("/login2");
         fetchAccountDetailed(response.data.user.id, response.data.token);
       })
       .catch(function (error) {
