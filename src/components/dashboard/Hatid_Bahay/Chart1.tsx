@@ -14,7 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { usePieChartQuery, useProductChartQuery } from "../../store";
+import { usePieChartQuery, useProductChartQuery } from "../../../store";
 
 function Chart1() {
   const account_detailed1 = JSON.parse(
@@ -63,7 +63,7 @@ function Chart1() {
 
   return (
     <div className="w-full pt-5 flex justify-center">
-      <div className=" w-5/6 ">
+      <div className=" w-full ">
         <div className="">
           <div className="flex gap-3">
             <div className="bg-white inline-block rounded-lg w-2/4">

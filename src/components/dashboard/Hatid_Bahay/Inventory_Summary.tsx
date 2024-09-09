@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
-import { useDashTotalProductsQuery } from "../../store";
+import { useDashTotalProductsQuery } from "../../../store";
 
 function Inventory_Summary() {
   const account_detailed1 = JSON.parse(
@@ -96,7 +96,7 @@ function Inventory_Summary() {
 
   return (
     <div className="w-full pt-2 flex justify-center">
-      <div className=" w-5/6 bg-white rounded-lg p-5">
+      <div className=" w-full bg-white rounded-lg p-5">
         <Typography variant="h6">Inventory Summary</Typography>
         <div className="flex pt-3">
           <div className=" w-1/4">
