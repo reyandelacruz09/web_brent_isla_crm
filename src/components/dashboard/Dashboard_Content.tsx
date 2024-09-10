@@ -9,6 +9,14 @@ import Box from "@mui/material/Box";
 import Calls from "./Call_Center_Report/Calls";
 import Calls_Summary from "./Call_Center_Report/Calls_Summary";
 import SMS_Summary from "./SMS/SMS_Summary";
+import SMS from "./SMS/SMS";
+import Ticketing_Summary from "./Ticketing/Ticketing_Summary";
+import Chart_Bar_Line from "./Ticketing/Chart_Bar_Line";
+import Chart_Pie from "./Ticketing/Chart_Pie";
+import Ticketing_Hour from "./Ticketing/Ticketing_Hour";
+import MBR_Summary from "./MBR/MBR_Summary";
+import MBR_Bar_Year from "./MBR/MBR_Bar_Year";
+import MBR_3 from "./MBR/MBR_3";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -85,12 +93,18 @@ function Dashboard_Content() {
               </CustomTabPanel>
               <CustomTabPanel value={value} index={2}>
                 <SMS_Summary />
+                <SMS />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={3}>
-                4
+                <Ticketing_Summary />
+                <Chart_Bar_Line />
+                <Chart_Pie />
+                <Ticketing_Hour />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={4}>
-                5
+                <MBR_Summary />
+                <MBR_Bar_Year />
+                <MBR_3 />
               </CustomTabPanel>
             </Box>
           </div>

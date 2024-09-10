@@ -2,6 +2,14 @@ import React, { useEffect } from "react";
 import { Typography } from "@mui/material";
 import { useSpring, animated } from "@react-spring/web";
 import { useDashTotalProductsQuery } from "../../../store";
+import {
+  Cell,
+  LabelList,
+  Legend,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+} from "recharts";
 
 function SMS_Summary() {
   const account_detailed1 = JSON.parse(
@@ -13,27 +21,27 @@ function SMS_Summary() {
   });
 
   const [TotalNetSales, setTotalNetSales] = useSpring(() => ({
-    number: 1784,
+    number: 173,
     from: { number: 0 },
     config: { duration: 2000 },
   }));
   const [NoOfTransactions, setNoOfTransactions] = useSpring(() => ({
-    number: 99,
+    number: 131,
     from: { number: 0 },
     config: { duration: 2000 },
   }));
   const [NoOfItems, setNoOfItems] = useSpring(() => ({
-    number: 4.75,
+    number: 42,
     from: { number: 0 },
     config: { duration: 2000 },
   }));
   const [TotalRefunds] = useSpring(() => ({
-    number: 8,
+    number: 5,
     from: { number: 0 },
     config: { duration: 2000 },
   }));
   const [TotalDiscount, setTotalDiscount] = useSpring(() => ({
-    number: 1883,
+    number: 42,
     from: { number: 0 },
     config: { duration: 2000 },
   }));
@@ -100,6 +108,25 @@ function SMS_Summary() {
     }).format(number);
   };
 
+  const PieData: any = [
+    {
+      name: "Order Completed",
+      value: 131,
+    },
+    {
+      name: "Inquiry",
+      value: 42,
+    },
+    {
+      name: "Complaint",
+      value: 5,
+    },
+    {
+      name: "No Status",
+      value: 42,
+    },
+  ];
+
   return (
     <div className="w-full pt-2 flex justify-center">
       <div className=" w-full bg-white rounded-lg p-5">
@@ -110,7 +137,7 @@ function SMS_Summary() {
           Quick overview Dashboard of the Customer Analytics
         </Typography>
 
-        <div className="pt-5 flex w-full">
+        <div className="py-5 flex w-full">
           <div className="">
             <Typography variant="body2" className="text-gray-500">
               Filter:
@@ -141,11 +168,11 @@ function SMS_Summary() {
             </select>
           </div>
         </div>
-        <div className="flex pt-3">
-          <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Total Calls Answered
+        <div className="w-full flex">
+          <div className="w-1/2">
+            <div className="bg-blue-500 m-1.5 rounded-lg h-28 place-content-center">
+              <Typography className="text-white pb-3 text-center">
+                Total SMS Notification
               </Typography>
               <Typography variant="h4" className="text-white text-center">
                 <b>
@@ -155,109 +182,102 @@ function SMS_Summary() {
                 </b>
               </Typography>
             </div>
-          </div>
-          <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Total Abandoned
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {NoOfTransactions.number.to((n) => formatNumber1(n))}
-                  </animated.span>
-                </b>
-              </Typography>
+            <div className="flex">
+              <div className="bg-blue-500 w-1/2 h-28 m-1.5 rounded-lg place-content-center">
+                <Typography className="text-white pb-3 text-center">
+                  Order Completed
+                </Typography>
+                <Typography variant="h4" className="text-white text-center">
+                  <b>
+                    <animated.span>
+                      {NoOfTransactions.number.to((n) => formatNumber1(n))}
+                    </animated.span>
+                  </b>
+                </Typography>
+              </div>
+              <div className="bg-slate-400 w-1/2 h-28 m-1.5 rounded-lg place-content-center">
+                <Typography className="text-white pb-3 text-center">
+                  Inquiry
+                </Typography>
+                <Typography variant="h4" className="text-white text-center">
+                  <b>
+                    <animated.span>
+                      {NoOfItems.number.to((n) => formatNumber1(n))}
+                    </animated.span>
+                  </b>
+                </Typography>
+              </div>
+            </div>
+
+            <div className="flex">
+              <div className="bg-slate-400 w-1/2 h-28 m-1.5 rounded-lg place-content-center">
+                <Typography className="text-white pb-3 text-center">
+                  Complaint
+                </Typography>
+                <Typography variant="h4" className="text-white text-center">
+                  <b>
+                    <animated.span>
+                      {TotalRefunds.number.to((n) => formatNumber1(n))}
+                    </animated.span>
+                  </b>
+                </Typography>
+              </div>
+              <div className="bg-blue-500 w-1/2 h-28 m-1.5 rounded-lg place-content-center">
+                <Typography className="text-white pb-3 text-center">
+                  Invalid SMS
+                </Typography>
+                <Typography variant="h4" className="text-white text-center">
+                  <b>
+                    <animated.span>
+                      {TotalDiscount.number.to((n) => formatNumber1(n))}
+                    </animated.span>
+                  </b>
+                </Typography>
+              </div>
             </div>
           </div>
-          <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Average Handle Time
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {NoOfItems.number.to((n) => formatNumber(n))}
-                  </animated.span>
-                </b>
+          <div className="w-1/2">
+            <div>
+              <Typography className="p-3">
+                <b>Status Chart</b>
               </Typography>
             </div>
-          </div>
-          <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Average Waiting Time
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {TotalRefunds.number.to((n) => formatNumber1(n))}
-                  </animated.span>
-                </b>
-              </Typography>
-            </div>
-          </div>
-        </div>
-        <div className="flex">
-          <div className=" w-full">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Total Calls Received
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {TotalDiscount.number.to((n) => formatNumber1(n))}
-                  </animated.span>
-                </b>
-              </Typography>
-            </div>
-          </div>
-        </div>
-        <div className="flex">
-          <div className=" w-1/3">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Answered Rate
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {CostOfGoods.number.to((n) => formatNumber(n))}
-                  </animated.span>
-                  %
-                </b>
-              </Typography>
-            </div>
-          </div>
-          <div className=" w-1/3">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Abandoned Rate
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {Profit.number.to((n) => formatNumber(n))}
-                  </animated.span>
-                  %
-                </b>
-              </Typography>
-            </div>
-          </div>
-          <div className=" w-1/3">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
-              <Typography className="text-white pb-5 text-center">
-                Average Talk Time
-              </Typography>
-              <Typography variant="h4" className="text-white text-center">
-                <b>
-                  <animated.span>
-                    {TotalOnlineOrders.number.to((n) => formatNumber1(n))}
-                  </animated.span>
-                </b>
-              </Typography>
+            <div>
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart width={300} height={300}>
+                  <Pie
+                    data={PieData}
+                    dataKey="value"
+                    nameKey="label"
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={120}
+                    fill="#8884d8"
+                  >
+                    {PieData.map((entry: any, index: any) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={
+                          ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"][index]
+                        }
+                      />
+                    ))}
+                    <LabelList
+                      dataKey="value"
+                      position="inside"
+                      style={{
+                        fill: "#fff",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </Pie>
+                  <Legend
+                    verticalAlign="bottom"
+                    align="center"
+                    wrapperStyle={{ paddingTop: 20 }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
           </div>
         </div>
