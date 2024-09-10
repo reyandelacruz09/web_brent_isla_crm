@@ -7,13 +7,13 @@ import {
   Typography,
 } from "@mui/material";
 import React, { useState } from "react";
-import Calls_Hourly from "./Calls_Hourly";
-import Calls_Daily from "./Calls_Daily";
-import Calls_Monthly from "./Calls_Monthly";
+import SMS_Hourly from "./SMS_Hourly";
+import SMS_Daily from "./SMS_Daily";
+import SMS_Monthly from "./SMS_Monthly";
 
-function Calls() {
+function SMS() {
   const [radioVal, setRadioVal] = useState("hourly");
-  const [content, setContent] = useState(<Calls_Hourly />);
+  const [content, setContent] = useState(<SMS_Hourly />);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value;
@@ -21,16 +21,16 @@ function Calls() {
 
     switch (newValue) {
       case "hourly":
-        setContent(<Calls_Hourly />);
+        setContent(<SMS_Hourly />);
         break;
       case "daily":
-        setContent(<Calls_Daily />);
+        setContent(<SMS_Daily />);
         break;
       case "monthly":
-        setContent(<Calls_Monthly />);
+        setContent(<SMS_Monthly />);
         break;
       default:
-        setContent(<Calls_Hourly />);
+        setContent(<SMS_Hourly />);
     }
   };
   return (
@@ -39,7 +39,7 @@ function Calls() {
         <div className="bg-white rounded-lg">
           <div className="w-full pt-5 pl-10">
             <Typography>
-              <b>Calls Received</b>
+              <b>SMS</b>
             </Typography>
           </div>
           <div className="flex gap-3">
@@ -85,4 +85,4 @@ function Calls() {
   );
 }
 
-export default Calls;
+export default SMS;

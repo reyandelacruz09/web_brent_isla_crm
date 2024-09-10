@@ -99,12 +99,12 @@ function CustomerDetails_R1({ orderID }: cust_idProps) {
         setAccept(false);
         setDispatch(true);
         setComplete(true);
-        setCancel(true);
+        setCancel(false);
       } else if (orderDetails[0].status == "2") {
         setAccept(true);
         setDispatch(false);
         setComplete(true);
-        setCancel(true);
+        setCancel(false);
       } else if (orderDetails[0].status == "3") {
         setAccept(true);
         setDispatch(true);
@@ -114,7 +114,7 @@ function CustomerDetails_R1({ orderID }: cust_idProps) {
         setAccept(true);
         setDispatch(true);
         setComplete(true);
-        setCancel(false);
+        setCancel(true);
       } else if (orderDetails[0].status == "5") {
         setAccept(true);
         setDispatch(true);

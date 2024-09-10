@@ -100,7 +100,7 @@ function Inventory_Summary() {
         <Typography variant="h6">Inventory Summary</Typography>
         <div className="flex pt-3">
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 Total Net Sales
               </Typography>
@@ -114,7 +114,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 No of Transactions
               </Typography>
@@ -128,7 +128,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">No of Items</Typography>
               <Typography variant="h4" className="text-white text-right">
                 <b>
@@ -140,7 +140,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">Total Refunds</Typography>
               <Typography variant="h4" className="text-white text-right">
                 <b>
@@ -154,7 +154,7 @@ function Inventory_Summary() {
         </div>
         <div className="flex">
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 Total Discount
               </Typography>
@@ -168,7 +168,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">Cost of Goods</Typography>
               <Typography variant="h4" className="text-white text-right">
                 <b>
@@ -180,7 +180,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">Profit</Typography>
               <Typography variant="h4" className="text-white text-right">
                 <b>
@@ -192,7 +192,7 @@ function Inventory_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 Total Online Orders
               </Typography>

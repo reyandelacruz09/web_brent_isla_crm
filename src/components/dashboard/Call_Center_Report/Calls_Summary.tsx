@@ -143,7 +143,7 @@ function Calls_Summary() {
         </div>
         <div className="flex pt-3">
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Total Calls Answered
               </Typography>
@@ -157,7 +157,7 @@ function Calls_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Total Abandoned
               </Typography>
@@ -171,7 +171,7 @@ function Calls_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Average Handle Time
               </Typography>
@@ -185,7 +185,7 @@ function Calls_Summary() {
             </div>
           </div>
           <div className=" w-1/4">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Average Waiting Time
               </Typography>
@@ -201,7 +201,7 @@ function Calls_Summary() {
         </div>
         <div className="flex">
           <div className=" w-full">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Total Calls Received
               </Typography>
@@ -217,7 +217,7 @@ function Calls_Summary() {
         </div>
         <div className="flex">
           <div className=" w-1/3">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Answered Rate
               </Typography>
@@ -232,7 +232,7 @@ function Calls_Summary() {
             </div>
           </div>
           <div className=" w-1/3">
-            <div className="bg-blue-500 p-5 m-3 rounded-lg">
+            <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Abandoned Rate
               </Typography>
@@ -247,7 +247,7 @@ function Calls_Summary() {
             </div>
           </div>
           <div className=" w-1/3">
-            <div className="bg-slate-400 p-5 m-3 rounded-lg">
+            <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5 text-center">
                 Average Talk Time
               </Typography>
