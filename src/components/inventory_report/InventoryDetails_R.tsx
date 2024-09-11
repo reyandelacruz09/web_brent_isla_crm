@@ -55,7 +55,7 @@ const columns: GridColDef[] = [
 ];
 
 interface Product {
-  id: string;
+  id: number;
   code: string;
   name: string;
   owner: string;
@@ -154,6 +154,7 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
                 ) : (
                   <DataGrid
                     sx={{
+                      height: "515px",
                       [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                         {
                           outline: "none",
@@ -163,6 +164,7 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
                           outline: "none",
                         },
                     }}
+                    rowHeight={40}
                     rows={filteredContent}
                     columns={columns}
                     initialState={{

@@ -5,7 +5,7 @@ import InventorySearchInput from "./InventorySearchInput";
 
 function InventoryReport() {
   const [products, setProducts] = useState({
-    id: "",
+    id: 0,
     code: "",
     name: "",
     owner: "",

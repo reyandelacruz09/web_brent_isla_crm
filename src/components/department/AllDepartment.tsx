@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import Modal_Delete_Client from "./Modal_Delete_Client";
 import { Slide, toast } from "react-toastify";
 import { EditOutlined } from "@mui/icons-material";
+import DataGridToolBar from "../custom/DataGridToolBar";
 
 interface Client {
   id: string;
@@ -168,6 +169,7 @@ function AllDepartment() {
                 ) : (
                   <DataGrid
                     sx={{
+                      height: "515px",
                       [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                         {
                           outline: "none",
@@ -177,6 +179,7 @@ function AllDepartment() {
                           outline: "none",
                         },
                     }}
+                    rowHeight={40}
                     rows={filteredContent}
                     columns={columns.map((col) => ({
                       ...col,
@@ -187,9 +190,10 @@ function AllDepartment() {
                         paginationModel: { page: 0, pageSize: 10 },
                       },
                     }}
+                    rowSelection={false}
                     pageSizeOptions={[5, 10]}
                     hideFooterSelectedRowCount
-                    slots={{ toolbar: GridToolbar }}
+                    slots={{ toolbar: DataGridToolBar }}
                   />
                 )}
               </div>

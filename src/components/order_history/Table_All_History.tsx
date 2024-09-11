@@ -2,11 +2,23 @@
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useOrderListQuery } from "../../store";
+import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
 
 export interface Order {
   status: string;
+  id: string;
+  neworderID: string;
+  name: string;
+  assignedbranch: string;
+  amount: string;
+  ordertaker: string;
+  edt: string;
+  cid: string;
+}
+interface Complaint {
+  status: string;
+  neworderID: string;
   id: string;
   name: string;
   assignedbranch: string;
@@ -18,29 +30,38 @@ export interface Order {
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
-  { field: "id", headerName: "ID", width: 70 },
+  { field: "neworderID", headerName: "ID", width: 70 },
   { field: "name", headerName: "Name", width: 200 },
   { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
   { field: "amount", headerName: "Amount", width: 130 },
   { field: "ordertaker", headerName: "Order Taker", width: 150 },
-  { field: "edt", headerName: "EDT", width: 130 },
+  { field: "edt", headerName: "Date", width: 150 },
 ];
 
 function Table_All_History() {
   const navigate = useNavigate();
-  const { data, error, isLoading, isSuccess } = useOrderListQuery("");
-  const [content, setContent] = useState<Order[]>([]);
+  const {
+    data: OrderData,
+    error: OrderError,
+    isLoading: OrderIsLoading,
+    isSuccess: OrderIsSuccess,
+  } = useOrderListQuery("");
+  const { data: Complaintdata, isSuccess: ComplaintisSuccess } =
+    useViewComplaintsQuery("");
+  const [order, setOrder] = useState<Order[]>([]);
+  const [complaint, setComplaint] = useState<Complaint[]>([]);
+  const [combined, setCombined] = useState<(Order | Complaint)[]>([]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (OrderIsSuccess) {
       let result: any = [];
-      result = data;
+      result = OrderData;
 
       const size = Object.keys(result.data).length;
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.expected_deltime;
+        const dateStr = result.data[i].orderID.completed_date;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -53,50 +74,90 @@ function Table_All_History() {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        order.push({
-          status: result.data[i].orderID.status,
-          id: result.data[i].orderID.id,
+        if (result.data[i].orderID.status > 3) {
+          let newid = i + 100000000000;
+          order.push({
+            status: result.data[i].orderID.status,
+            neworderID: result.data[i].orderID.orderID,
+            id: newid.toString(),
+            name:
+              result.data[i].orderID.customerID.fname +
+              " " +
+              result.data[i].orderID.customerID.lname,
+            assignedbranch: result.data[i].orderID.branch.name,
+            amount: result.data[i].grandtotal.toFixed(2),
+            ordertaker: result.data[i].orderID.added_by.fullname,
+            edt: formattedDate,
+            cid: result.data[i].orderID.customerID.id,
+          });
+        }
+      }
+      setOrder(order);
+      console.log("Order: ", order);
+    }
+  }, [OrderData, OrderIsSuccess]);
+
+  useEffect(() => {
+    if (ComplaintisSuccess) {
+      let result: any = [];
+      result = Complaintdata;
+
+      const size = result.data?.length || 0;
+      const complaint: Complaint[] = [];
+
+      console.log("size: ", size);
+
+      for (let i = 0; i < size; i++) {
+        const orderID = result.data[i]?.orderID;
+        const dateStr = result.data[i].date_added;
+        const date = new Date(dateStr);
+
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
+        const year = date.getFullYear();
+        const hours = date.getHours();
+        const minutes = date.getMinutes();
+
+        const formattedDate = `${month}/${day}/${year} ${hours
+          .toString()
+          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
+
+        complaint.push({
+          status: result.data[i]?.complaint === "Canceled Order" ? "1" : "2",
+          id: i.toString(),
+          neworderID: result.data[i]?.orderID.id || "", // Safeguard against undefined orderID
           name:
-            result.data[i].orderID.customerID.fname +
-            " " +
-            result.data[i].orderID.customerID.lname,
-          assignedbranch: result.data[i].orderID.branch.name,
-          amount: result.data[i].grandtotal.toFixed(2),
-          ordertaker: result.data[i].orderID.added_by.fullname,
+            result.data[i]?.orderID.customerID.fname +
+              " " +
+              result.data[i]?.orderID.customerID?.lname || "",
+          assignedbranch: result.data[i]?.orderID.branch.name || "",
+          amount: "N/A",
+          ordertaker: result.data[i]?.added_by?.fullname || "",
           edt: formattedDate,
-          cid: result.data[i].orderID.customerID.id,
+          cid: result.data[i]?.id || "", // Safeguard against undefined id
         });
       }
-
-      setContent(order);
+      setComplaint(complaint);
+      console.log("Complaint: ", complaint);
     }
-  }, [data, isSuccess]);
+  }, [Complaintdata, ComplaintisSuccess]);
 
-  const handleNameClick = (name: string) => {
-    localStorage.setItem("view_cust", name);
-    navigate("/customer-details");
-  };
+  useEffect(() => {
+    const combinedData = [...order, ...complaint];
+
+    const sortedCombined = combinedData.sort((b, a) => {
+      const dateA = new Date(a.edt);
+      const dateB = new Date(b.edt);
+      return dateA.getTime() - dateB.getTime();
+    });
+
+    setCombined(sortedCombined);
+
+    console.log("Combined: ", combined);
+  }, [order, complaint]);
 
   const renderCell = (params: any) => {
-    if (params.colDef.field === "status" && params.value === 1) {
-      return (
-        <span className="bg-pink-500 text-white p-2 px-3 rounded-2xl">
-          New Order
-        </span>
-      );
-    } else if (params.colDef.field === "status" && params.value === 2) {
-      return (
-        <span className="bg-blue-500 text-white p-2 px-3 rounded-2xl">
-          Received
-        </span>
-      );
-    } else if (params.colDef.field === "status" && params.value === 3) {
-      return (
-        <span className="bg-purple-700 text-white p-2 px-3 rounded-2xl">
-          In-Transit
-        </span>
-      );
-    } else if (params.colDef.field === "status" && params.value === 4) {
+    if (params.colDef.field === "status" && params.value === 4) {
       return (
         <span className="bg-green-700 text-white p-2 px-3 rounded-2xl">
           Completed
@@ -119,12 +180,26 @@ function Table_All_History() {
       );
     } else if (params.colDef.field === "amount") {
       return (
-        <span>
-          {new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(parseFloat(params.value ? params.value : "0"))}
-        </span>
+        <div className="text-right pr-5">
+          <span>
+            {params.value === "N/A"
+              ? "N/A"
+              : new Intl.NumberFormat("en-US", {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                }).format(parseFloat(params.value ? params.value : "0"))}
+          </span>
+        </div>
+      );
+    }
+
+    if (params.colDef.field === "status" && params.value === "2") {
+      return (
+        <div className="text-center">
+          <span className="bg-slate-400 text-white p-2 px-3 rounded-2xl">
+            &emsp;Inquiry&emsp;
+          </span>
+        </div>
       );
     }
 
@@ -134,13 +209,14 @@ function Table_All_History() {
   return (
     <>
       <div className="w-full h-full bg-white">
-        {isLoading ? (
+        {OrderIsLoading ? (
           <Skeleton />
-        ) : error ? (
+        ) : OrderError ? (
           "No data available"
         ) : (
           <DataGrid
             sx={{
+              height: "515px",
               [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                 {
                   outline: "none",
@@ -150,7 +226,8 @@ function Table_All_History() {
                   outline: "none",
                 },
             }}
-            rows={content}
+            rowHeight={40}
+            rows={combined}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,

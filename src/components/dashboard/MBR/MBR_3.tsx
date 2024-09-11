@@ -205,7 +205,7 @@ function MBR_3() {
               % of Difference From: -94.7%
             </Typography>
           </div>
-          <div className="bg-blue-500 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
+          <div className="bg-slate-400 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
             <Typography
               className="text-white text-center"
               sx={{ fontSize: "12px" }}
@@ -259,7 +259,7 @@ function MBR_3() {
               % of Difference From: -99.4%
             </Typography>
           </div>
-          <div className="bg-blue-500 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
+          <div className="bg-slate-400 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
             <Typography
               className="text-white text-center"
               sx={{ fontSize: "12px" }}
@@ -286,7 +286,7 @@ function MBR_3() {
               % of Difference From: -99.3%
             </Typography>
           </div>
-          <div className="bg-slate-400 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
+          <div className="bg-blue-500 w-1/3 h-36 m-1.5 rounded-lg place-content-center">
             <Typography className="text-white pb-1 text-center" variant="body2">
               Engagement Dec 2022 vs Average
             </Typography>

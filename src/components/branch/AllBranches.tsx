@@ -184,6 +184,7 @@ function AllBranches() {
                 ) : (
                   <DataGrid
                     sx={{
+                      height: "515px",
                       [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                         {
                           outline: "none",
@@ -193,6 +194,7 @@ function AllBranches() {
                           outline: "none",
                         },
                     }}
+                    rowHeight={40}
                     rows={filteredContent}
                     columns={columns.map((col) => ({
                       ...col,

@@ -190,6 +190,7 @@ function AllUser() {
                 ) : (
                   <DataGrid
                     sx={{
+                      height: "515px",
                       [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                         {
                           outline: "none",
@@ -199,6 +200,7 @@ function AllUser() {
                           outline: "none",
                         },
                     }}
+                    rowHeight={40}
                     rows={filteredContent}
                     columns={columns.map((col) => ({
                       ...col,

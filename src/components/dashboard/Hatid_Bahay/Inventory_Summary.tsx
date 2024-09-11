@@ -83,7 +83,7 @@ function Inventory_Summary() {
         ...Profit,
         number: getInventorySummaryApi.data?.data.Profit,
       });
-      console.log("datas: ", getInventorySummaryApi.data?.data);
+      // console.log("datas: ", getInventorySummaryApi.data?.data);
     }
   }, [getInventorySummaryApi.isSuccess, getInventorySummaryApi.data]);
 
@@ -96,10 +96,11 @@ function Inventory_Summary() {
 
   return (
     <div className="w-full pt-2 flex justify-center">
-      <div className=" w-full bg-white rounded-lg p-5">
+      <div className=" w-full bg-white rounded-lg p-5 ">
         <Typography variant="h6">Inventory Summary</Typography>
-        <div className="flex pt-3">
-          <div className=" w-1/4">
+
+        <div className="pt-3 flex flex-wrap">
+          <div className="flex-grow flex-shrink-0 basis-[180px]">
             <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 Total Net Sales
@@ -113,7 +114,7 @@ function Inventory_Summary() {
               </Typography>
             </div>
           </div>
-          <div className=" w-1/4">
+          <div className="flex-grow flex-shrink-0 basis-[180px]">
             <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">
                 No of Transactions
@@ -127,7 +128,7 @@ function Inventory_Summary() {
               </Typography>
             </div>
           </div>
-          <div className=" w-1/4">
+          <div className="flex-grow flex-shrink-0 basis-[180px]">
             <div className="bg-blue-500 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">No of Items</Typography>
               <Typography variant="h4" className="text-white text-right">
@@ -139,7 +140,7 @@ function Inventory_Summary() {
               </Typography>
             </div>
           </div>
-          <div className=" w-1/4">
+          <div className="flex-grow flex-shrink-0 basis-[180px]">
             <div className="bg-slate-400 p-5 m-1.5 rounded-lg">
               <Typography className="text-white pb-5">Total Refunds</Typography>
               <Typography variant="h4" className="text-white text-right">
@@ -152,6 +153,7 @@ function Inventory_Summary() {
             </div>
           </div>
         </div>
+
         <div className="flex">
           <div className=" w-1/4">
             <div className="bg-slate-400 p-5 m-1.5 rounded-lg">

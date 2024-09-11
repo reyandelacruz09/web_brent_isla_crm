@@ -1,10 +1,10 @@
 //import * as React from "react";
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, Skeleton, styled, ThemeProvider } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery } from "../../store";
 import { useEffect, useState } from "react";
-import { Order } from "./Table_All_Orders";
+import { Order, Table_All_OrdersProps } from "./Table_All_Orders";
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
@@ -21,7 +21,8 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-function Table_Received() {
+function Table_Received({ search }: Table_All_OrdersProps) {
+  const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListQuery("");
   const [content, setContent] = useState<Order[]>([]);
 
@@ -68,6 +69,12 @@ function Table_Received() {
     }
   }, [data, isSuccess]);
 
+  const handleNameClick = (name: string, orderID: string) => {
+    localStorage.setItem("view_cust", name);
+    localStorage.setItem("view_id", orderID);
+    navigate("/customer-details");
+  };
+
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === 2) {
       return (
@@ -77,9 +84,12 @@ function Table_Received() {
       );
     } else if (params.colDef.field === "name") {
       return (
-        <Link to="/customer-details">
-          <span className="cursor-pointer font-bold">{params.value}</span>
-        </Link>
+        <span
+          className="cursor-pointer font-bold"
+          onClick={() => handleNameClick(params.row.cid, params.row.id)}
+        >
+          {params.value}
+        </span>
       );
     } else if (params.colDef.field === "amount") {
       return (
@@ -93,6 +103,12 @@ function Table_Received() {
     }
     return params.value;
   };
+
+  const filteredContent = content.filter(
+    (order) =>
+      order.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <>
       <div className="w-full h-full bg-white">
@@ -103,6 +119,7 @@ function Table_Received() {
         ) : (
           <DataGrid
             sx={{
+              height: "515px",
               [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                 {
                   outline: "none",
@@ -112,7 +129,8 @@ function Table_Received() {
                   outline: "none",
                 },
             }}
-            rows={content}
+            rowHeight={40}
+            rows={filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,

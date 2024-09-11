@@ -21,9 +21,11 @@ interface cust_idProps {
 }
 
 function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
+  const order_Detailed = JSON.parse(localStorage.getItem("view_id") || "{}");
   const { data, error, isLoading, isSuccess } =
     useOrderListCustomerQuery(cust_id);
   const [content, setContent] = useState<Order[]>([]);
+  const [selectedRow, setSelectedRow] = useState<string>("");
 
   useEffect(() => {
     if (isSuccess) {
@@ -62,8 +64,11 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
           cid: result.data[i].orderID.customerID.id,
         });
       }
-
       setContent(order);
+
+      if (order_Detailed && order.find((row) => row.id === order_Detailed)) {
+        setSelectedRow(order_Detailed);
+      }
     }
   }, [data, isSuccess]);
 
@@ -77,8 +82,14 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
     return <div>Error loading data</div>;
   }
 
+  if (order_Detailed !== "") {
+    setOrderID(order_Detailed);
+  }
+
   const handleRowClick = (params: any) => {
     setOrderID(params.row.id);
+    setSelectedRow(params.row.id);
+    localStorage.setItem("view_id", params.row.id);
   };
 
   const renderCell = (params: any) => {
@@ -161,6 +172,7 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
                   pageSizeOptions={[5, 10]}
                   hideFooterSelectedRowCount
                   onRowClick={handleRowClick}
+                  rowSelectionModel={selectedRow ? [selectedRow] : []}
                 />
               </div>
             </div>

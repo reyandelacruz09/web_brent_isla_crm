@@ -16,6 +16,10 @@ export interface Order {
   cid: string;
 }
 
+export interface Table_All_OrdersProps {
+  search: string;
+}
+
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
   { field: "id", headerName: "ID", width: 70 },
@@ -31,7 +35,7 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-function Table_All_Orders() {
+function Table_All_Orders({ search }: Table_All_OrdersProps) {
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListQuery("");
   const [content, setContent] = useState<Order[]>([]);
@@ -78,8 +82,9 @@ function Table_All_Orders() {
     }
   }, [data, isSuccess]);
 
-  const handleNameClick = (name: string) => {
+  const handleNameClick = (name: string, orderID: string) => {
     localStorage.setItem("view_cust", name);
+    localStorage.setItem("view_id", orderID);
     navigate("/customer-details");
   };
 
@@ -118,7 +123,7 @@ function Table_All_Orders() {
       return (
         <span
           className="cursor-pointer font-bold"
-          onClick={() => handleNameClick(params.row.cid)}
+          onClick={() => handleNameClick(params.row.cid, params.row.id)}
         >
           {params.value}
         </span>
@@ -137,6 +142,12 @@ function Table_All_Orders() {
     return params.value;
   };
 
+  const filteredContent = content.filter(
+    (order) =>
+      order.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
       <div className="w-full h-full bg-white">
@@ -147,6 +158,7 @@ function Table_All_Orders() {
         ) : (
           <DataGrid
             sx={{
+              height: "515px",
               [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                 {
                   outline: "none",
@@ -156,7 +168,8 @@ function Table_All_Orders() {
                   outline: "none",
                 },
             }}
-            rows={content}
+            rowHeight={40}
+            rows={filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,
