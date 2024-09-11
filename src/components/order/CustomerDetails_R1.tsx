@@ -23,9 +23,10 @@ function CustomerDetails_R1({ orderID }: cust_idProps) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
+  const order_Detailed = JSON.parse(localStorage.getItem("view_id") || "{}");
   const [orderDetails, setOrderDetails] = useState<order[]>([]);
   const { data: order, isSuccess: isOrderSuccess } = useOrderViewQuery(
-    orderID || ""
+    orderID || order_Detailed
   );
   const [accept, setAccept] = useState<boolean>(true);
   const [dispatch, setDispatch] = useState<boolean>(true);

@@ -17,6 +17,7 @@ import Ticketing_Hour from "./Ticketing/Ticketing_Hour";
 import MBR_Summary from "./MBR/MBR_Summary";
 import MBR_Bar_Year from "./MBR/MBR_Bar_Year";
 import MBR_3 from "./MBR/MBR_3";
+import MBR_4 from "./MBR/MBR_4";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -105,6 +106,7 @@ function Dashboard_Content() {
                 <MBR_Summary />
                 <MBR_Bar_Year />
                 <MBR_3 />
+                <MBR_4 />
               </CustomTabPanel>
             </Box>
           </div>

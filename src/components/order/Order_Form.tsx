@@ -8,6 +8,7 @@ import Table_In_Transit from "./Table_In_Transit";
 import Table_New_Orders from "./Table_New_Order";
 import Table_Received from "./Table_Received";
 import Table_Completed from "./Table_Completed";
+import { useState } from "react";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -17,7 +18,6 @@ interface TabPanelProps {
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
-
   return (
     <div
       role="tabpanel"
@@ -39,9 +39,14 @@ function a11yProps(index: number) {
 }
 export default function BasicTabs() {
   const [value, setValue] = React.useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
   };
   return (
     <>
@@ -55,6 +60,7 @@ export default function BasicTabs() {
                 name="discount"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
                 placeholder="Search"
+                onChange={handleSearch}
               />
               <Modal_Create_Order />
             </div>
@@ -78,19 +84,19 @@ export default function BasicTabs() {
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                <Table_All_Orders />
+                <Table_All_Orders search={searchQuery} />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={1}>
-                <Table_New_Orders />
+                <Table_New_Orders search={searchQuery} />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={2}>
-                <Table_Received />
+                <Table_Received search={searchQuery} />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={3}>
-                <Table_In_Transit />
+                <Table_In_Transit search={searchQuery} />
               </CustomTabPanel>
               <CustomTabPanel value={value} index={4}>
-                <Table_Completed />
+                <Table_Completed search={searchQuery} />
               </CustomTabPanel>
             </Box>
           </div>

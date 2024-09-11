@@ -143,6 +143,17 @@ const productApi = createApi({
         },
         providesTags: ["products"],
       }),
+      // /api/products/inventory_history/?productID=1
+      InventoryHistory: builder.query({
+        query: ({ productID }) => {
+          return {
+            url: `/api/products/inventory_history/?productID=${productID}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["products"],
+      }),
     };
   },
 });
@@ -158,5 +169,6 @@ export const {
   useAddInventoryMutation,
   useInventoryListQuery,
   useInventoryListIDQuery,
+  useInventoryHistoryQuery,
 } = productApi;
 export { productApi };

@@ -26,7 +26,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 }));
 
 interface InventoryDetails_LProps {
-  pid: string;
+  pid: number;
 }
 
 export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
@@ -40,7 +40,7 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
   };
 
   const [addQuantity, setAddQuantity] = useState({
-    product: "",
+    product: 0,
     quantity: "",
     price: "",
     issuedby: "",

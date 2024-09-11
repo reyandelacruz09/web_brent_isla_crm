@@ -2,10 +2,11 @@ import Add_Quantity_Modal from "./Add_Quantity_Modal";
 // useInventoryListIDQuery
 import { useInventoryListIDQuery } from "../../store";
 import { useEffect, useState } from "react";
+import View_History_Modal from "./View_History_Modal";
 
 interface InventoryDetails_LProps {
   products: {
-    id: string;
+    id: number;
     code: string;
     name: string;
     owner: string;
@@ -48,7 +49,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
       <div className="pt-5">
         <span className="font-bold text-lg pl-5">Product Detail</span>
       </div>
-      <div className="py-5 px-3 flex justify-left">
+      {/* <div className="py-5 px-3 flex justify-left">
         <div>
           <img
             className="inline-block w-14 object-cover rounded-full"
@@ -59,7 +60,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
         <div className="pl-3">
           <span className="font-bold">Orlhie S. Almendares</span>
         </div>
-      </div>
+      </div> */}
       <div className="px-3 py-2">
         <div className=" border-gray-200 border-2 p-3 rounded-lg">
           <div className="hidden">
@@ -162,7 +163,8 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
               />
             </div>
           </div>
-          <div>
+          <div className="flex place-content-between">
+            <View_History_Modal pid={products.id} />
             <Add_Quantity_Modal pid={products.id} />
           </div>
         </div>

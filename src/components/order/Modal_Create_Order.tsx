@@ -204,6 +204,58 @@ export default function CustomizedDialogs() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
+
+        setOrderType({
+          demographic: "1",
+          order_type: "1",
+          call_type: "1",
+          type_of_complaint: "0",
+          reason_cancell: "0",
+        });
+
+        setCustomerData({
+          fname: "",
+          lname: "",
+          phone1: "",
+          phone2: "",
+          landline: "",
+          email: "",
+          block_unit: "",
+          barangay: "",
+          company: "",
+          nearest_landmark: "",
+          expected_deldate: "",
+          expected_deltime: "",
+          sendsms: false,
+          sendemail: false,
+          branch: "",
+        });
+
+        setProductOrder([
+          {
+            id: 0,
+            product: "",
+            unitPrice: "",
+            qty: "",
+            discount: "",
+            subtotal: "",
+          },
+        ]);
+
+        setProductOrderTotal({
+          gsubtotal: "",
+          gdelcharge: "",
+          gdiscount: "",
+          gtotal: "0.00",
+        });
+
+        setOthers({
+          mopayment: "1",
+          changefor: "",
+          changeamount: "",
+          special_instructions: "",
+        });
+
         handleClose();
       } else {
         alert("something wrong");
@@ -441,7 +493,7 @@ export default function CustomizedDialogs() {
           />
 
           <div className="flex justify-center gap-5 py-10">
-            <Button
+            {/* <Button
               component="label"
               variant="contained"
               className="w-1/5"
@@ -457,7 +509,7 @@ export default function CustomizedDialogs() {
               tabIndex={-1}
             >
               Cancel
-            </Button>
+            </Button> */}
           </div>
         </DialogContent>
       </BootstrapDialog>

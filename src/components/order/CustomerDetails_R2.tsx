@@ -26,13 +26,14 @@ interface status {
   date_canceled: string;
 }
 function CustomerDetails_R2({ orderID }: cust_idProps) {
+  const order_Detailed = JSON.parse(localStorage.getItem("view_id") || "{}");
   const [orderDetails, setOrderDetails] = useState<order[]>([]);
   const [orderStatus, setOrderStatus] = useState<status[]>([]);
   const { data: order, isSuccess: isOrderSuccess } = useOrderViewQuery(
-    orderID || ""
+    orderID || order_Detailed
   );
   const { data: orderStat, isSuccess: isOrderStatSuccess } =
-    useOrderGetStatusQuery(orderID || "");
+    useOrderGetStatusQuery(orderID || order_Detailed);
   const [style, setStyle] = useState({
     created:
       "border-dashed border-2 border-slate-300 relative -top-4 w-1/2 -z-10",

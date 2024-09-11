@@ -121,7 +121,6 @@ function Login_Form() {
                   <TextField
                     id="filled-required"
                     label="Email"
-                    defaultValue=""
                     variant="filled"
                     className="w-full border-b-0"
                     value={username}

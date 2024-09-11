@@ -46,6 +46,7 @@ export {
   useAddInventoryMutation,
   useInventoryListQuery,
   useInventoryListIDQuery,
+  useInventoryHistoryQuery,
 } from "../store/apis/ProductsApi";
 
 export {
