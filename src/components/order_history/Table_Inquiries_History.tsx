@@ -4,6 +4,7 @@ import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
+import { Table_All_History_Props } from "./Table_All_History";
 
 export interface Order {
   status: string;
@@ -38,7 +39,7 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_Inquiries_History() {
+function Table_Inquiries_History({ search }: Table_All_History_Props) {
   const navigate = useNavigate();
   const {
     data: OrderData,
@@ -93,7 +94,7 @@ function Table_Inquiries_History() {
         }
       }
       setOrder(order);
-      console.log("Order: ", order);
+      // console.log("Order: ", order);
     }
   }, [OrderData, OrderIsSuccess]);
 
@@ -105,7 +106,7 @@ function Table_Inquiries_History() {
       const size = result.data?.length || 0;
       const complaint: Complaint[] = [];
 
-      console.log("size: ", size);
+      // console.log("size: ", size);
 
       for (let i = 0; i < size; i++) {
         const orderID = result.data[i]?.orderID;
@@ -138,7 +139,7 @@ function Table_Inquiries_History() {
         });
       }
       setComplaint(complaint);
-      console.log("Complaint: ", complaint);
+      // console.log("Complaint: ", complaint);
     }
   }, [Complaintdata, ComplaintisSuccess]);
 
@@ -153,7 +154,7 @@ function Table_Inquiries_History() {
 
     setCombined(sortedCombined);
 
-    console.log("Combined: ", combined);
+    // console.log("Combined: ", combined);
   }, [order, complaint]);
 
   const renderCell = (params: any) => {
@@ -206,6 +207,11 @@ function Table_Inquiries_History() {
     return params.value;
   };
 
+  const filteredContent = combined.filter(
+    (order) =>
+      order.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <>
       <div className="w-full h-full bg-white">
@@ -227,7 +233,7 @@ function Table_Inquiries_History() {
                 },
             }}
             rowHeight={40}
-            rows={combined}
+            rows={filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,

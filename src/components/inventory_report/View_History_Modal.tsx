@@ -52,6 +52,7 @@ export default function View_History_Modal({ pid }: InventoryDetails_LProps) {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState<InventoryItem[]>([]);
   const [productName, setProductName] = useState("");
+  const [productCode, setProductCode] = useState("");
 
   const handleClickOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -71,7 +72,7 @@ export default function View_History_Modal({ pid }: InventoryDetails_LProps) {
 
   useEffect(() => {
     if (getInventHist.isSuccess) {
-      console.log("Fetched Inventory History Data:", getInventHist.data);
+      // console.log("Fetched Inventory History Data:", getInventHist.data);
 
       // Adjust this based on the actual data structure
       //   const data = Array.isArray(getInventHist.data) ? getInventHist.data : [];
@@ -90,8 +91,9 @@ export default function View_History_Modal({ pid }: InventoryDetails_LProps) {
           date: result.data[i].date_added,
         });
       }
-
+      setProductCode(result.data[0]?.product.code);
       setProductName(result.data[0]?.product.name);
+
       setContent(history);
     }
   }, [getInventHist.data]);
@@ -151,7 +153,7 @@ export default function View_History_Modal({ pid }: InventoryDetails_LProps) {
       </div>
       <BootstrapDialog open={open} onClose={handleClose}>
         <DialogTitle>
-          {pid} - {productName}
+          {productCode} - {productName}
           <IconButton
             aria-label="close"
             onClick={handleClose}

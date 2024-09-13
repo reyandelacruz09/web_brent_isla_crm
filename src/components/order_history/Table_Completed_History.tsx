@@ -4,6 +4,7 @@ import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
+import { Table_All_History_Props } from "./Table_All_History";
 
 export interface Order {
   status: string;
@@ -27,7 +28,7 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_Completed_History() {
+function Table_Completed_History({ search }: Table_All_History_Props) {
   const navigate = useNavigate();
   const {
     data: OrderData,
@@ -80,7 +81,7 @@ function Table_Completed_History() {
         }
       }
       setOrder(order);
-      console.log("Order: ", order);
+      // console.log("Order: ", order);
     }
   }, [OrderData, OrderIsSuccess]);
 
@@ -134,6 +135,11 @@ function Table_Completed_History() {
     return params.value;
   };
 
+  const filteredContent = order.filter(
+    (order) =>
+      order.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+  );
   return (
     <>
       <div className="w-full h-full bg-white">
@@ -155,7 +161,7 @@ function Table_Completed_History() {
                 },
             }}
             rowHeight={40}
-            rows={order}
+            rows={filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,
