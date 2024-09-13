@@ -83,7 +83,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     role: account_detailed1.role || 0,
   });
 
-  console.log(getRolesAPI.data?.data.products.edit);
+  // console.log(getRolesAPI.data?.data.products.edit);
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -130,7 +130,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   const saveProduct = async (e: any) => {
     e.preventDefault();
 
-    console.log(updateProduct);
+    // console.log(updateProduct);
 
     try {
       const checkstat = await upProduct(updateProduct).unwrap();

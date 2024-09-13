@@ -3,10 +3,10 @@ import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import SearchInput from "./SearchInput";
 import Table_All_History from "./Table_All_History";
 import Table_Completed_History from "./Table_Completed_History";
 import Table_Inquiries_History from "./Table_Inquiries_History";
+import { useState } from "react";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -37,10 +37,14 @@ function a11yProps(index: number) {
   };
 }
 export default function Order_History_Form() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = useState(0);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+  };
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
   };
   return (
     <div className="w-full">
@@ -53,6 +57,7 @@ export default function Order_History_Form() {
               name="discount"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-80 p-1.5"
               placeholder="Search"
+              onChange={handleSearch}
             />
             <Modal_Create_Order />
           </div>
@@ -74,13 +79,13 @@ export default function Order_History_Form() {
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-              <Table_All_History />
+              <Table_All_History search={searchQuery} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <Table_Completed_History />
+              <Table_Completed_History search={searchQuery} />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <Table_Inquiries_History />
+              <Table_Inquiries_History search={searchQuery} />
             </CustomTabPanel>
           </Box>
         </div>

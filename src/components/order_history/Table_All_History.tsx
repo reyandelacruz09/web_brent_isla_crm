@@ -28,6 +28,10 @@ interface Complaint {
   cid: string;
 }
 
+export interface Table_All_History_Props {
+  search: string;
+}
+
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
   { field: "neworderID", headerName: "ID", width: 70 },
@@ -38,7 +42,7 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_All_History() {
+function Table_All_History({ search }: Table_All_History_Props) {
   const navigate = useNavigate();
   const {
     data: OrderData,
@@ -93,7 +97,7 @@ function Table_All_History() {
         }
       }
       setOrder(order);
-      console.log("Order: ", order);
+      // console.log("Order: ", order);
     }
   }, [OrderData, OrderIsSuccess]);
 
@@ -105,7 +109,7 @@ function Table_All_History() {
       const size = result.data?.length || 0;
       const complaint: Complaint[] = [];
 
-      console.log("size: ", size);
+      // console.log("size: ", size);
 
       for (let i = 0; i < size; i++) {
         const orderID = result.data[i]?.orderID;
@@ -138,7 +142,7 @@ function Table_All_History() {
         });
       }
       setComplaint(complaint);
-      console.log("Complaint: ", complaint);
+      // console.log("Complaint: ", complaint);
     }
   }, [Complaintdata, ComplaintisSuccess]);
 
@@ -153,7 +157,7 @@ function Table_All_History() {
 
     setCombined(sortedCombined);
 
-    console.log("Combined: ", combined);
+    // console.log("Combined: ", combined);
   }, [order, complaint]);
 
   const renderCell = (params: any) => {
@@ -206,6 +210,12 @@ function Table_All_History() {
     return params.value;
   };
 
+  const filteredContent = combined.filter(
+    (order) =>
+      order.name.toLowerCase().includes(search.toLowerCase()) ||
+      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
     <>
       <div className="w-full h-full bg-white">
@@ -227,7 +237,7 @@ function Table_All_History() {
                 },
             }}
             rowHeight={40}
-            rows={combined}
+            rows={filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,

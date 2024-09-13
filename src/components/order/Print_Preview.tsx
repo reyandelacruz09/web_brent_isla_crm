@@ -12,8 +12,10 @@ import {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
 } from "../../store";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Date_Format from "./Date_Format";
+import ReactToPrint from "react-to-print";
+import PrintComponent from "./PrintTemplate";
 
 interface cust_idProps {
   cust_id: string;
@@ -88,6 +90,7 @@ function toProperCase(str: string) {
 }
 
 function Print_Preview({ cust_id, orderID }: cust_idProps) {
+  const componentRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState<DialogProps["scroll"]>("paper");
 
@@ -145,7 +148,7 @@ function Print_Preview({ cust_id, orderID }: cust_idProps) {
   useEffect(() => {
     if (isCustOrderSuccess && custOrder) {
       setCustomerOrder(custOrder.data);
-      console.log(custOrder.data);
+      // console.log(custOrder.data);
     }
   }, [isCustOrderSuccess, custOrder]);
 
@@ -281,7 +284,7 @@ function Print_Preview({ cust_id, orderID }: cust_idProps) {
                     </td>
                     <td className="w-1/5 text-center py-2">
                       <Typography variant="body2" className="text-black">
-                        Unit Price
+                        Price
                       </Typography>
                     </td>
                     <td className="w-1/5 text-center py-2">
@@ -459,11 +462,31 @@ function Print_Preview({ cust_id, orderID }: cust_idProps) {
           <Button onClick={handleClose} className="w-32" variant="contained">
             Close
           </Button>
-          <Button onClick={handleClose} className="w-32" variant="contained">
+          {/* <Button onClick={handleClose} className="w-32" variant="contained">
             Print
-          </Button>
+          </Button> */}
+          <ReactToPrint
+            trigger={() => (
+              <Button className="w-32" variant="contained">
+                Print
+              </Button>
+            )}
+            content={() => componentRef.current as HTMLElement} // Cast to HTMLElement
+            pageStyle="@media print { @page { size: portrait; } }"
+          />
         </DialogActions>
       </Dialog>
+      <div>
+        <div style={{ display: "none" }}>
+          <PrintComponent
+            ref={componentRef}
+            customerOrder={customerOrder}
+            productList={productList}
+            totals={totals}
+            others={others}
+          />
+        </div>
+      </div>
     </React.Fragment>
   );
 }

@@ -50,7 +50,7 @@ function Login_Form() {
         navigate("/login2");
       })
       .catch((error) => {
-        console.log(error);
+        // console.log(error);
       });
   };
 

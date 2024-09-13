@@ -271,7 +271,7 @@ export default function Modal_Edit_Roles({ name, id }: name) {
                   </TableHead>
                   <TableBody>
                     {roleList.map((roles, index) => {
-                      console.log(roles.access);
+                      // console.log(roles.access);
                       return (
                         <>
                           <StyledTableRow key={index}>
