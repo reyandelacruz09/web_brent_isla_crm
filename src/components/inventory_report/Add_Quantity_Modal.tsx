@@ -140,7 +140,7 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
               <div className="grid place-items-center pr-5">
                 <Typography>Quantity: </Typography>
               </div>
-              <div className="w-3/4 bg-green-100">
+              <div className="w-3/4">
                 <input
                   type="number"
                   id="quantity"
@@ -155,7 +155,10 @@ export default function Add_Quantity_Modal({ pid }: InventoryDetails_LProps) {
               <div className="grid place-items-center pr-5">
                 <Typography>Price: </Typography>
               </div>
-              <div className="w-3/4 bg-green-100">
+              <div className="w-3/4 relative">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <span className="text-gray-500 sm:text-sm">PHP</span>
+                </div>
                 <input
                   type="number"
                   id="price"

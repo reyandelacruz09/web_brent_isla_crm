@@ -149,7 +149,9 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     }
   };
 
-  const clients = useBranchListQuery("");
+  const clients = useBranchListQuery({
+    owner: account_detailed1.department.id,
+  });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess && clients.data) {
@@ -274,7 +276,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                       onChange={handleInput}
                     />
                     <FormControlLabel
-                      className="absolute top-0 right-0"
+                      className="absolute top-0 right-0 h-full"
                       control={
                         <Checkbox
                           onChange={handleInput}

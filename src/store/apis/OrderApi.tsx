@@ -165,6 +165,39 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      //view_complaints_id
+      ViewComplaintsID: builder.query({
+        query: ({ cpid }) => {
+          return {
+            url: `api/order/view_complaints_id/?cpid=${cpid}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      ///api/order/get_address/?barangay_id=6525
+      LocateAddress: builder.query({
+        query: ({ barangay_id }) => {
+          return {
+            url: `api/order/get_address/?barangay_id=${barangay_id}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      ///api/order/view_customer/?department_id=1
+      ListCustomer: builder.query({
+        query: ({ department_id }) => {
+          return {
+            url: `api/order/view_customer/?department_id=${department_id}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
     };
   },
 });
@@ -184,5 +217,8 @@ export const {
   useCompleteOrderTotalQuery,
   useUpdateOrderMutation,
   useViewComplaintsQuery,
+  useViewComplaintsIDQuery,
+  useLocateAddressQuery,
+  useListCustomerQuery,
 } = orderApi;
 export { orderApi };

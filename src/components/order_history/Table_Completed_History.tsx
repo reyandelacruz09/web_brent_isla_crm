@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
 import { Table_All_History_Props } from "./Table_All_History";
+import Show_Order_Details from "./Show_Order_Details";
 
 export interface Order {
   status: string;
@@ -16,6 +17,7 @@ export interface Order {
   ordertaker: string;
   edt: string;
   cid: string;
+  type: string;
 }
 
 const columns: GridColDef[] = [
@@ -77,6 +79,7 @@ function Table_Completed_History({ search }: Table_All_History_Props) {
             ordertaker: result.data[i].orderID.added_by.fullname,
             edt: formattedDate,
             cid: result.data[i].orderID.customerID.id,
+            type: "order",
           });
         }
       }
@@ -100,11 +103,13 @@ function Table_Completed_History({ search }: Table_All_History_Props) {
       );
     } else if (params.colDef.field === "name") {
       return (
-        <span
-          className="cursor-pointer font-bold"
-          // onClick={() => handleNameClick(params.row.cid)}
-        >
-          {params.value}
+        <span className="cursor-pointer font-bold">
+          <Show_Order_Details
+            cust_id={params.row.cid}
+            orderID={params.row.neworderID}
+            name={params.value}
+            type={params.row.type}
+          />
         </span>
       );
     } else if (params.colDef.field === "amount") {

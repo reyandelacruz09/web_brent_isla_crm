@@ -181,7 +181,7 @@ function Modal_Show_CustomerInformation({ cust_id, orderID }: cust_idProps) {
               disabled
             />
             <FormControlLabel
-              className="absolute top-0 right-0"
+              className="absolute top-0 right-0 h-full"
               control={
                 <Checkbox
                   disabled
@@ -240,7 +240,7 @@ function Modal_Show_CustomerInformation({ cust_id, orderID }: cust_idProps) {
               disabled
             />
             <FormControlLabel
-              className="absolute top-0 right-0"
+              className="absolute top-0 right-0 h-full"
               control={
                 <Checkbox
                   disabled

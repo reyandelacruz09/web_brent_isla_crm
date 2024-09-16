@@ -38,7 +38,7 @@ const columns: GridColDef[] = [
   { field: "code", headerName: "Product Code", width: 100 },
   { field: "name", headerName: "Product Name", width: 200 },
   { field: "description", headerName: "Product Description", width: 200 },
-  { field: "owner", headerName: "Product Owner", width: 130 },
+  { field: "owner", headerName: "Branch Owner", width: 130 },
   { field: "price", headerName: "Unit Price", width: 150 },
   { field: "active", headerName: "Active", width: 130 },
   { field: "edit", headerName: "Edit", width: 130 },

@@ -12,10 +12,10 @@ const branchApi = createApi({
   tagTypes: ["branch"],
   endpoints(builder) {
     return {
-      BranchList: builder.query<Branch, string>({
-        query: () => {
+      BranchList: builder.query({
+        query: ({ owner }) => {
           return {
-            url: `/api/branch/branch_list`,
+            url: `/api/branch/branch_list/?owner=${owner}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

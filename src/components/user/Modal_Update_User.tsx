@@ -56,15 +56,6 @@ export default function Modal_Update_User({
     setOpen(false);
   };
 
-  const clients = useBranchListQuery("");
-  const [content, setContent] = useState<Client[]>([]);
-  useEffect(() => {
-    if (clients.isSuccess) {
-      const result = clients.data?.data || [];
-      setContent(result);
-    }
-  }, [clients.isSuccess, clients.data]);
-
   const depList = useClientListQuery("");
   const [clientList, setClientList] = useState<Department[]>([]);
   useEffect(() => {
@@ -96,6 +87,9 @@ export default function Modal_Update_User({
       ...updateUser,
       [name]: type === "checkbox" ? checked : value,
     });
+    if (name === "department") {
+      setDepatmentID(value);
+    }
   };
 
   const { data, error, isLoading, isSuccess } = useViewUserQuery(modalid);
@@ -155,6 +149,18 @@ export default function Modal_Update_User({
       });
     }
   };
+
+  const [departmentID, setDepatmentID] = useState("");
+  const clients = useBranchListQuery({
+    owner: updateUser.department || "0",
+  });
+  const [content, setContent] = useState<Client[]>([]);
+  useEffect(() => {
+    if (clients.isSuccess) {
+      const result = clients.data?.data || [];
+      setContent(result);
+    }
+  }, [clients.isSuccess, clients.data]);
 
   return (
     <React.Fragment>
@@ -288,7 +294,7 @@ export default function Modal_Update_User({
                   onChange={handleInput}
                 />
                 <FormControlLabel
-                  className="absolute top-0 right-0"
+                  className="absolute top-0 right-0 h-full"
                   control={
                     <Checkbox
                       name="status"
@@ -395,7 +401,7 @@ export default function Modal_Update_User({
                   onChange={handleInput}
                 >
                   <option value="0" disabled selected>
-                    Inactive Branch
+                    Select Department
                   </option>
                   {content.map((listOption: any) => (
                     <option key={listOption.id} value={listOption.id}>

@@ -19,7 +19,15 @@ interface Department {
 }
 
 function AddUser() {
-  const clients = useBranchListQuery("");
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const [departmentID, setDepatmentID] = useState("");
+
+  const clients = useBranchListQuery({
+    owner: departmentID,
+  });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess) {
@@ -67,6 +75,10 @@ function AddUser() {
     const { name, value, type, checked } = e.target;
     setUser({ ...user, [name]: type === "checkbox" ? checked : value });
     setValidationErrors({ ...validationErrors, [name]: false });
+
+    if (name === "department") {
+      setDepatmentID(value);
+    }
   };
 
   const validateFields = () => {
@@ -153,11 +165,8 @@ function AddUser() {
       department: 0,
       branch: 0,
     });
+    setDepatmentID("0");
   };
-
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
 
   const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,
@@ -285,7 +294,7 @@ function AddUser() {
                   onChange={handleInput}
                 />
                 <FormControlLabel
-                  className="absolute top-0 right-0"
+                  className="absolute top-0 right-0 h-full"
                   control={
                     <Checkbox
                       name="status"
@@ -405,7 +414,7 @@ function AddUser() {
                   onChange={handleInput}
                 >
                   <option value="0" disabled selected>
-                    Choose One
+                    Choose Branch
                   </option>
                   {content.map((listOption: any) => (
                     <option key={listOption.id} value={listOption.id}>
