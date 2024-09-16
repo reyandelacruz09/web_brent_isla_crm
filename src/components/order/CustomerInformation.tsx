@@ -1,5 +1,17 @@
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
-import { Checkbox, FormControlLabel } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Dialog,
+  DialogTitle,
+  FormControlLabel,
+  Input,
+  InputAdornment,
+  IconButton,
+  DialogContent,
+  FormControl,
+  DialogActions,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { adress } from "../branch/AddBranch";
 import {
@@ -9,9 +21,19 @@ import {
   useProvinceListQuery,
   useRegionListQuery,
   useCustomerInfoQuery,
+  useListCustomerQuery,
 } from "../../store";
 import { Client } from "../product/AddProduct";
 import React from "react";
+import ContentPasteSearchOutlined from "@mui/icons-material/ContentPasteSearchOutlined";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  DataGrid,
+  gridClasses,
+  GridColDef,
+  GridRowParams,
+} from "@mui/x-data-grid";
 
 type CustomerData = {
   fname: string;
@@ -31,6 +53,24 @@ type CustomerData = {
   branch: string;
 };
 
+interface Customer {
+  id: string;
+  fname: string;
+  lname: string;
+  phone1: string;
+  phone2: string;
+  landline: string;
+  email: string;
+  block_unit: string;
+  address: string;
+  company: string;
+}
+
+interface Branch {
+  id: string;
+  name: string;
+}
+
 type CustomerInformationProps = {
   customerData: CustomerData;
   setCustomerData: React.Dispatch<React.SetStateAction<CustomerData>>;
@@ -40,6 +80,7 @@ function CustomerInformation({
   customerData,
   setCustomerData,
 }: CustomerInformationProps) {
+  const [openModal, setOpenModal] = useState(false);
   const [regionList, setRegionList] = useState<adress[]>([]);
   const [provinceList, setProvinceList] = useState<adress[]>([]);
   const [cityList, setCityList] = useState<adress[]>([]);
@@ -51,6 +92,12 @@ function CustomerInformation({
   );
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [apiPhone, setApiPhone] = useState<string>("");
+  const [apiPhoneCustomer, setApiPhoneCustomer] = useState<string>("");
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
 
   const { data: regions, isSuccess: isRegionSuccess } = useRegionListQuery("");
   useEffect(() => {
@@ -106,14 +153,29 @@ function CustomerInformation({
     setSelectedCityId(event.target.value);
   };
 
-  const clients = useBranchListQuery("");
-  const [content, setContent] = useState<Client[]>([]);
+  const clients = useListCustomerQuery({
+    department_id: account_detailed1.department.id,
+  });
+  const [content, setContent] = useState<Customer[]>([]);
   useEffect(() => {
     if (clients.isSuccess) {
       const result = clients.data?.data || [];
+      console.log("Result: ", result);
       setContent(result);
     }
   }, [clients.isSuccess, clients.data]);
+
+  const branches = useBranchListQuery({
+    owner: account_detailed1.department.id,
+  });
+  const [branchList, setBranchList] = useState<Branch[]>([]);
+  useEffect(() => {
+    if (branches.isSuccess) {
+      const result = branches.data?.data || [];
+      console.log("Result: ", result);
+      setBranchList(result);
+    }
+  }, [branches.isSuccess, branches.data]);
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -168,19 +230,92 @@ function CustomerInformation({
     }
   }, [isCustInfoSuccess, custInfo]);
 
-  // useEffect(() => {
-  //   if (orderDetails.length > 0) {
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
 
-  //   }, );
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+  const updateApiPhone = () => {
+    setOpenModal(false);
+    setApiPhone(apiPhoneCustomer);
+  };
+
+  const columns: GridColDef[] = [
+    { field: "fname", headerName: "First Name", width: 150 },
+    { field: "lname", headerName: "Last Name", width: 150 },
+    { field: "phone1", headerName: "Phone 1", width: 130 },
+    { field: "phone2", headerName: "Phone 2", width: 130 },
+    { field: "landline", headerName: "Landline", width: 130 },
+    { field: "email", headerName: "Email", width: 150 },
+    { field: "address", headerName: "Address", width: 600 },
+  ];
+
+  const renderCell = (params: any) => {
+    // if (params.colDef.field === "price") {
+    //   return (
+    //     <div className="text-right pr-5">
+    //       <span>
+    //         {new Intl.NumberFormat("en-US", {
+    //           minimumFractionDigits: 2,
+    //           maximumFractionDigits: 2,
+    //         }).format(parseFloat(params.value ? params.value : "0"))}
+    //       </span>
+    //     </div>
+    //   );
+    // } else if (params.colDef.field === "stock") {
+    //   return (
+    //     <div className="text-right pr-5">
+    //       <span>{params.value}</span>
+    //     </div>
+    //   );
+    // }
+
+    return params.value;
+  };
+
+  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredContent = content.filter(
+    (customer) =>
+      customer.fname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.lname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      customer.phone1.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (customer.phone2
+        ? customer.phone2.toLowerCase().includes(searchQuery.toLowerCase())
+        : false) ||
+      (customer.landline
+        ? customer.landline.toLowerCase().includes(searchQuery.toLowerCase())
+        : false) ||
+      (customer.email
+        ? customer.email.toLowerCase().includes(searchQuery.toLowerCase())
+        : false)
+  );
 
   return (
     <>
       <div className="grid grid-cols-3 mt-4">
-        <div className="col-span-3 mt-3">
-          <span className="text-lg font-bold">
-            <KeyboardAltOutlinedIcon className="align-top" /> Customer
-            Information
-          </span>
+        <div className="col-span-3 mt-3 flex">
+          <div className="w-1/2">
+            <span className="text-lg font-bold flex items-center">
+              <KeyboardAltOutlinedIcon className="align-center mr-2" />
+              Customer Information
+            </span>
+          </div>
+          <div className="flex justify-end w-1/2">
+            <Button
+              size="small"
+              variant="contained"
+              startIcon={<ContentPasteSearchOutlined />}
+              onClick={handleOpenModal}
+            >
+              Find Customer
+            </Button>
+          </div>
         </div>
 
         <div className="pt-5 mr-5">
@@ -217,16 +352,17 @@ function CustomerInformation({
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
             Cell Phone 1
           </label>
-          <div className="relative mb-6 ">
+          <div className="relative mb-6">
             <input
               type="text"
               id="input-group-1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
               name="phone1"
               onChange={handleInput}
+              value={apiPhone}
             />
             <FormControlLabel
-              className="absolute top-0 right-0"
+              className="absolute top-0 right-0 h-full"
               control={<Checkbox />}
               label="Send SMS"
               name="sendsms"
@@ -281,7 +417,7 @@ function CustomerInformation({
               onChange={handleInput}
             />
             <FormControlLabel
-              className="absolute top-0 right-0"
+              className="absolute top-0 right-0 h-full"
               control={<Checkbox />}
               label="Send Email"
               name="sendemail"
@@ -420,7 +556,7 @@ function CustomerInformation({
               <option value="" disabled selected>
                 Choose One
               </option>
-              {content.map((listOption: any) => (
+              {branchList.map((listOption: any) => (
                 <option key={listOption.id} value={listOption.id}>
                   {listOption.name}
                 </option>
@@ -466,6 +602,103 @@ function CustomerInformation({
           </div>
         </div>
       </div>
+
+      <Dialog
+        open={openModal}
+        onClose={handleCloseModal}
+        PaperProps={{
+          sx: {
+            width: "70vw",
+            height: "85vh",
+            maxWidth: "none",
+            maxHeight: "none",
+          },
+        }}
+      >
+        <DialogTitle>
+          <Input
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            }
+            placeholder="Search Customer"
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+        </DialogTitle>
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseModal}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <DialogContent sx={{ paddingTop: 0, paddingBottom: 0 }}>
+          <FormControl fullWidth>
+            <div className="flex justify-center">
+              <DataGrid
+                sx={{
+                  [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                    {
+                      outline: "none",
+                    },
+                  [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                    {
+                      outline: "none",
+                    },
+                  width: "55vw",
+                  maxWidth: "none",
+                  height: "65vh",
+                }}
+                rowHeight={35}
+                rows={filteredContent}
+                columns={columns.map((col) => ({
+                  ...col,
+                  renderCell: renderCell,
+                }))}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 10 },
+                  },
+                }}
+                pageSizeOptions={[5, 10, 20, 50, 100]}
+                hideFooterSelectedRowCount
+                onRowClick={(params: GridRowParams) =>
+                  setApiPhoneCustomer(params.row.phone1)
+                }
+              />
+            </div>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <div className="flex w-full pb-3">
+            <div className="w-1/2">
+              <Button
+                variant="contained"
+                color="success"
+                onClick={updateApiPhone}
+              >
+                Choose
+              </Button>
+            </div>
+            <div className="w-1/2 flex justify-end">
+              <Button
+                variant="contained"
+                color="info"
+                onClick={handleCloseModal}
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

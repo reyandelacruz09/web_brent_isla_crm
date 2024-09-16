@@ -28,7 +28,8 @@ import {
   GridColDef,
   GridRowParams,
 } from "@mui/x-data-grid";
-import { useProductListQuery, useProductListBranchQuery } from "../../store"; // Adjust this import based on your actual query hook
+import { useProductListQuery, useProductListBranchQuery } from "../../store";
+import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 
 // Define interfaces for the props and state
 interface Product {
@@ -261,25 +262,38 @@ const ProductOrder: React.FC<ProductOrderProps> = ({
               {productOrder.map((item, idx) => (
                 <TableRow key={item.id || idx}>
                   <StyledTableCell className="w-2/6">
-                    <button
+                    <Button
                       style={{
                         backgroundColor: "#f9fafb",
                         border: "1px solid #e2e8f0",
                         width: "100%",
                         textAlign: "left",
-                        padding: "6px",
+                        padding: "4.6px",
+                        textTransform: "none",
+                        justifyContent: "flex-start",
+                        display: "flex",
+                        flexDirection: "row",
+                        borderRadius: "0",
+                        paddingLeft: "20px",
+                        color: "black",
                       }}
                       onClick={() => handleOpenModal(idx)}
+                      size="small"
+                      disableRipple
                     >
-                      {/* {item.product
-                        ? productList.find((p) => p.id === item.product)?.name
-                        : "Select Product"} */}
-                      {item.product
-                        ? productList.find(
-                            (p) => p.id === parseInt(item.product)
-                          )?.name
-                        : "Select Product"}
-                    </button>
+                      {item.product ? (
+                        productList.find((p) => p.id === parseInt(item.product))
+                          ?.name
+                      ) : (
+                        <>
+                          <SearchOutlinedIcon
+                            fontSize="small"
+                            className="mr-3 text-blue-700"
+                          />
+                          <span className="text-blue-700">Select Product</span>
+                        </>
+                      )}
+                    </Button>
                   </StyledTableCell>
                   <StyledTableCell className="w-36" align="center">
                     <input

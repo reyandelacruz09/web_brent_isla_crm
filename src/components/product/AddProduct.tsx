@@ -52,6 +52,10 @@ function AddProduct() {
     description: false,
   });
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setProduct({ ...product, [name]: type === "checkbox" ? checked : value });
@@ -139,7 +143,9 @@ function AddProduct() {
     });
   };
 
-  const clients = useBranchListQuery("");
+  const clients = useBranchListQuery({
+    owner: account_detailed1.department.id,
+  });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess) {
@@ -157,10 +163,6 @@ function AddProduct() {
       setListCategory(category_result);
     }
   }, [productcategory.isSuccess, productcategory.data]);
-
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
 
   const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,
@@ -232,7 +234,7 @@ function AddProduct() {
 
               <div className="pt-3 mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Product Owner
+                  Branch Owner
                 </label>
                 <div className="relative mb-6">
                   <select
@@ -321,7 +323,7 @@ function AddProduct() {
                     autoComplete="false"
                   />
                   <FormControlLabel
-                    className="absolute top-0 right-0"
+                    className="absolute top-0 right-0 h-full"
                     control={
                       <Checkbox
                         checked={product.active}
@@ -338,12 +340,15 @@ function AddProduct() {
                   Unit Price
                 </label>
                 <div className="relative mb-6">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-gray-500 sm:text-sm">PHP</span>
+                  </div>
                   <input
                     type="number"
                     name="price"
                     value={product.price}
                     onChange={handleInput}
-                    className={`bg-gray-50 border ${
+                    className={`bg-gray-50 border text-right ${
                       validationErrors.price
                         ? "border-red-500"
                         : "border-gray-300"
@@ -357,12 +362,15 @@ function AddProduct() {
                   Discount
                 </label>
                 <div className="relative mb-6">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <span className="text-gray-500 sm:text-sm">PHP</span>
+                  </div>
                   <input
                     type="number"
                     name="discount"
                     value={product.discount}
                     onChange={handleInput}
-                    className={`bg-gray-50 border ${
+                    className={`bg-gray-50 border text-right ${
                       validationErrors.discount
                         ? "border-red-500"
                         : "border-gray-300"

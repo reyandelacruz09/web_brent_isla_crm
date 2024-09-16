@@ -36,7 +36,7 @@ function UserInformation() {
               placeholder=""
             />
             <FormControlLabel
-              className="absolute top-0 right-0"
+              className="absolute top-0 right-0 h-full"
               control={<Checkbox defaultChecked />}
               label="Active"
             />

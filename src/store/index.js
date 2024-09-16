@@ -85,6 +85,9 @@ export {
   useCompleteOrderTotalQuery,
   useUpdateOrderMutation,
   useViewComplaintsQuery,
+  useViewComplaintsIDQuery,
+  useLocateAddressQuery,
+  useListCustomerQuery,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,

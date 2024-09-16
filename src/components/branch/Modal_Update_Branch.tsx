@@ -338,7 +338,7 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
                   onChange={handleInput}
                 />
                 <FormControlLabel
-                  className="absolute top-0 right-0"
+                  className="absolute top-0 right-0 h-full"
                   control={
                     <Checkbox
                       name="active"

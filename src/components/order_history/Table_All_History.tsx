@@ -4,6 +4,7 @@ import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
+import Show_Order_Details from "./Show_Order_Details";
 
 export interface Order {
   status: string;
@@ -15,6 +16,7 @@ export interface Order {
   ordertaker: string;
   edt: string;
   cid: string;
+  type: string;
 }
 interface Complaint {
   status: string;
@@ -26,6 +28,7 @@ interface Complaint {
   ordertaker: string;
   edt: string;
   cid: string;
+  type: string;
 }
 
 export interface Table_All_History_Props {
@@ -93,6 +96,7 @@ function Table_All_History({ search }: Table_All_History_Props) {
             ordertaker: result.data[i].orderID.added_by.fullname,
             edt: formattedDate,
             cid: result.data[i].orderID.customerID.id,
+            type: "order",
           });
         }
       }
@@ -138,7 +142,8 @@ function Table_All_History({ search }: Table_All_History_Props) {
           amount: "N/A",
           ordertaker: result.data[i]?.added_by?.fullname || "",
           edt: formattedDate,
-          cid: result.data[i]?.id || "", // Safeguard against undefined id
+          cid: result.data[i]?.orderID.customerID.id || "", // Safeguard against undefined id
+          type: "complaint",
         });
       }
       setComplaint(complaint);
@@ -175,11 +180,15 @@ function Table_All_History({ search }: Table_All_History_Props) {
       );
     } else if (params.colDef.field === "name") {
       return (
-        <span
-          className="cursor-pointer font-bold"
-          // onClick={() => handleNameClick(params.row.cid)}
-        >
-          {params.value}
+        <span className="cursor-pointer font-bold">
+          {/* {params.value} */}
+          <Show_Order_Details
+            cust_id={params.row.cid}
+            orderID={params.row.neworderID}
+            name={params.value}
+            type={params.row.type}
+          />
+          {/* {params.row.cid} */}
         </span>
       );
     } else if (params.colDef.field === "amount") {

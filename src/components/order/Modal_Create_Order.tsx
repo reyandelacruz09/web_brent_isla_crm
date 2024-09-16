@@ -21,6 +21,7 @@ import {
   useViewBranchQuery,
   useCustomerInfoQuery,
   useGetRolesQuery,
+  useLocateAddressQuery,
 } from "../../store";
 import { Client } from "../product/AddProduct";
 
@@ -64,6 +65,12 @@ interface customer {
   barangay: Barangay;
 }
 
+interface locateAddress {
+  id: number;
+  name: string;
+  city: City;
+}
+
 function toProperCase(str: string) {
   if (!str) return "";
   return str
@@ -75,7 +82,13 @@ function toProperCase(str: string) {
 export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
 
-  const clients = useBranchListQuery("");
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const clients = useBranchListQuery({
+    owner: account_detailed1.department.id,
+  });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess) {
@@ -90,10 +103,6 @@ export default function CustomizedDialogs() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
 
   const [orderType, setOrderType] = React.useState({
     demographic: "1",
@@ -174,6 +183,7 @@ export default function CustomizedDialogs() {
     sendemail: customerData.sendemail,
     branch: customerData.branch,
     added_by: account_detailed1.id,
+    department: account_detailed1.department.id,
 
     demographic: orderType.demographic,
     order_type: orderType.order_type,
@@ -311,41 +321,41 @@ export default function CustomizedDialogs() {
     }
   }, [isdbaddressSuccess, dbaddress]);
 
-  const [customerInfo, setCustomerInfo] = useState<customer>({
-    block_unit: "",
-    barangay: {
+  const [customerInfo, setCustomerInfo] = useState<locateAddress>({
+    id: 0,
+    name: "",
+    city: {
       name: "",
-      city: {
+      province: {
+        id: 0,
         name: "",
-        province: {
-          id: 0,
+        region: {
           name: "",
-          region: {
-            name: "",
-          },
         },
       },
     },
   });
-  const { data: custInfo, isSuccess: isCustInfoSuccess } = useCustomerInfoQuery(
-    OrderDetails.phone1 || ""
-  );
+  const { data: custInfo, isSuccess: isCustInfoSuccess } =
+    useLocateAddressQuery({
+      barangay_id: OrderDetails.barangay,
+    });
 
   useEffect(() => {
     if (isCustInfoSuccess && custInfo) {
       setCustomerInfo(custInfo.data);
+      console.log("Customer Info", custInfo.data);
     }
   }, [isCustInfoSuccess, custInfo]);
 
   const locateAddress = () => {
     let customerProvince = "";
     if (
-      customerInfo.barangay.city.province.id < 86 &&
-      customerInfo.barangay.city.province.id > 81
+      customerInfo.city.province.id < 86 &&
+      customerInfo.city.province.id > 81
     ) {
       customerProvince = "NCR";
     } else {
-      customerProvince = customerInfo.barangay.city.province.name;
+      customerProvince = customerInfo.city.province.name;
     }
 
     let branchProvince = "";
@@ -359,11 +369,11 @@ export default function CustomizedDialogs() {
     }
 
     let customerAddress =
-      customerInfo.block_unit +
+      OrderDetails.block_unit +
       ", " +
-      customerInfo.barangay.name +
+      customerInfo.name +
       ", " +
-      customerInfo.barangay.city.name +
+      customerInfo.city.name +
       ", " +
       customerProvince;
 

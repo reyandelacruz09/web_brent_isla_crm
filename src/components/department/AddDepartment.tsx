@@ -233,7 +233,7 @@ function AddDepartment() {
                     } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   />
                   <FormControlLabel
-                    className="absolute top-0 right-0"
+                    className="absolute top-0 right-0 h-full"
                     control={
                       <Checkbox
                         onChange={handleInput}
