@@ -23,6 +23,7 @@ import Restricted from "./pages/Restricted";
 import Ticketing from "./components/settings/ticketing";
 import SMS from "./components/settings/SMS";
 import Login_Form_2 from "./components/Login_Form_2";
+import BranchRoutes from "./pages/BranchRoutes";
 
 function App() {
   return (
@@ -55,6 +56,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/settings/profile" element={<Profiles />} />
           <Route path="/settings/roles" element={<Roles_and_Sharing />} />
+          <Route path="/settings/route" element={<BranchRoutes />} />
           <Route path="/login2" element={<Login_Form_2 />} />
 
           <Route path="/ticketing" element={<Ticketing />} />

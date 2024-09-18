@@ -36,8 +36,14 @@ const columns: GridColDef[] = [
 ];
 
 function Table_All_Orders({ search }: Table_All_OrdersProps) {
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   const navigate = useNavigate();
-  const { data, error, isLoading, isSuccess } = useOrderListQuery("");
+  const { data, error, isLoading, isSuccess } = useOrderListQuery({
+    owner: account_detailed1.department.id,
+  });
   const [content, setContent] = useState<Order[]>([]);
 
   useEffect(() => {

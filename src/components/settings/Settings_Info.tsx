@@ -187,7 +187,40 @@ function Settings_Info() {
               <CardActions></CardActions>
             </Card>
           </div>
-          <div className="w-1/2"></div>
+          <div className="w-1/2">
+            <Card sx={{ minWidth: 275, minHeight: 250 }}>
+              <CardMedia className="bg-blue-700">
+                <Typography
+                  variant="h6"
+                  component="div"
+                  className="py-1 px-2"
+                  color="white"
+                >
+                  Automations
+                </Typography>
+              </CardMedia>
+              <CardMedia sx={{ height: 5 }} className="bg-green-300" />
+              <CardContent>
+                <Link to="/settings/route">
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    className="pl-5 py-1"
+                    sx={{
+                      textDecoration: "none",
+                      color: "black",
+                      "&:hover": {
+                        color: "blue",
+                      },
+                    }}
+                  >
+                    Routing
+                  </Typography>
+                </Link>
+              </CardContent>
+              <CardActions></CardActions>
+            </Card>
+          </div>
         </div>
       </div>
     </>

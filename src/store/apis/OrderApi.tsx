@@ -28,9 +28,9 @@ const orderApi = createApi({
         invalidatesTags: ["order", "dashboard"],
       }),
       OrderList: builder.query({
-        query: () => {
+        query: ({ owner }) => {
           return {
-            url: `/api/order/order_list`,
+            url: `/api/order/order_list/?owner=${owner}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -198,6 +198,21 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      ///api/order/get_complaint/
+      PassComplaint: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `api/order/pass_complaint/`,
+            headers: {
+              Authorization: "token " + token,
+              "Content-Type": "application/json",
+            },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["order"],
+      }),
     };
   },
 });
@@ -220,5 +235,6 @@ export const {
   useViewComplaintsIDQuery,
   useLocateAddressQuery,
   useListCustomerQuery,
+  usePassComplaintMutation,
 } = orderApi;
 export { orderApi };
