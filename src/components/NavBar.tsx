@@ -238,7 +238,8 @@ function NavBar() {
             className={`cursor-pointer ${
               window.location.pathname === "/settings" ||
               window.location.pathname === "/settings/profile" ||
-              window.location.pathname === "/settings/roles"
+              window.location.pathname === "/settings/roles" ||
+              window.location.pathname === "/settings/route"
                 ? " activenavbar"
                 : ""
             }`}

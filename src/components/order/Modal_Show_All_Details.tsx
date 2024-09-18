@@ -24,6 +24,7 @@ import {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
   useGetRolesQuery,
+  usePassComplaintMutation,
   useUpdateOrderMutation,
 } from "../../store";
 import { Avatar } from "@mui/material";
@@ -60,6 +61,20 @@ type OrderType = {
   complaint_message: string;
   added_by: string;
 };
+
+interface ApiData {
+  orderID: string;
+  complaint_message: string;
+  lname: string;
+  fname: string;
+  phone1: string;
+  phone2: string;
+  landline: string;
+  email: string;
+  block_unit: string;
+  company: string;
+  nearest_landmark: string;
+}
 
 function stringToColor(string: string) {
   let hash = 0;
@@ -127,6 +142,44 @@ export default function Modal_Show_All_Details({
   const { data: dbutton, isSuccess: isDButtonSuccess } =
     useCustomerOrderIDQuery(orderID || "");
 
+  const [customerInfo, setCustomerInfo] = useState<customer>({
+    fname: "",
+    lname: "",
+  });
+  const [apiData, setApiData] = useState<ApiData>({
+    orderID: "",
+    complaint_message: "",
+    lname: "",
+    fname: "",
+    phone1: "",
+    phone2: "",
+    landline: "",
+    email: "",
+    block_unit: "",
+    company: "",
+    nearest_landmark: "",
+  });
+  const { data: custInfo, isSuccess: isCustInfoSuccess } =
+    useCustomerInfoIDQuery(cust_id || "");
+
+  useEffect(() => {
+    if (isCustInfoSuccess && custInfo) {
+      setCustomerInfo(custInfo.data);
+      setApiData((previous) => ({
+        ...previous,
+        lname: custInfo.data.lname,
+        fname: custInfo.data.fname,
+        phone1: custInfo.data.phone1,
+        phone2: custInfo.data.phone2,
+        landline: custInfo.data.landline,
+        email: custInfo.data.email,
+        block_unit: custInfo.data.block_unit,
+        company: custInfo.data.company,
+        nearest_landmark: custInfo.data.nearest_landmark,
+      }));
+    }
+  }, [isCustInfoSuccess, custInfo]);
+
   useEffect(() => {
     if (isDButtonSuccess && dbutton) {
       // setCustomerInfo(dbutton.data);
@@ -141,6 +194,11 @@ export default function Modal_Show_All_Details({
         complaint_message: dbutton.data.complaint_message || "",
         added_by: account_detailed1.id,
       });
+      setApiData((previous) => ({
+        ...previous,
+        orderID: dbutton.data.id,
+      }));
+
       if (dbutton.data.status < 3) {
         setDisabledButton(false);
       } else {
@@ -212,22 +270,14 @@ export default function Modal_Show_All_Details({
       ...prevState,
       [name]: value,
     }));
+    setApiData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
   };
 
-  const [customerInfo, setCustomerInfo] = useState<customer>({
-    fname: "",
-    lname: "",
-  });
-  const { data: custInfo, isSuccess: isCustInfoSuccess } =
-    useCustomerInfoIDQuery(cust_id || "");
-
-  useEffect(() => {
-    if (isCustInfoSuccess && custInfo) {
-      setCustomerInfo(custInfo.data);
-    }
-  }, [isCustInfoSuccess, custInfo]);
-
   const [updateOrder] = useUpdateOrderMutation();
+  const [upComplaint] = usePassComplaintMutation();
   const saveOrder = async (e: any) => {
     e.preventDefault();
 
@@ -240,6 +290,13 @@ export default function Modal_Show_All_Details({
         handleClose();
       } else {
         alert("something wrong");
+      }
+
+      if (orderType.type_of_complaint === "2") {
+        const checkComplaint = await upComplaint(apiData).unwrap();
+        if (checkComplaint.success === true) {
+          console.log("API Data: ", apiData);
+        }
       }
     } catch (error) {
       toast.error("Something went wrong 🥺", {

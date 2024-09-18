@@ -71,7 +71,27 @@ const settingsApi = createApi({
             method: "GET",
           };
         },
-        // providesTags: ["settings"],
+        providesTags: ["settings"],
+      }),
+      GetCustomerField: builder.query({
+        query: () => {
+          return {
+            url: `/api/settings/get_customer_field`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["settings"],
+      }),
+      GetCustomerFilter: builder.query({
+        query: ({ conditions }) => {
+          return {
+            url: `/api/settings/get_filtered_customer/?conditions=${conditions}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["settings"],
       }),
     };
   },
@@ -83,5 +103,7 @@ export const {
   useAddAccountRoleMutation,
   useUpdateRoleMutation,
   useGetRolesQuery,
+  useGetCustomerFieldQuery,
+  useGetCustomerFilterQuery,
 } = settingsApi;
 export { settingsApi };

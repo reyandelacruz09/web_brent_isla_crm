@@ -46,13 +46,18 @@ const columns: GridColDef[] = [
 ];
 
 function Table_All_History({ search }: Table_All_History_Props) {
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
   const navigate = useNavigate();
   const {
     data: OrderData,
     error: OrderError,
     isLoading: OrderIsLoading,
     isSuccess: OrderIsSuccess,
-  } = useOrderListQuery("");
+  } = useOrderListQuery({
+    owner: account_detailed1.department.id,
+  });
   const { data: Complaintdata, isSuccess: ComplaintisSuccess } =
     useViewComplaintsQuery("");
   const [order, setOrder] = useState<Order[]>([]);

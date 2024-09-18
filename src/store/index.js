@@ -88,6 +88,7 @@ export {
   useViewComplaintsIDQuery,
   useLocateAddressQuery,
   useListCustomerQuery,
+  usePassComplaintMutation,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,
@@ -102,6 +103,8 @@ export {
   useAddAccountRoleMutation,
   useUpdateRoleMutation,
   useGetRolesQuery,
+  useGetCustomerFieldQuery,
+  useGetCustomerFilterQuery,
 } from "../store/apis/SettingsApi";
 export {
   useDashTotalProductsQuery,
