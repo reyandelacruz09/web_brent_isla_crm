@@ -199,20 +199,20 @@ const orderApi = createApi({
         providesTags: ["order"],
       }),
       ///api/order/get_complaint/
-      PassComplaint: builder.mutation({
-        query: (formBody) => {
-          return {
-            url: `api/order/pass_complaint/`,
-            headers: {
-              Authorization: "token " + token,
-              "Content-Type": "application/json",
-            },
-            body: formBody,
-            method: "POST",
-          };
-        },
-        invalidatesTags: ["order"],
-      }),
+      // PassComplaint: builder.mutation({
+      //   query: (formBody) => {
+      //     return {
+      //       url: `api/order/pass_complaint/`,
+      //       headers: {
+      //         Authorization: "token " + token,
+      //         "Content-Type": "application/json",
+      //       },
+      //       body: formBody,
+      //       method: "POST",
+      //     };
+      //   },
+      //   invalidatesTags: ["order"],
+      // }),
     };
   },
 });
@@ -235,6 +235,6 @@ export const {
   useViewComplaintsIDQuery,
   useLocateAddressQuery,
   useListCustomerQuery,
-  usePassComplaintMutation,
+  // usePassComplaintMutation,
 } = orderApi;
 export { orderApi };

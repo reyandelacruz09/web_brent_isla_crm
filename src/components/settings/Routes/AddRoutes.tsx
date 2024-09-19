@@ -2,6 +2,7 @@ import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import React, { useState } from "react";
 import KeyboardAltOutlinedIcon from "@mui/icons-material/KeyboardAltOutlined";
 import UpdateRoute from "./UpdateRoute";
+import ImportCsv from "./ImportCsv";
 
 function AddRoutes() {
   const [branch, setBranch] = useState({
@@ -61,16 +62,7 @@ function AddRoutes() {
                 <span className="text-2xl font-bold">Add Route</span>
               </div>
               <div className="flex justify-center pl-5">
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-40 pt-1"
-                  tabIndex={-1}
-                  size="small"
-                  color="success"
-                >
-                  <span className="">Import CSV file</span>
-                </Button>
+                <ImportCsv />
               </div>
               <div className="flex justify-center pl-5">
                 <UpdateRoute />

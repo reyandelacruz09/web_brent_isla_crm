@@ -31,9 +31,13 @@ const productApi = createApi({
   tagTypes: ["products"],
   endpoints(builder) {
     return {
-      ProductList: builder.query<Product, string>({
+      ProductList: builder.query({
+        // query: ({ page, pageSize }) => {
         query: () => {
           return {
+            // url: `/api/products/product_list/?page=${
+            //   page + 1
+            // }&page_size=${pageSize}`,
             url: `/api/products/product_list`,
             headers: { Authorization: "token " + token },
             method: "GET",

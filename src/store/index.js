@@ -8,6 +8,7 @@ import { orderApi } from "../store/apis/OrderApi";
 import { userApi } from "../store/apis/UserApi";
 import { settingsApi } from "../store/apis/SettingsApi";
 import { dashboardApi } from "./apis/DashboardAPI";
+import { externalApi } from "./apis/ExternalApi";
 // import { productApi } from "./apis/ProductsApi";
 
 export const store = configureStore({
@@ -20,6 +21,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [settingsApi.reducerPath]: settingsApi.reducer,
     [dashboardApi.reducerPath]: dashboardApi.reducer,
+    [externalApi.reducerPath]: externalApi.reducer,
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
@@ -30,7 +32,8 @@ export const store = configureStore({
       .concat(orderApi.middleware)
       .concat(userApi.middleware)
       .concat(settingsApi.middleware)
-      .concat(dashboardApi.middleware);
+      .concat(dashboardApi.middleware)
+      .concat(externalApi.middleware);
   },
 });
 
@@ -88,7 +91,7 @@ export {
   useViewComplaintsIDQuery,
   useLocateAddressQuery,
   useListCustomerQuery,
-  usePassComplaintMutation,
+  // usePassComplaintMutation,
 } from "../store/apis/OrderApi";
 export {
   useCreateUserMutation,
@@ -111,3 +114,4 @@ export {
   usePieChartQuery,
   useProductChartQuery,
 } from "../store/apis/DashboardAPI";
+export { useSendComplaintMutation } from "../store/apis/ExternalApi";

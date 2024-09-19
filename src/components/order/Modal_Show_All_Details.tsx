@@ -24,13 +24,15 @@ import {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
   useGetRolesQuery,
-  usePassComplaintMutation,
+  // usePassComplaintMutation,
   useUpdateOrderMutation,
+  useSendComplaintMutation,
 } from "../../store";
 import { Avatar } from "@mui/material";
 import Modal_Show_CustomerInformation from "./Modal_Show_CustomerInformation";
 import { Slide, toast } from "react-toastify";
 import Print_Preview from "./Print_Preview";
+import axios from "axios";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -275,9 +277,53 @@ export default function Modal_Show_All_Details({
       [name]: value,
     }));
   };
-
+  console.log("API Data: ", apiData);
   const [updateOrder] = useUpdateOrderMutation();
-  const [upComplaint] = usePassComplaintMutation();
+  // const [upComplaint] = usePassComplaintMutation();
+  const [senComplaint] = useSendComplaintMutation();
+
+  const newapiData = {
+    orderID: 14,
+    complaint_message: "sample",
+    lname: "Bausing",
+    fname: "Jonas",
+    phone1: "09455904251",
+    phone2: "",
+    landline: "",
+    email: "jonasbausing@gmail.com",
+    block_unit: "1167 Chino Roces Ave",
+    company: "OODC",
+    nearest_landmark: "near church",
+  };
+
+  const jsonData = JSON.stringify({ newapiData });
+  // {
+  //   headers: {
+  //     'Content-Type': 'application/json',
+  //   },
+  // }
+
+  const externalApi = async () => {
+    try {
+      const jsonData = JSON.stringify({ newapiData });
+
+      const response = await axios.post(
+        `https://flow.zoho.com/772396954/flow/webhook/incoming?zapikey=1001.2768223215be0fcafdcfbadcbadd93e5.35f2633c889af89b756ed315cf7b2d29&isdebug=false`,
+        jsonData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 10000, // Set timeout to 10 seconds
+        }
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   const saveOrder = async (e: any) => {
     e.preventDefault();
 
@@ -293,11 +339,13 @@ export default function Modal_Show_All_Details({
       }
 
       if (orderType.type_of_complaint === "2") {
-        const checkComplaint = await upComplaint(apiData).unwrap();
-        if (checkComplaint.success === true) {
-          console.log("API Data: ", apiData);
-        }
+        externalApi();
+        // const sendComplaint = await senComplaint(apiData).unwrap();
+        // console.log("API Data: ", apiData);
       }
+
+      console.log("API Data: ", apiData);
+      console.log(orderType.type_of_complaint);
     } catch (error) {
       toast.error("Something went wrong 🥺", {
         transition: Slide,
