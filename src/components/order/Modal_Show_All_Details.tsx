@@ -184,8 +184,6 @@ export default function Modal_Show_All_Details({
 
   useEffect(() => {
     if (isDButtonSuccess && dbutton) {
-      // setCustomerInfo(dbutton.data);
-      // console.warn("Order: ", dbutton.data.status);
       setOrderType({
         orderID: dbutton.data.id,
         demographic: dbutton.data.demographic,
@@ -277,9 +275,7 @@ export default function Modal_Show_All_Details({
       [name]: value,
     }));
   };
-  // console.log("API Data: ", apiData);
   const [updateOrder] = useUpdateOrderMutation();
-  // const [upComplaint] = usePassComplaintMutation();
   const [senComplaint] = useSendComplaintMutation();
 
   const newapiData = {
@@ -299,16 +295,11 @@ export default function Modal_Show_All_Details({
   const externalApi = async () => {
     try {
       const formData = new FormData();
-      formData.append("newapiData", JSON.stringify(newapiData));
+      formData.append("newapiData", JSON.stringify(apiData));
 
       const response = await axios.post(
-        `https://cors-anywhere.herokuapp.com/https://flow.zoho.com/772396954/flow/webhook/incoming?zapikey=1001.2768223215be0fcafdcfbadcbadd93e5.35f2633c889af89b756ed315cf7b2d29&isdebug=false`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        `https://hook.eu1.make.com/pynjmdam8zwe7m3p2w8395mxv33jm549`,
+        formData
       );
 
       if (response) {

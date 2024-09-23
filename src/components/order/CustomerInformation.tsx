@@ -21,6 +21,7 @@ import {
   useProvinceListQuery,
   useRegionListQuery,
   useCustomerInfoQuery,
+  useCustomerInfoCodeQuery,
   useListCustomerQuery,
 } from "../../store";
 import { Client } from "../product/AddProduct";
@@ -60,6 +61,8 @@ type CustomerData = {
 
 interface Customer {
   id: string;
+  customercode: string;
+  customername: string;
   fname: string;
   lname: string;
   phone1: string;
@@ -76,14 +79,20 @@ interface Branch {
   name: string;
 }
 
+type OrderType = {
+  orderType: string;
+};
+
 type CustomerInformationProps = {
   customerData: CustomerData;
   setCustomerData: React.Dispatch<React.SetStateAction<CustomerData>>;
+  orderType: OrderType;
 };
 
 function CustomerInformation({
   customerData,
   setCustomerData,
+  orderType,
 }: CustomerInformationProps) {
   const [openModal, setOpenModal] = useState(false);
   const [regionList, setRegionList] = useState<adress[]>([]);
@@ -98,6 +107,8 @@ function CustomerInformation({
   const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
   const [apiPhone, setApiPhone] = useState<string>("");
   const [apiPhoneCustomer, setApiPhoneCustomer] = useState<string>("");
+  const [apiCustCode, setApiCustCode] = useState<string>("");
+  const [apiCustCodeCustomer, setApiCustCodeCustomer] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const account_detailed1 = JSON.parse(
@@ -158,10 +169,29 @@ function CustomerInformation({
     setSelectedCityId(event.target.value);
   };
 
-  const clients = useListCustomerQuery({
-    department_id: account_detailed1.department.id,
+  let ownerid = "";
+  if (orderType.orderType === "2") {
+    ownerid = "4";
+  } else {
+    ownerid = account_detailed1.department.id;
+  }
+  const branches = useBranchListQuery({
+    owner: ownerid,
   });
+  const [branchList, setBranchList] = useState<Branch[]>([]);
+  useEffect(() => {
+    if (branches.isSuccess) {
+      const result = branches.data?.data || [];
+      console.log("Result Branches: ", result);
+      setBranchList(result);
+    }
+  }, [branches.isSuccess, branches.data]);
+
   const [content, setContent] = useState<Customer[]>([]);
+  const clients = useListCustomerQuery({
+    department_id: ownerid,
+  });
+
   useEffect(() => {
     if (clients.isSuccess) {
       const result = clients.data?.data || [];
@@ -169,18 +199,6 @@ function CustomerInformation({
       setContent(result);
     }
   }, [clients.isSuccess, clients.data]);
-
-  const branches = useBranchListQuery({
-    owner: account_detailed1.department.id,
-  });
-  const [branchList, setBranchList] = useState<Branch[]>([]);
-  useEffect(() => {
-    if (branches.isSuccess) {
-      const result = branches.data?.data || [];
-      console.log("Result: ", result);
-      setBranchList(result);
-    }
-  }, [branches.isSuccess, branches.data]);
 
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
@@ -192,6 +210,9 @@ function CustomerInformation({
     if (name === "phone1") {
       setApiPhone(value);
     }
+    if (name === "customercode") {
+      setApiCustCode(value);
+    }
   };
 
   const { data: custInfo, isSuccess: isCustInfoSuccess } =
@@ -199,7 +220,6 @@ function CustomerInformation({
   useEffect(() => {
     if (isCustInfoSuccess && custInfo) {
       if (custInfo.data.phone1 != "") {
-        // console.warn(custInfo.data);
         setCustomerData({
           ...customerData,
           fname: custInfo.data?.fname,
@@ -235,6 +255,50 @@ function CustomerInformation({
     }
   }, [isCustInfoSuccess, custInfo]);
 
+  const { data: custInfoCode, isSuccess: isCustInfoCodeSuccess } =
+    useCustomerInfoCodeQuery(apiCustCode);
+  useEffect(() => {
+    if (isCustInfoCodeSuccess && custInfoCode) {
+      if (custInfoCode.data.customercode != "") {
+        setCustomerData({
+          ...customerData,
+          customercode: custInfoCode.data?.customercode,
+          customername: custInfoCode.data?.customername,
+          fname: custInfoCode.data?.fname,
+          lname: custInfoCode.data?.lname,
+          phone2: custInfoCode.data?.phone2,
+          landline: custInfoCode.data?.landline,
+          email: custInfoCode.data?.email,
+          block_unit: custInfoCode.data?.block_unit,
+          barangay: custInfoCode.data?.barangay.id,
+          company: custInfoCode.data?.company,
+          nearest_landmark: custInfoCode.data?.nearest_landmark,
+        });
+        setSelectedRegionId(
+          custInfoCode.data?.barangay.city.province.region.id
+        );
+        setSelectedProvinceId(custInfoCode.data?.barangay.city.province.id);
+        setSelectedCityId(custInfoCode.data?.barangay.city.id);
+      } else {
+        setCustomerData({
+          ...customerData,
+          fname: "",
+          lname: "",
+          phone2: "",
+          landline: "",
+          email: "",
+          block_unit: "",
+          barangay: "",
+          company: "",
+          nearest_landmark: "",
+        });
+        setSelectedRegionId("0");
+        setSelectedProvinceId("0");
+        setSelectedCityId("0");
+      }
+    }
+  }, [isCustInfoCodeSuccess, custInfoCode]);
+
   const handleOpenModal = () => {
     setOpenModal(true);
   };
@@ -246,38 +310,30 @@ function CustomerInformation({
   const updateApiPhone = () => {
     setOpenModal(false);
     setApiPhone(apiPhoneCustomer);
+    setApiCustCode(apiCustCodeCustomer);
   };
 
-  const columns: GridColDef[] = [
-    { field: "fname", headerName: "First Name", width: 150 },
-    { field: "lname", headerName: "Last Name", width: 150 },
-    { field: "phone1", headerName: "Phone 1", width: 130 },
-    { field: "phone2", headerName: "Phone 2", width: 130 },
-    { field: "landline", headerName: "Landline", width: 130 },
-    { field: "email", headerName: "Email", width: 150 },
-    { field: "address", headerName: "Address", width: 600 },
-  ];
+  let columns: GridColDef[];
+  if (orderType.orderType == "2") {
+    columns = [
+      { field: "customercode", headerName: "Code", width: 150 },
+      { field: "customername", headerName: "Name", width: 200 },
+      { field: "email", headerName: "Email", width: 150 },
+      { field: "address", headerName: "Address", width: 600 },
+    ];
+  } else {
+    columns = [
+      { field: "fname", headerName: "First Name", width: 150 },
+      { field: "lname", headerName: "Last Name", width: 150 },
+      { field: "phone1", headerName: "Phone 1", width: 130 },
+      { field: "phone2", headerName: "Phone 2", width: 130 },
+      { field: "landline", headerName: "Landline", width: 130 },
+      { field: "email", headerName: "Email", width: 150 },
+      { field: "address", headerName: "Address", width: 600 },
+    ];
+  }
 
   const renderCell = (params: any) => {
-    // if (params.colDef.field === "price") {
-    //   return (
-    //     <div className="text-right pr-5">
-    //       <span>
-    //         {new Intl.NumberFormat("en-US", {
-    //           minimumFractionDigits: 2,
-    //           maximumFractionDigits: 2,
-    //         }).format(parseFloat(params.value ? params.value : "0"))}
-    //       </span>
-    //     </div>
-    //   );
-    // } else if (params.colDef.field === "stock") {
-    //   return (
-    //     <div className="text-right pr-5">
-    //       <span>{params.value}</span>
-    //     </div>
-    //   );
-    // }
-
     return params.value;
   };
 
@@ -323,7 +379,7 @@ function CustomerInformation({
           </div>
         </div>
 
-        {account_detailed1.department.id === 4 ? (
+        {orderType.orderType === "2" ? (
           <>
             <div className="pt-5 mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
@@ -334,7 +390,7 @@ function CustomerInformation({
                   type="text"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  name="fname"
+                  name="customercode"
                   value={customerData.customercode}
                   onChange={handleInput}
                 />
@@ -349,7 +405,7 @@ function CustomerInformation({
                   type="text"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  name="lname"
+                  name="customername"
                   value={customerData.customername}
                   onChange={handleInput}
                 />
@@ -364,7 +420,7 @@ function CustomerInformation({
                   type="text"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  name="lname"
+                  name="invoiceno"
                   value={customerData.invoiceno}
                   onChange={handleInput}
                 />
@@ -428,7 +484,7 @@ function CustomerInformation({
           </>
         )}
 
-        {account_detailed1.department.id === 4 ? (
+        {orderType.orderType === "2" ? (
           <>
             <div className="mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
@@ -439,7 +495,7 @@ function CustomerInformation({
                   type="text"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  name="phone2"
+                  name="truck"
                   value={customerData.truck}
                   onChange={handleInput}
                 />
@@ -455,7 +511,7 @@ function CustomerInformation({
                   type="text"
                   id="input-group-1"
                   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  name="landline"
+                  name="tripno"
                   value={customerData.tripno}
                   onChange={handleInput}
                 />
@@ -621,7 +677,7 @@ function CustomerInformation({
           </div>
         </div>
 
-        {account_detailed1.department.id === 4 ? (
+        {orderType.orderType === "2" ? (
           <></>
         ) : (
           <>
@@ -770,9 +826,11 @@ function CustomerInformation({
                 }}
                 pageSizeOptions={[5, 10, 20, 50, 100]}
                 hideFooterSelectedRowCount
-                onRowClick={(params: GridRowParams) =>
-                  setApiPhoneCustomer(params.row.phone1)
-                }
+                onRowClick={(params: GridRowParams) => {
+                  orderType.orderType === "2"
+                    ? setApiCustCodeCustomer(params.row.customercode)
+                    : setApiPhoneCustomer(params.row.phone1);
+                }}
               />
             </div>
           </FormControl>

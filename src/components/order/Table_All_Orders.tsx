@@ -69,13 +69,21 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
+        let name = "";
+
+        if (result.data[i].orderID.customerID.fname === " ") {
+          name = result.data[i].orderID.customerID.customername;
+        } else {
+          name =
+            result.data[i].orderID.customerID.fname +
+            " " +
+            result.data[i].orderID.customerID.lname;
+        }
+
         order.push({
           status: result.data[i].orderID.status,
           id: result.data[i].orderID.id,
-          name:
-            result.data[i].orderID.customerID.fname +
-            " " +
-            result.data[i].orderID.customerID.lname,
+          name: name,
           assignedbranch: result.data[i].orderID.branch.name,
           amount: result.data[i].grandtotal.toFixed(2),
           ordertaker: result.data[i].orderID.added_by.fullname,
