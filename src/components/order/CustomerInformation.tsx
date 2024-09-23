@@ -323,7 +323,7 @@ function CustomerInformation({
           </div>
         </div>
 
-        {account_detailed1.department.id === 2 ? (
+        {account_detailed1.department.id === 4 ? (
           <>
             <div className="pt-5 mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
@@ -428,7 +428,7 @@ function CustomerInformation({
           </>
         )}
 
-        {account_detailed1.department.id === 2 ? (
+        {account_detailed1.department.id === 4 ? (
           <>
             <div className="mr-5">
               <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
@@ -621,7 +621,7 @@ function CustomerInformation({
           </div>
         </div>
 
-        {account_detailed1.department.id === 2 ? (
+        {account_detailed1.department.id === 4 ? (
           <></>
         ) : (
           <>
