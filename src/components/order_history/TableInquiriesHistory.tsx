@@ -1,11 +1,10 @@
 //import * as React from "react";
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
-import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Skeleton } from "@mui/material";
 import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
-import { Table_All_History_Props } from "./Table_All_History";
-import Show_Order_Details from "./Show_Order_Details";
+import { Table_All_History_Props } from "./TableAllHistory";
+import ShowOrderDetails from "./ShowOrderDetails";
 
 export interface Order {
   status: string;
@@ -45,7 +44,7 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
-  const navigate = useNavigate();
+
   const {
     data: OrderData,
     error: OrderError,
@@ -82,7 +81,7 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        if (result.data[i].orderID.status == 5) {
+        if (result.data[i].orderID.status === 5) {
           let newid = i + 100000000000;
           order.push({
             status: result.data[i].orderID.status,
@@ -116,7 +115,6 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
       // console.log("size: ", size);
 
       for (let i = 0; i < size; i++) {
-        const orderID = result.data[i]?.orderID;
         const dateStr = result.data[i].date_added;
         const date = new Date(dateStr);
 
@@ -181,7 +179,7 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
     } else if (params.colDef.field === "name") {
       return (
         <span className="cursor-pointer font-bold">
-          <Show_Order_Details
+          <ShowOrderDetails
             cust_id={params.row.cid}
             orderID={params.row.neworderID}
             name={params.value}

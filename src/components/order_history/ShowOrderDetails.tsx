@@ -14,12 +14,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormLabel from "@mui/material/FormLabel";
 import MenuItem from "@mui/material/MenuItem";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Select from "@mui/material/Select";
 
-import Modal_CustomerInformation from "../order/Modal_CustomerInformation";
 import Modal_ProductOrder from "../order/Modal_ProductOrder";
 import Modal_Others from "../order/Modal_Others";
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
@@ -27,7 +26,6 @@ import {
 } from "../../store";
 import { Avatar } from "@mui/material";
 import Modal_Show_CustomerInformation from "../order/Modal_Show_CustomerInformation";
-import { Slide, toast } from "react-toastify";
 import Print_Preview from "../order/Print_Preview";
 import Date_Format from "../order/Date_Format";
 
@@ -98,7 +96,7 @@ function stringAvatar(name: string) {
   };
 }
 
-export default function Show_Order_Details({
+export default function ShowOrderDetails({
   cust_id,
   orderID,
   name,
@@ -116,8 +114,6 @@ export default function Show_Order_Details({
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
-
-  const [value, setValue] = React.useState("callType");
   const [otypeCall, setotypeCall] = React.useState("");
   const [otypeComplaint, setotypeComplaint] = React.useState("hidden");
   const [otypeComplaint1, setotypeComplaint1] = React.useState("hidden");

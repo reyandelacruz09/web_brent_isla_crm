@@ -17,7 +17,7 @@ const userApi = createApi({
           return {
             url: `api/user/create_user/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },

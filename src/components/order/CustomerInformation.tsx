@@ -36,6 +36,11 @@ import {
 } from "@mui/x-data-grid";
 
 type CustomerData = {
+  customercode: string;
+  customername: string;
+  invoiceno: string;
+  truck: string;
+  tripno: string;
   fname: string;
   lname: string;
   phone1: string;
@@ -318,90 +323,180 @@ function CustomerInformation({
           </div>
         </div>
 
-        <div className="pt-5 mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            First Name
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="fname"
-              value={customerData.fname}
-              onChange={handleInput}
-            />
-          </div>
-        </div>
-        <div className="pt-5 mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Last Name
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="lname"
-              value={customerData.lname}
-              onChange={handleInput}
-            />
-          </div>
-        </div>
-        <div className="pt-5 mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Cell Phone 1
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="phone1"
-              onChange={handleInput}
-              value={apiPhone}
-            />
-            <FormControlLabel
-              className="absolute top-0 right-0 h-full"
-              control={<Checkbox />}
-              label="Send SMS"
-              name="sendsms"
-              onChange={handleInput}
-            />
-          </div>
-        </div>
+        {account_detailed1.department.id === 2 ? (
+          <>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Customer Code
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="fname"
+                  value={customerData.customercode}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Customer Name
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="lname"
+                  value={customerData.customername}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Invoice No
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="lname"
+                  value={customerData.invoiceno}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                First Name
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="fname"
+                  value={customerData.fname}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Last Name
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="lname"
+                  value={customerData.lname}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+            <div className="pt-5 mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Cell Phone 1
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone1"
+                  onChange={handleInput}
+                  value={apiPhone}
+                />
+                <FormControlLabel
+                  className="absolute top-0 right-0 h-full"
+                  control={<Checkbox />}
+                  label="Send SMS"
+                  name="sendsms"
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
-        <div className="mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Cell Phone 2
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="phone2"
-              value={customerData.phone2}
-              onChange={handleInput}
-            />
-          </div>
-        </div>
+        {account_detailed1.department.id === 2 ? (
+          <>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Truck
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone2"
+                  value={customerData.truck}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
 
-        <div className=" mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Landline
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="landline"
-              value={customerData.landline}
-              onChange={handleInput}
-            />
-          </div>
-        </div>
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Trip No
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="landline"
+                  value={customerData.tripno}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Cell Phone 2
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="phone2"
+                  value={customerData.phone2}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Landline
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="landline"
+                  value={customerData.landline}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className=" mr-5">
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
@@ -526,21 +621,27 @@ function CustomerInformation({
           </div>
         </div>
 
-        <div className=" mr-5">
-          <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-            Company
-          </label>
-          <div className="relative mb-6">
-            <input
-              type="text"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              name="company"
-              value={customerData.company}
-              onChange={handleInput}
-            />
-          </div>
-        </div>
+        {account_detailed1.department.id === 2 ? (
+          <></>
+        ) : (
+          <>
+            <div className=" mr-5">
+              <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
+                Company
+              </label>
+              <div className="relative mb-6">
+                <input
+                  type="text"
+                  id="input-group-1"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  name="company"
+                  value={customerData.company}
+                  onChange={handleInput}
+                />
+              </div>
+            </div>
+          </>
+        )}
 
         <div className=" mr-5">
           <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">

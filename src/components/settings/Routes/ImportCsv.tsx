@@ -21,6 +21,10 @@ interface Condition {
 
 function ImportCsv() {
   const [open, setOpen] = useState(false);
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+  //   const [importLeads] = useUploadLeadsFromExcelMutation();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -30,12 +34,21 @@ function ImportCsv() {
     setOpen(false);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const onSubmit = async (data: any) => {
+    const importUsers = {
+      bulk_lead: data.validData,
+      session: account_detailed1.id,
+    };
 
-  const onSubmit = () => {
-    alert("Submit");
+    console.log("Datas: ", importUsers);
+    // const csvLeds = await importLeads(importedLeads).unwrap();
+    // if (csvLeds.success === true) {
+    //    ToastSuccess
+    // } else {
+    //     ToastError
+    // }
+    // csvLeadsRefetch();
+    onClose();
   };
 
   const fields = [
@@ -138,13 +151,12 @@ function ImportCsv() {
       >
         <span className="">Import CSV file</span>
       </Button>
-      {/* <ReactSpreadsheetImport
+      <ReactSpreadsheetImport
         isOpen={open}
         onClose={onClose}
         onSubmit={onSubmit}
         fields={fields}
-        autoMapDistance={true}
-      /> */}
+      />
     </>
   );
 }

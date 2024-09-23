@@ -8,10 +8,10 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import Modal_Update_Branch from "./Modal_Update_Branch";
+import Modal_Update_Branch from "./ModalUpdateBranch";
 import { useBranchListQuery, useGetRolesQuery } from "../../store";
 import { useEffect, useState } from "react";
-import Modal_Delete_Branch from "./Modal_Delete_Branch";
+import Modal_Delete_Branch from "./ModalDeleteBranch";
 import { Slide, toast } from "react-toastify";
 import { EditOutlined } from "@mui/icons-material";
 

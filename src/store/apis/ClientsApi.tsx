@@ -52,7 +52,7 @@ const clientApi = createApi({
           return {
             url: `/api/client/create_client/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },

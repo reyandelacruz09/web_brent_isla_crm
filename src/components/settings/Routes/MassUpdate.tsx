@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  gridClasses,
+  GridColDef,
+  GridRowSelectionModel,
+} from "@mui/x-data-grid";
 import { useGetCustomerFilterQuery } from "../../../store";
+import { Button, Typography } from "@mui/material";
+import MassUpdateFinal from "./MassUpdateFinal";
 
 interface Customer {
   id: number;
@@ -20,6 +27,8 @@ function MassUpdate({ cond }: any) {
   const getFilteredCustomer = useGetCustomerFilterQuery({
     conditions: cond,
   });
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>([]);
 
   useEffect(() => {
     if (getFilteredCustomer.isSuccess && getFilteredCustomer.data) {
@@ -76,36 +85,56 @@ function MassUpdate({ cond }: any) {
   const renderCell = (params: any) => {
     return params.value;
   };
+
+  const massUpdate = () => {
+    alert(rowSelectionModel);
+  };
   return (
-    <div className="flex justify-center gap-5 py-10">
-      <DataGrid
-        sx={{
-          height: "515px",
-          [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
-            {
-              outline: "none",
+    <>
+      <div className="py-3">
+        {rowSelectionModel.length === 0 ? (
+          <Typography>No of selected rows: 0</Typography>
+        ) : (
+          <div>
+            No of selected rows: {rowSelectionModel.length}
+            <MassUpdateFinal id={rowSelectionModel} />
+          </div>
+        )}
+      </div>
+      <div className="flex justify-center gap-5 pb-10">
+        <DataGrid
+          sx={{
+            height: "515px",
+            [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+              {
+                outline: "none",
+              },
+            [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+              {
+                outline: "none",
+              },
+          }}
+          rowHeight={40}
+          rows={content}
+          columns={columns.map((col) => ({
+            ...col,
+            renderCell: renderCell,
+          }))}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 10 },
             },
-          [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
-            {
-              outline: "none",
-            },
-        }}
-        rowHeight={40}
-        rows={content}
-        columns={columns.map((col) => ({
-          ...col,
-          renderCell: renderCell,
-        }))}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 10 },
-          },
-        }}
-        pageSizeOptions={[5, 10, 20, 50, 100]}
-        checkboxSelection
-        // hideFooterSelectedRowCount
-      />
-    </div>
+          }}
+          pageSizeOptions={[5, 10, 20, 50, 100]}
+          checkboxSelection
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setRowSelectionModel(newRowSelectionModel);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          // hideFooterSelectedRowCount
+        />
+      </div>
+    </>
   );
 }
 

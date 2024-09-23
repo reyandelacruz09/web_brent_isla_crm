@@ -62,6 +62,38 @@ function Settings_Info() {
                 >
                   General
                 </Typography>
+                <Link to="/settings/department">
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    className="pl-5 py-1"
+                    sx={{
+                      textDecoration: "none",
+                      color: "black",
+                      "&:hover": {
+                        color: "blue",
+                      },
+                    }}
+                  >
+                    Department
+                  </Typography>
+                </Link>
+                <Link to="/settings/user">
+                  <Typography
+                    variant="body1"
+                    component="div"
+                    className="pl-5 py-1"
+                    sx={{
+                      textDecoration: "none",
+                      color: "black",
+                      "&:hover": {
+                        color: "blue",
+                      },
+                    }}
+                  >
+                    Users
+                  </Typography>
+                </Link>
               </CardContent>
               <CardActions></CardActions>
             </Card>
@@ -221,6 +253,110 @@ function Settings_Info() {
               <CardActions></CardActions>
             </Card>
           </div>
+        </div>
+      </div>
+
+      <div className="flex justify-center">
+        <div className="w-2/3 flex gap-10 pb-5">
+          <div className="w-1/2">
+            <Card sx={{ minWidth: 275, minHeight: 250 }}>
+              <CardMedia className="bg-blue-700">
+                <Typography
+                  variant="h6"
+                  component="div"
+                  className="py-1 px-2"
+                  color="white"
+                >
+                  Data Administration
+                </Typography>
+              </CardMedia>
+              <CardMedia sx={{ height: 5 }} className="bg-green-300" />
+              <CardContent>
+                {/* <a href="/telephony" target="_blank"> */}
+                <Typography
+                  variant="body1"
+                  component="div"
+                  className="pl-5 py-1"
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  Import
+                </Typography>
+                {/* </a> */}
+                {/* <a href="/sms" target="_blank"> */}
+                <Typography
+                  variant="body1"
+                  component="div"
+                  className="pl-5 py-1"
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  Export
+                </Typography>
+                {/* </a> */}
+                {/* <a href="/ticketing" target="_blank"> */}
+                <Typography
+                  variant="body1"
+                  component="div"
+                  className="pl-5 py-1"
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  Data Backup
+                </Typography>
+                {/* </a> */}
+                {/* <a href="/ticketing" target="_blank"> */}
+                <Typography
+                  variant="body1"
+                  component="div"
+                  className="pl-5 py-1"
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  Storage
+                </Typography>
+                {/* </a> */}
+                {/* <a href="/ticketing" target="_blank"> */}
+                <Typography
+                  variant="body1"
+                  component="div"
+                  className="pl-5 py-1"
+                  sx={{
+                    textDecoration: "none",
+                    color: "black",
+                    "&:hover": {
+                      color: "blue",
+                    },
+                  }}
+                >
+                  Recycle Bin
+                </Typography>
+                {/* </a> */}
+              </CardContent>
+              <CardActions></CardActions>
+            </Card>
+          </div>
+          <div className="w-1/2"></div>
         </div>
       </div>
     </>
