@@ -108,6 +108,7 @@ export {
   useGetRolesQuery,
   useGetCustomerFieldQuery,
   useGetCustomerFilterQuery,
+  useUpdateCustomerMutation,
 } from "../store/apis/SettingsApi";
 export {
   useDashTotalProductsQuery,

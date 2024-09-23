@@ -1,6 +1,5 @@
-import { useNavigate } from "react-router-dom";
 import NavBar from "../components/NavBar";
-import Order_History_Form from "../components/order_history/Order_history_Forms";
+import OrderHistoryForm from "../components/order_history/OrderHistoryForms";
 import { useGetRolesQuery } from "../store";
 import Restricted from "./Restricted";
 
@@ -16,7 +15,7 @@ function OrderHistory() {
   const content =
     getRolesAPI.data?.data.order_history.access === true ? (
       <div>
-        <Order_History_Form />
+        <OrderHistoryForm />
       </div>
     ) : getRolesAPI.data?.data.order_history.access === false ? (
       <div>

@@ -277,7 +277,7 @@ export default function Modal_Show_All_Details({
       [name]: value,
     }));
   };
-  console.log("API Data: ", apiData);
+  // console.log("API Data: ", apiData);
   const [updateOrder] = useUpdateOrderMutation();
   // const [upComplaint] = usePassComplaintMutation();
   const [senComplaint] = useSendComplaintMutation();
@@ -296,29 +296,26 @@ export default function Modal_Show_All_Details({
     nearest_landmark: "near church",
   };
 
-  const jsonData = JSON.stringify({ newapiData });
-  // {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //   },
-  // }
-
   const externalApi = async () => {
     try {
-      const jsonData = JSON.stringify({ newapiData });
+      const formData = new FormData();
+      formData.append("newapiData", JSON.stringify(newapiData));
 
       const response = await axios.post(
-        `https://flow.zoho.com/772396954/flow/webhook/incoming?zapikey=1001.2768223215be0fcafdcfbadcbadd93e5.35f2633c889af89b756ed315cf7b2d29&isdebug=false`,
-        jsonData,
+        `https://cors-anywhere.herokuapp.com/https://flow.zoho.com/772396954/flow/webhook/incoming?zapikey=1001.2768223215be0fcafdcfbadcbadd93e5.35f2633c889af89b756ed315cf7b2d29&isdebug=false`,
+        formData,
         {
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "multipart/form-data",
           },
-          timeout: 10000, // Set timeout to 10 seconds
         }
       );
 
-      console.log(response.data);
+      if (response) {
+        console.log("Response Data:", response.data);
+        console.log("FormData here:", formData);
+        console.log("ApiData here:", newapiData);
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -344,8 +341,8 @@ export default function Modal_Show_All_Details({
         // console.log("API Data: ", apiData);
       }
 
-      console.log("API Data: ", apiData);
-      console.log(orderType.type_of_complaint);
+      // console.log("API Data: ", apiData);
+      // console.log(orderType.type_of_complaint);
     } catch (error) {
       toast.error("Something went wrong 🥺", {
         transition: Slide,

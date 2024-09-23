@@ -9,7 +9,7 @@ const settingsApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
-  tagTypes: ["settings"],
+  tagTypes: ["settings", "order"],
   endpoints(builder) {
     return {
       AddAccountRole: builder.mutation({
@@ -17,7 +17,7 @@ const settingsApi = createApi({
           return {
             url: `/api/settings/add_AccountRoles/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },
@@ -52,7 +52,7 @@ const settingsApi = createApi({
           return {
             url: `/api/settings/update_role/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },
@@ -93,6 +93,17 @@ const settingsApi = createApi({
         },
         providesTags: ["settings"],
       }),
+      updateCustomer: builder.mutation({
+        query: (formBody) => {
+          return {
+            url: `api/order/update_customer/`,
+            headers: { Authorization: "token " + token },
+            body: formBody,
+            method: "POST",
+          };
+        },
+        invalidatesTags: ["settings"],
+      }),
     };
   },
 });
@@ -105,5 +116,6 @@ export const {
   useGetRolesQuery,
   useGetCustomerFieldQuery,
   useGetCustomerFilterQuery,
+  useUpdateCustomerMutation,
 } = settingsApi;
 export { settingsApi };

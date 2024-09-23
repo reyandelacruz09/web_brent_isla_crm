@@ -153,27 +153,27 @@ function NavBar() {
         ),
         access: getRolesAPI.data?.data.inventory.access,
       },
-      {
-        id: 7,
-        path: "/user",
-        label: "User",
-        icon: (
-          <PersonOutlineOutlinedIcon
-            className="align-top wiggle pr-1"
-            fontSize="small"
-          />
-        ),
-        access: getRolesAPI.data?.data.user.access,
-      },
-      {
-        id: 8,
-        path: "/department",
-        label: "Department",
-        icon: (
-          <BedOutlinedIcon className="align-top wiggle pr-1" fontSize="small" />
-        ),
-        access: getRolesAPI.data?.data.department.access,
-      },
+      // {
+      //   id: 7,
+      //   path: "/user",
+      //   label: "User",
+      //   icon: (
+      //     <PersonOutlineOutlinedIcon
+      //       className="align-top wiggle pr-1"
+      //       fontSize="small"
+      //     />
+      //   ),
+      //   access: getRolesAPI.data?.data.user.access,
+      // },
+      // {
+      //   id: 8,
+      //   path: "/department",
+      //   label: "Department",
+      //   icon: (
+      //     <BedOutlinedIcon className="align-top wiggle pr-1" fontSize="small" />
+      //   ),
+      //   access: getRolesAPI.data?.data.department.access,
+      // },
       {
         id: 9,
         path: "/kb",
@@ -239,7 +239,9 @@ function NavBar() {
               window.location.pathname === "/settings" ||
               window.location.pathname === "/settings/profile" ||
               window.location.pathname === "/settings/roles" ||
-              window.location.pathname === "/settings/route"
+              window.location.pathname === "/settings/route" ||
+              window.location.pathname === "/settings/user" ||
+              window.location.pathname === "/settings/department"
                 ? " activenavbar"
                 : ""
             }`}

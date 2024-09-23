@@ -27,7 +27,7 @@ const branchApi = createApi({
           return {
             url: `api/branch/create_branch/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },

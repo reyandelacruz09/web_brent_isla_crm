@@ -49,14 +49,18 @@ function App() {
           <Route path="/branch" element={<Branch />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/inventory" element={<Inventory />} />
-          <Route path="/user" element={<User />} />
-          <Route path="/department" element={<Department />} />
+          {/* <Route path="/user" element={<User />} /> */}
+          {/* <Route path="/department" element={<Department />} /> */}
           <Route path="/kb" element={<KB />} />
           <Route path="/customer-details" element={<CustomerDetails />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/settings/profile" element={<Profiles />} />
           <Route path="/settings/roles" element={<Roles_and_Sharing />} />
           <Route path="/settings/route" element={<BranchRoutes />} />
+
+          <Route path="/settings/department" element={<Department />} />
+          <Route path="/settings/user" element={<User />} />
+
           <Route path="/login2" element={<Login_Form_2 />} />
 
           <Route path="/ticketing" element={<Ticketing />} />

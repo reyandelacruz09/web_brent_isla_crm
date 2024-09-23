@@ -13,7 +13,7 @@ interface ModalDeleteProductProps {
   modalid: string;
 }
 
-const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
+const Modal_Delete_Branch: React.FC<ModalDeleteProductProps> = ({
   modalid,
 }) => {
   const [open, setOpen] = React.useState(false);
@@ -99,4 +99,4 @@ const Modal_Delete_Product: React.FC<ModalDeleteProductProps> = ({
   );
 };
 
-export default Modal_Delete_Product;
+export default Modal_Delete_Branch;

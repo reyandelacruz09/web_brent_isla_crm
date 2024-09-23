@@ -9,7 +9,7 @@ const orderApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
-  tagTypes: ["order", "dashboard"],
+  tagTypes: ["order", "dashboard", "settings"],
   endpoints(builder) {
     return {
       CreateOrder: builder.mutation({
@@ -17,7 +17,7 @@ const orderApi = createApi({
           return {
             url: `api/order/order_submit/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },
@@ -72,7 +72,7 @@ const orderApi = createApi({
           return {
             url: `api/order/0/update_status/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },

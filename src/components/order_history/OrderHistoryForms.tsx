@@ -3,9 +3,9 @@ import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Table_All_History from "./Table_All_History";
-import Table_Completed_History from "./Table_Completed_History";
-import Table_Inquiries_History from "./Table_Inquiries_History";
+import Table_All_History from "./TableAllHistory";
+import Table_Completed_History from "./TableCompletedHistory";
+import Table_Inquiries_History from "./TableInquiriesHistory";
 import { useState } from "react";
 
 interface TabPanelProps {
@@ -36,7 +36,7 @@ function a11yProps(index: number) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
-export default function Order_History_Form() {
+export default function OrderHistoryForm() {
   const [value, setValue] = useState(0);
   const [searchQuery, setSearchQuery] = useState<string>("");
 

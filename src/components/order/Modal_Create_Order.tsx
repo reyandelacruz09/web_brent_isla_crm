@@ -113,6 +113,11 @@ export default function CustomizedDialogs() {
   });
 
   const [customerData, setCustomerData] = React.useState({
+    customercode: "",
+    customername: "",
+    invoiceno: "",
+    truck: "",
+    tripno: "",
     fname: "",
     lname: "",
     phone1: "",
@@ -167,6 +172,11 @@ export default function CustomizedDialogs() {
   }, [others.changeamount]);
 
   const OrderDetails = {
+    customercode: customerData.customercode,
+    customername: customerData.customername,
+    invoiceno: customerData.invoiceno,
+    truck: customerData.truck,
+    tripno: customerData.tripno,
     fname: customerData.fname,
     lname: customerData.lname,
     phone1: customerData.phone1,
@@ -224,6 +234,11 @@ export default function CustomizedDialogs() {
         });
 
         setCustomerData({
+          customercode: "",
+          customername: "",
+          invoiceno: "",
+          truck: "",
+          tripno: "",
           fname: "",
           lname: "",
           phone1: "",

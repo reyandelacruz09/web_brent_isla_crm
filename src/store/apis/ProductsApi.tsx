@@ -60,7 +60,7 @@ const productApi = createApi({
           return {
             url: `api/products/create_product/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },
@@ -116,7 +116,7 @@ const productApi = createApi({
           return {
             url: `/api/products/add_inventory/`,
             headers: {
-              // Authorization: "token " + token,
+              Authorization: "token " + token,
               // "Content-Type": "application/json",
               // Accept: "/",
             },
