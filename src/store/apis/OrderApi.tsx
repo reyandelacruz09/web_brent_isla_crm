@@ -103,6 +103,17 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      ///api/order/<code>/cust_info_code
+      CustomerInfoCode: builder.query({
+        query: (id) => {
+          return {
+            url: `/api/order/${id}/cust_info_code`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
       CustomerInfoID: builder.query({
         query: (id) => {
           return {
@@ -226,6 +237,7 @@ export const {
   useOrderUpdateStatusMutation,
   useOrderGetStatusQuery,
   useCustomerInfoQuery,
+  useCustomerInfoCodeQuery,
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
   useCompleteOrderQuery,

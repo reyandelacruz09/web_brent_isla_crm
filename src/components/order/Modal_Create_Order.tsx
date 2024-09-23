@@ -1,6 +1,6 @@
 import * as React from "react";
 import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
+import { styled, alpha } from "@mui/material/styles";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -28,6 +28,9 @@ import { Client } from "../product/AddProduct";
 import "react-datepicker/dist/react-datepicker.css";
 import Modal_Order_Type from "./Modal_Order_Type";
 import { Slide, toast } from "react-toastify";
+import { Divider, MenuItem } from "@mui/material";
+import Menu, { MenuProps } from "@mui/material/Menu";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -79,8 +82,55 @@ function toProperCase(str: string) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+
+const StyledMenu = styled((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    anchorOrigin={{
+      vertical: "bottom",
+      horizontal: "right",
+    }}
+    transformOrigin={{
+      vertical: "top",
+      horizontal: "right",
+    }}
+    {...props}
+  />
+))(({ theme }) => ({
+  "& .MuiPaper-root": {
+    borderRadius: 6,
+    marginTop: theme.spacing(1),
+    minWidth: 180,
+    color: "rgb(55, 65, 81)",
+    boxShadow:
+      "rgb(255, 255, 255) 0px 0px 0px 0px, rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px",
+    "& .MuiMenu-list": {
+      padding: "4px 0",
+    },
+    "& .MuiMenuItem-root": {
+      "& .MuiSvgIcon-root": {
+        fontSize: 18,
+        color: theme.palette.text.secondary,
+        marginRight: theme.spacing(1.5),
+      },
+      "&:active": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          theme.palette.action.selectedOpacity
+        ),
+      },
+    },
+    ...theme.applyStyles("dark", {
+      color: theme.palette.grey[300],
+    }),
+  },
+}));
 export default function CustomizedDialogs() {
   const [open, setOpen] = React.useState(false);
+
+  const [typeOrder, setTypeOrder] = useState({
+    orderType: "",
+  });
 
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
@@ -97,9 +147,6 @@ export default function CustomizedDialogs() {
     }
   }, [clients.isSuccess, clients.data]);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
   const handleClose = () => {
     setOpen(false);
   };
@@ -427,9 +474,23 @@ export default function CustomizedDialogs() {
     role: account_detailed1.role || 0,
   });
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const openDropdown = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseDropdown = () => {
+    setAnchorEl(null);
+  };
+
+  const checkhandle = (e: any) => {
+    const { name, value, type, checked } = e.target;
+    alert(name);
+  };
+
   return (
     <React.Fragment>
-      <Button
+      {/* <Button
         component="label"
         role={undefined}
         variant="contained"
@@ -439,7 +500,61 @@ export default function CustomizedDialogs() {
         disabled={getRolesAPI.data?.data.order.create === true ? false : true}
       >
         Create New Order
+      </Button> */}
+
+      <Button
+        id="demo-customized-button"
+        aria-controls={open ? "demo-customized-menu" : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? "true" : undefined}
+        variant="contained"
+        disableElevation
+        onClick={handleClick}
+        endIcon={<KeyboardArrowDownIcon />}
+      >
+        Create New Order
       </Button>
+
+      <StyledMenu
+        id="demo-customized-menu"
+        MenuListProps={{
+          "aria-labelledby": "demo-customized-button",
+        }}
+        anchorEl={anchorEl}
+        open={openDropdown}
+        onClose={handleCloseDropdown}
+      >
+        <MenuItem
+          onClick={() => {
+            setTypeOrder({
+              ...orderType,
+              orderType: "1",
+            });
+            setOpen(true);
+            handleCloseDropdown();
+          }}
+          disableRipple
+        >
+          <AddIcon />
+          Hatid Bahay
+        </MenuItem>
+        <Divider sx={{ my: 0.5 }} />
+        <MenuItem
+          onClick={() => {
+            setTypeOrder({
+              ...orderType,
+              orderType: "2",
+            });
+            setOpen(true);
+            handleCloseDropdown();
+          }}
+          disableRipple
+        >
+          <AddIcon />
+          Road Transport
+        </MenuItem>
+      </StyledMenu>
+
       <BootstrapDialog
         onClose={handleClose}
         aria-labelledby="customized-dialog-title"
@@ -492,13 +607,13 @@ export default function CustomizedDialogs() {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <hr className="mt-3" />
           <Modal_Order_Type orderType={orderType} setOrderType={setOrderType} />
 
           <hr className="mt-3" />
           <CustomerInformation
             customerData={customerData}
             setCustomerData={setCustomerData}
+            orderType={typeOrder}
           />
 
           <hr className="mt-3" />
@@ -517,25 +632,7 @@ export default function CustomizedDialogs() {
             totalamt={productOrderTotal.gtotal}
           />
 
-          <div className="flex justify-center gap-5 py-10">
-            {/* <Button
-              component="label"
-              variant="contained"
-              className="w-1/5"
-              tabIndex={-1}
-            >
-              Send to Branch
-            </Button>
-            <Button
-              component="label"
-              variant="contained"
-              className="w-1/5"
-              color="error"
-              tabIndex={-1}
-            >
-              Cancel
-            </Button> */}
-          </div>
+          <div className="flex justify-center gap-5 py-10"></div>
         </DialogContent>
       </BootstrapDialog>
     </React.Fragment>

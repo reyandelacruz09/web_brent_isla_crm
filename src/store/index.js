@@ -82,6 +82,7 @@ export {
   useOrderUpdateStatusMutation,
   useOrderGetStatusQuery,
   useCustomerInfoQuery,
+  useCustomerInfoCodeQuery,
   useCustomerInfoIDQuery,
   useCustomerOrderIDQuery,
   useCompleteOrderQuery,
