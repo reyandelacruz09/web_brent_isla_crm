@@ -81,7 +81,9 @@ const ProductOrder: React.FC<ProductOrderProps> = ({
   productOrderTotal,
   setProductOrderTotal,
 }) => {
-  const product = useProductListBranchQuery({ branch: branch });
+  const product = useProductListBranchQuery({
+    branch: branch === "" ? "0" : branch,
+  });
   const [productList, setProductList] = useState<Product[]>([]);
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);

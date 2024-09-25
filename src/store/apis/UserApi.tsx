@@ -28,9 +28,11 @@ const userApi = createApi({
         invalidatesTags: ["user"],
       }),
       UserList: builder.query({
-        query: () => {
+        query: ({ page, pageSize, searchQuery }) => {
           return {
-            url: `/api/user/account_list`,
+            url: `/api/user/account_list/?page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

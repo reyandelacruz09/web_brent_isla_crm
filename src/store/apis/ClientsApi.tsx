@@ -27,10 +27,12 @@ const clientApi = createApi({
   tagTypes: ["client"],
   endpoints(builder) {
     return {
-      ClientList: builder.query<ClientList, string>({
-        query: () => {
+      ClientList: builder.query({
+        query: ({ page, pageSize, searchQuery }) => {
           return {
-            url: `/api/client/client_list`,
+            url: `/api/client/client_list/?page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

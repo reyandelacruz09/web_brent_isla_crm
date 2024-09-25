@@ -32,13 +32,13 @@ const productApi = createApi({
   endpoints(builder) {
     return {
       ProductList: builder.query({
-        // query: ({ page, pageSize }) => {
-        query: () => {
+        query: ({ page, pageSize, searchQuery }) => {
+          // query: () => {
           return {
-            // url: `/api/products/product_list/?page=${
-            //   page + 1
-            // }&page_size=${pageSize}`,
-            url: `/api/products/product_list`,
+            url: `/api/products/product_list/?page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
+            // url: `/api/products/product_list`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -126,10 +126,12 @@ const productApi = createApi({
         },
         invalidatesTags: ["products"],
       }),
-      InventoryList: builder.query<Product, string>({
-        query: () => {
+      InventoryList: builder.query({
+        query: ({ page, pageSize, searchQuery }) => {
           return {
-            url: `/api/products/inventory_list`,
+            url: `/api/products/inventory_list/?page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

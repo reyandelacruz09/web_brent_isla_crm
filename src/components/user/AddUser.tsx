@@ -25,16 +25,33 @@ function AddUser() {
 
   const [departmentID, setDepatmentID] = useState("");
 
-  const clients = useBranchListQuery({
-    owner: departmentID,
-  });
+  // const clients = useBranchListQuery({
+  //   owner: departmentID,
+  //   page: 0,
+  //   pageSize: 100,
+  //   searchQuery: "",
+  // });
+
+  // useEffect(() => {
+  //   if (clients.isSuccess) {
+  //     const result = clients.data?.data || [];
+  //     setContent(result);
+  //   }
+  // }, [clients.isSuccess, clients.data]);
   const [content, setContent] = useState<Client[]>([]);
+  const { data: branchesData, isSuccess: branchesIsSuccess } =
+    useBranchListQuery({
+      owner: departmentID,
+      page: 0,
+      pageSize: 100,
+      searchQuery: "",
+    });
   useEffect(() => {
-    if (clients.isSuccess) {
-      const result = clients.data?.data || [];
+    if (branchesIsSuccess) {
+      const result = branchesData.results || [];
       setContent(result);
     }
-  }, [clients.isSuccess, clients.data]);
+  }, [branchesIsSuccess, branchesData]);
 
   const depList = useClientListQuery("");
   const [clientList, setClientList] = useState<Department[]>([]);

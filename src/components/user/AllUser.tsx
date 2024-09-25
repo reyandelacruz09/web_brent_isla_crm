@@ -41,47 +41,57 @@ const columns: GridColDef[] = [
 ];
 
 function AllUser() {
-  const { data, error, isLoading, isSuccess } = useUserListQuery("");
   const [content, setContent] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useUserListQuery({
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      let content: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const branches: User[] = [];
 
       for (let i = 0; i < size; i++) {
         let newrole = "";
-        if (result.data[i].role === 3) {
+        if (result[i].role === 3) {
           newrole = "Admin";
-        } else if (result.data[i].role === 2) {
+        } else if (result[i].role === 2) {
           newrole = "Supervisor";
-        } else if (result.data[i].role === 1) {
+        } else if (result[i].role === 1) {
           newrole = "Agent";
         } else {
           newrole = "";
         }
 
         branches.push({
-          id: result.data[i].id,
-          code: result.data[i].code,
-          fullname: result.data[i].fullname,
-          email: result.data[i].user.email,
+          id: result[i].id,
+          code: result[i].code,
+          fullname: result[i].fullname,
+          email: result[i].user.email,
           role: newrole,
-          department: result.data[i].department.name,
-          branch: result.data[i].branch.name,
-          active: result.data[i].status,
-          edit: result.data[i].id,
-          delete: result.data[i].id,
+          department: result[i].department.name,
+          branch: result[i].branch.name,
+          active: result[i].status,
+          edit: result[i].id,
+          delete: result[i].id,
         });
       }
 
       setContent(branches);
-      // console.warn("Size", size);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -96,6 +106,7 @@ function AllUser() {
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
+    setPage(0);
   };
 
   const filteredContent = content.filter(
@@ -201,17 +212,30 @@ function AllUser() {
                         },
                     }}
                     rowHeight={40}
-                    rows={filteredContent}
+                    rows={loadingNextPage || isLoading ? [] : filteredContent}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,
                     }))}
                     initialState={{
                       pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                        paginationModel: {
+                          page: 0,
+                          pageSize: 10,
+                        },
                       },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    paginationMode="server"
+                    pagination
+                    paginationModel={{ page, pageSize }}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
+                    rowCount={totalCount}
+                    onPaginationModelChange={(newModel) => {
+                      setPage(newModel.page);
+                      setPageSize(newModel.pageSize);
+                      setLoadingNextPage(true);
+                    }}
+                    loading={loadingNextPage}
                     hideFooterSelectedRowCount
                   />
                 )}

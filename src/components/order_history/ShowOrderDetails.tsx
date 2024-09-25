@@ -188,7 +188,7 @@ export default function ShowOrderDetails({
       const size = Object.keys(result.data).length;
       const listComplaint: complaints[] = [];
 
-      console.log("size: ", result);
+      // console.log("size: ", result);
       for (let i = 0; i < size; i++) {
         listComplaint.push({
           id: i,

@@ -46,43 +46,54 @@ function AllBranches() {
     localStorage.getItem("account_detail") || "{}"
   );
 
-  const { data, error, isLoading, isSuccess } = useBranchListQuery({
-    owner: account_detailed1.department.id,
-  });
   const [content, setContent] = useState<Branch[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useBranchListQuery({
+    owner: account_detailed1.department.id,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
       let content: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const branches: Branch[] = [];
 
       for (let i = 0; i < size; i++) {
         branches.push({
-          id: result.data[i].id,
-          client: result.data[i].client,
-          code: result.data[i].code,
-          name: result.data[i].name,
-          active: result.data[i].active,
-          owner: result.data[i].owner.name,
-          block_street: result.data[i].block_street,
+          id: result[i].id,
+          client: result[i].client,
+          code: result[i].code,
+          name: result[i].name,
+          active: result[i].active,
+          owner: result[i].owner.name,
+          block_street: result[i].block_street,
           barangay:
-            result.data[i].block_street +
+            result[i].block_street +
             " " +
-            result.data[i].barangay.name +
+            result[i].barangay.name +
             ", " +
-            result.data[i].barangay.city.name,
-          email: result.data[i].email,
-          edit: result.data[i].id,
-          delete: result.data[i].id,
+            result[i].barangay.city.name,
+          email: result[i].email,
+          edit: result[i].id,
+          delete: result[i].id,
           data: undefined,
         });
       }
       setContent(branches);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -91,8 +102,9 @@ function AllBranches() {
     role: account_detailed1.role || 0,
   });
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (event: any) => {
     setSearchQuery(event.target.value);
+    setPage(0);
   };
 
   const filteredContent = content.filter(
@@ -197,17 +209,30 @@ function AllBranches() {
                         },
                     }}
                     rowHeight={40}
-                    rows={filteredContent}
+                    rows={loadingNextPage || isLoading ? [] : filteredContent}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,
                     }))}
                     initialState={{
                       pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                        paginationModel: {
+                          page: 0,
+                          pageSize: 10,
+                        },
                       },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    paginationMode="server"
+                    pagination
+                    paginationModel={{ page, pageSize }}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
+                    rowCount={totalCount}
+                    onPaginationModelChange={(newModel) => {
+                      setPage(newModel.page);
+                      setPageSize(newModel.pageSize);
+                      setLoadingNextPage(true);
+                    }}
+                    loading={loadingNextPage}
                     hideFooterSelectedRowCount
                   />
                 )}

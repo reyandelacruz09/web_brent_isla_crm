@@ -13,9 +13,11 @@ const branchApi = createApi({
   endpoints(builder) {
     return {
       BranchList: builder.query({
-        query: ({ owner }) => {
+        query: ({ owner, page, pageSize, searchQuery }) => {
           return {
-            url: `/api/branch/branch_list/?owner=${owner}`,
+            url: `/api/branch/branch_list/?owner=${owner}&page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

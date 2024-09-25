@@ -66,7 +66,7 @@ function MassUpdate({ cond }: any) {
           region: "",
         });
       }
-      console.log(getFilteredCustomer.data);
+      // console.log(getFilteredCustomer.data);
       setContent(customer);
     }
   }, [getFilteredCustomer.isSuccess, getFilteredCustomer.data]);

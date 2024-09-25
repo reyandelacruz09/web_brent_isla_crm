@@ -143,16 +143,37 @@ function AddProduct() {
     });
   };
 
-  const clients = useBranchListQuery({
-    owner: account_detailed1.department.id,
-  });
+  // const clients = useBranchListQuery({
+  //   owner: account_detailed1.department.id,
+  // });
+  // const [content, setContent] = useState<Client[]>([]);
+  // useEffect(() => {
+  //   if (clients.isSuccess) {
+  //     const result = clients.data?.data || [];
+  //     setContent(result);
+  //   }
+  // }, [clients.isSuccess, clients.data]);
+
+  const clients = useClientListQuery("");
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
-    if (clients.isSuccess) {
-      const result = clients.data?.data || [];
-      setContent(result);
+    if (clients.isSuccess && clients) {
+      let result: any = [];
+      let content: any = [];
+      result = clients.data;
+
+      const size = Object.keys(result.data).length;
+      const client: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        client.push({
+          id: result.data[i].id,
+          name: result.data[i].name,
+        });
+      }
+      setContent(client);
     }
-  }, [clients.isSuccess, clients.data]);
+  }, [clients, clients.isSuccess]);
 
   const productcategory = useCategoryListQuery("");
   const [listCategory, setListCategory] = useState<PCategory[]>([]);
@@ -234,7 +255,7 @@ function AddProduct() {
 
               <div className="pt-3 mr-5">
                 <label className="block mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                  Branch Owner
+                  Product Owner
                 </label>
                 <div className="relative mb-6">
                   <select

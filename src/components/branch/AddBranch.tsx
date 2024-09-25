@@ -51,11 +51,9 @@ function AddBranch() {
   const [cityList, setCityList] = useState<adress[]>([]);
   const [barangayList, setBarangayList] = useState<adress[]>([]);
 
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
-    null
-  );
-  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+  const [selectedRegionId, setSelectedRegionId] = useState<string>("0");
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string>("0");
+  const [selectedCityId, setSelectedCityId] = useState<string>("0");
 
   const { data: regions, isSuccess: isRegionSuccess } = useRegionListQuery("");
   useEffect(() => {
@@ -64,9 +62,8 @@ function AddBranch() {
     }
   }, [isRegionSuccess, regions]);
 
-  const { data: province, isSuccess: isProvinceSuccess } = useProvinceListQuery(
-    selectedRegionId || ""
-  );
+  const { data: province, isSuccess: isProvinceSuccess } =
+    useProvinceListQuery(selectedRegionId);
 
   useEffect(() => {
     if (isProvinceSuccess && province) {
@@ -220,10 +217,13 @@ function AddBranch() {
           block_street: "",
           barangay: "",
           email: "",
-          region: "",
+          region: "v1",
           province: "",
           city: "",
         });
+        setSelectedRegionId("0");
+        setSelectedProvinceId("0");
+        setSelectedCityId("0");
         toast.success("Successfully Added!", {
           transition: Slide,
         });
@@ -371,9 +371,9 @@ function AddBranch() {
                 } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                 onChange={handleInput}
                 name="owner"
-                value={branch.owner || ""}
+                defaultValue={branch.owner || "v1"}
               >
-                <option value="" disabled selected>
+                <option value="v1" disabled>
                   Choose One
                 </option>
                 {listOptions.map((listOption) => (
@@ -417,9 +417,9 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleRegionChange}
                   name="region"
-                  value={branch.region || ""}
+                  defaultValue={branch.region || "v1"}
                 >
-                  <option>Select Region</option>
+                  <option value="v1">Select Region</option>
                   {regionList.map((list) => (
                     <option key={list.id} value={list.id}>
                       {list.name}
@@ -441,9 +441,9 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleProvinceChange}
                   name="province"
-                  value={branch.province || ""}
+                  defaultValue={branch.province || "v1"}
                 >
-                  <option>Select Province</option>
+                  <option value="v1">Select Province</option>
                   {provinceList.map((list) => (
                     <option key={list.id} value={list.id}>
                       {list.name}
@@ -464,9 +464,9 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleCityChange}
                   name="city"
-                  value={branch.city || ""}
+                  defaultValue={branch.city || "v1"}
                 >
-                  <option>Select Municipality</option>
+                  <option value="v1">Select Municipality</option>
                   {cityList.map((list) => (
                     <option key={list.id} value={list.id}>
                       {list.name}
@@ -488,9 +488,9 @@ function AddBranch() {
                   } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
                   onChange={handleInput}
                   name="barangay"
-                  value={branch.barangay || ""}
+                  defaultValue={branch.barangay || "v1"}
                 >
-                  <option>Select Barangay</option>
+                  <option value="v1">Select Barangay</option>
                   {barangayList.map((list) => (
                     <option key={list.id} value={list.id}>
                       {list.name}

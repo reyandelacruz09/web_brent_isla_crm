@@ -21,6 +21,7 @@ import {
 import Modal_Delete_Product from "./Modal_Delete_Product";
 import { EditOutlined } from "@mui/icons-material";
 import { Slide, toast } from "react-toastify";
+import { CircularProgress } from "@mui/material";
 
 export interface Product {
   id: string;
@@ -29,7 +30,7 @@ export interface Product {
   description: string;
   owner: string;
   price: string;
-  active: string;
+  status: string;
   edit: string;
   delete: string;
 }
@@ -40,40 +41,53 @@ const columns: GridColDef[] = [
   { field: "description", headerName: "Product Description", width: 200 },
   { field: "owner", headerName: "Branch Owner", width: 130 },
   { field: "price", headerName: "Unit Price", width: 150 },
-  { field: "active", headerName: "Active", width: 130 },
+  { field: "status", headerName: "Active", width: 130 },
   { field: "edit", headerName: "Edit", width: 130 },
   { field: "delete", headerName: "Delete", width: 130 },
 ];
 
 function AllProducts() {
-  const { data, error, isLoading, isSuccess } = useProductListQuery("");
   const [content, setContent] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useProductListQuery({
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
       let content: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const products: Product[] = [];
 
       for (let i = 0; i < size; i++) {
+        let branchName = result[i].branch.name;
         products.push({
-          id: result.data[i].id,
-          code: result.data[i].code,
-          name: result.data[i].name,
-          description: result.data[i].description,
-          owner: result.data[i].branch.name,
-          price: result.data[i].price.toFixed(2),
-          active: result.data[i].status,
-          edit: result.data[i].id,
-          delete: result.data[i].id,
+          id: result[i].id,
+          code: result[i].code,
+          name: result[i].name,
+          description: result[i].description,
+          owner: branchName,
+          price: result[i].price.toFixed(2),
+          status: result[i].status,
+          edit: result[i].id,
+          delete: result[i].id,
         });
       }
 
       setContent(products);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -86,19 +100,21 @@ function AllProducts() {
     role: account_detailed1.role || 0,
   });
 
-  const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearch = (event: any) => {
     setSearchQuery(event.target.value);
+    setPage(0);
   };
 
   const filteredContent = content.filter(
     (product) =>
       product.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.owner.toLowerCase().includes(searchQuery.toLowerCase())
+      product.owner.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const renderCell = (params: any) => {
-    const isActive = params.colDef.field === "active";
+    const isActive = params.colDef.field === "status";
     const isChecked = isActive && params.value === 1;
 
     if (isActive) {
@@ -177,38 +193,45 @@ function AllProducts() {
             </div>
             <div className="h-100 w-4/4 flex justify-center items-center">
               <div className="w-full h-full bg-white">
-                {isLoading ? (
-                  <Skeleton />
-                ) : error ? (
-                  "No Data Available"
-                ) : (
-                  <DataGrid
-                    sx={{
-                      height: "515px",
-                      [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
-                        {
-                          outline: "none",
-                        },
-                      [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
-                        {
-                          outline: "none",
-                        },
-                    }}
-                    rowHeight={40}
-                    rows={filteredContent}
-                    columns={columns.map((col) => ({
-                      ...col,
-                      renderCell: renderCell,
-                    }))}
-                    initialState={{
-                      pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                <DataGrid
+                  sx={{
+                    height: "515px",
+                    [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
+                      {
+                        outline: "none",
                       },
-                    }}
-                    pageSizeOptions={[5, 10, 20, 50, 100]}
-                    hideFooterSelectedRowCount
-                  />
-                )}
+                    [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                      {
+                        outline: "none",
+                      },
+                  }}
+                  rowHeight={40}
+                  rows={loadingNextPage || isLoading ? [] : filteredContent}
+                  columns={columns.map((col) => ({
+                    ...col,
+                    renderCell: renderCell,
+                  }))}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        page: 0,
+                        pageSize: 10,
+                      },
+                    },
+                  }}
+                  paginationMode="server"
+                  pagination
+                  paginationModel={{ page, pageSize }}
+                  pageSizeOptions={[5, 10, 20, 50, 100]}
+                  rowCount={totalCount}
+                  onPaginationModelChange={(newModel) => {
+                    setPage(newModel.page);
+                    setPageSize(newModel.pageSize);
+                    setLoadingNextPage(true);
+                  }}
+                  loading={loadingNextPage}
+                  hideFooterSelectedRowCount
+                />
               </div>
             </div>
           </div>

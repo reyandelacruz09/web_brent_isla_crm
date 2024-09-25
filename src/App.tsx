@@ -49,8 +49,8 @@ function App() {
           <Route path="/branch" element={<Branch />} />
           <Route path="/order-history" element={<OrderHistory />} />
           <Route path="/inventory" element={<Inventory />} />
-          {/* <Route path="/user" element={<User />} /> */}
-          {/* <Route path="/department" element={<Department />} /> */}
+          <Route path="/user" element={<User />} />
+          <Route path="/department" element={<Department />} />
           <Route path="/kb" element={<KB />} />
           <Route path="/customer-details" element={<CustomerDetails />} />
           <Route path="/settings" element={<Settings />} />

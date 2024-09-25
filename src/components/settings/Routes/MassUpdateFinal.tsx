@@ -42,7 +42,7 @@ function MassUpdateFinal({ id }: any) {
   useEffect(() => {
     if (getBranchListData.isSuccess && getBranchListData.data) {
       setBranchList(getBranchListData.data?.data);
-      console.log("branchList", getBranchListData.data?.data);
+      // console.log("branchList", getBranchListData.data?.data);
     }
   }, [getBranchListData.isSuccess, getBranchListData.data]);
 
@@ -61,7 +61,7 @@ function MassUpdateFinal({ id }: any) {
       ids: id,
     };
 
-    console.log("data", data1);
+    // console.log("data", data1);
 
     if (data1.value === "") {
       toast.error("Field value is missing!", {
