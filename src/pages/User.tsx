@@ -31,6 +31,8 @@ function User() {
     <>
       <NavBar />
       {content}
+      {/* <AddUser />
+      <AllUser /> */}
     </>
   );
 }

@@ -48,35 +48,46 @@ const columns: GridColDef[] = [
 ];
 
 function AllDepartment() {
-  const { data, error, isLoading, isSuccess } = useClientListQuery("");
   const [content, setContent] = useState<Client[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useClientListQuery({
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const branches: Client[] = [];
 
       for (let i = 0; i < size; i++) {
         branches.push({
-          id: result.data[i].id,
-          depname: result.data[i].name,
-          cperson: result.data[i].contact_person,
-          email: result.data[i].email,
-          validity: result.data[i].start_date + " - " + result.data[i].end_date,
-          rdate: result.data[i].date_renewal,
-          plan: result.data[i].plan_subscription,
-          license: result.data[i].no_license,
-          edit: result.data[i].id,
+          id: result[i].id,
+          depname: result[i].name,
+          cperson: result[i].contact_person,
+          email: result[i].email,
+          validity: result[i].start_date + " - " + result[i].end_date,
+          rdate: result[i].date_renewal,
+          plan: result[i].plan_subscription,
+          license: result[i].no_license,
+          edit: result[i].id,
           // delete: result.data[i].id,
         });
       }
 
       setContent(branches);
-      // console.warn("Size", size);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -180,18 +191,30 @@ function AllDepartment() {
                         },
                     }}
                     rowHeight={40}
-                    rows={filteredContent}
+                    rows={loadingNextPage || isLoading ? [] : filteredContent}
                     columns={columns.map((col) => ({
                       ...col,
                       renderCell: renderCell,
                     }))}
                     initialState={{
                       pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                        paginationModel: {
+                          page: 0,
+                          pageSize: 10,
+                        },
                       },
                     }}
-                    rowSelection={false}
-                    pageSizeOptions={[5, 10]}
+                    paginationMode="server"
+                    pagination
+                    paginationModel={{ page, pageSize }}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
+                    rowCount={totalCount}
+                    onPaginationModelChange={(newModel) => {
+                      setPage(newModel.page);
+                      setPageSize(newModel.pageSize);
+                      setLoadingNextPage(true);
+                    }}
+                    loading={loadingNextPage}
                     hideFooterSelectedRowCount
                     slots={{ toolbar: DataGridToolBar }}
                   />

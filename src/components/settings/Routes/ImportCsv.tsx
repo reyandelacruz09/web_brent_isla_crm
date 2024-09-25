@@ -40,7 +40,7 @@ function ImportCsv() {
       session: account_detailed1.id,
     };
 
-    console.log("Datas: ", importUsers);
+    // console.log("Datas: ", importUsers);
     // const csvLeds = await importLeads(importedLeads).unwrap();
     // if (csvLeds.success === true) {
     //    ToastSuccess

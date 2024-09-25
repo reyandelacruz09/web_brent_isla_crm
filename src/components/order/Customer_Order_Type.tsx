@@ -121,7 +121,7 @@ function Customer_Order_Type(createOrder1: any, setCreateOrder1: any) {
             <Select
               variant="standard"
               className="mt-0 w-full border-none"
-              defaultValue=""
+              // =""
             >
               <MenuItem value="Order">
                 <span className="text-sm">Call</span>
@@ -137,7 +137,7 @@ function Customer_Order_Type(createOrder1: any, setCreateOrder1: any) {
                 Type of Complaint
               </span>
             </FormLabel>
-            <Select variant="standard" className="mt-0 w-full" defaultValue="">
+            <Select variant="standard" className="mt-0 w-full">
               <MenuItem value="Order">
                 <span className="text-sm">Cancelled Order</span>
               </MenuItem>
@@ -151,7 +151,7 @@ function Customer_Order_Type(createOrder1: any, setCreateOrder1: any) {
                 Reason of Cancel
               </span>
             </FormLabel>
-            <Select variant="standard" className="mt-0 w-full" defaultValue="">
+            <Select variant="standard" className="mt-0 w-full">
               <MenuItem value="Late Delivery">
                 <span className="text-sm">Late Delivery</span>
               </MenuItem>

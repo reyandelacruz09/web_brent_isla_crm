@@ -85,13 +85,13 @@ function UpdateRoute() {
   }, [getCustField.isSuccess, getCustField.data]);
 
   const handleSearch = () => {
-    console.log("Query", query);
+    // console.log("Query", query);
     const jsonConditions = JSON.stringify(conditions);
     const encodedConditions = encodeURIComponent(jsonConditions);
 
     setSubmitCon(encodedConditions);
 
-    console.log("Conditions: ", encodedConditions);
+    // console.log("Conditions: ", encodedConditions);
   };
 
   return (

@@ -148,6 +148,31 @@ export default function CustomizedDialogs() {
   }, [clients.isSuccess, clients.data]);
 
   const handleClose = () => {
+    setCustomerData({
+      ...customerData,
+      customercode: "",
+      customername: "",
+      fname: "",
+      lname: "",
+      phone1: "",
+      phone2: "",
+      landline: "",
+      email: "",
+      block_unit: "",
+      barangay: "",
+      company: "",
+      nearest_landmark: "",
+    });
+    setProductOrder([
+      {
+        id: 0,
+        product: "",
+        unitPrice: "",
+        qty: "",
+        discount: "",
+        subtotal: "",
+      },
+    ]);
     setOpen(false);
   };
 
@@ -298,8 +323,8 @@ export default function CustomizedDialogs() {
           nearest_landmark: "",
           expected_deldate: "",
           expected_deltime: "",
-          sendsms: false,
-          sendemail: false,
+          sendsms: true,
+          sendemail: true,
           branch: "",
         });
 
@@ -357,7 +382,7 @@ export default function CustomizedDialogs() {
     },
   });
   const { data: dbaddress, isSuccess: isdbaddressSuccess } = useViewBranchQuery(
-    OrderDetails.branch
+    OrderDetails.branch === "" ? "0" : OrderDetails.branch
   );
 
   useEffect(() => {
@@ -399,13 +424,13 @@ export default function CustomizedDialogs() {
   });
   const { data: custInfo, isSuccess: isCustInfoSuccess } =
     useLocateAddressQuery({
-      barangay_id: OrderDetails.barangay,
+      barangay_id: OrderDetails.barangay === "" ? "0" : OrderDetails.barangay,
     });
 
   useEffect(() => {
     if (isCustInfoSuccess && custInfo) {
       setCustomerInfo(custInfo.data);
-      console.log("Customer Info", custInfo.data);
+      // console.log("Customer Info", custInfo.data);
     }
   }, [isCustInfoSuccess, custInfo]);
 

@@ -32,6 +32,8 @@ function Department() {
   return (
     <>
       <NavBar />
+      {/* <AddDepartment />
+      <AllDepartment /> */}
       {content}
     </>
   );

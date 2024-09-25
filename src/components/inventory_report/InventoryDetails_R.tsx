@@ -69,31 +69,40 @@ interface InventoryDetails_RProps {
 }
 
 function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
-  const { data, error, isLoading, isSuccess } = useInventoryListQuery("");
   const [content, setContent] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useInventoryListQuery({
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
       let content: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const products: Product[] = [];
 
       for (let i = 0; i < size; i++) {
-        let newreceipt =
-          result.data[i].receipt === 0 ? "-" : result.data[i].receipt;
-        let newreleased =
-          result.data[i].released === 0 ? "-" : result.data[i].released;
-        let newstock = result.data[i].stock === 0 ? "-" : result.data[i].stock;
+        let newreceipt = result[i].receipt === 0 ? "-" : result[i].receipt;
+        let newreleased = result[i].released === 0 ? "-" : result[i].released;
+        let newstock = result[i].stock === 0 ? "-" : result[i].stock;
 
         products.push({
-          id: result.data[i].id,
-          code: result.data[i].code,
-          name: result.data[i].name,
-          owner: result.data[i].branch.name,
+          id: result[i].id,
+          code: result[i].code,
+          name: result[i].name,
+          owner: result[i].branch.name,
           receipt: newreceipt,
           released: newreleased,
           stock: newstock,
@@ -102,6 +111,7 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
       }
 
       setContent(products);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -165,14 +175,27 @@ function InventoryDetails_R({ setProducts }: InventoryDetails_RProps) {
                         },
                     }}
                     rowHeight={40}
-                    rows={filteredContent}
+                    rows={loadingNextPage || isLoading ? [] : filteredContent}
                     columns={columns}
                     initialState={{
                       pagination: {
-                        paginationModel: { page: 0, pageSize: 10 },
+                        paginationModel: {
+                          page: 0,
+                          pageSize: 10,
+                        },
                       },
                     }}
-                    pageSizeOptions={[5, 10]}
+                    paginationMode="server"
+                    pagination
+                    paginationModel={{ page, pageSize }}
+                    pageSizeOptions={[5, 10, 20, 50, 100]}
+                    rowCount={totalCount}
+                    onPaginationModelChange={(newModel) => {
+                      setPage(newModel.page);
+                      setPageSize(newModel.pageSize);
+                      setLoadingNextPage(true);
+                    }}
+                    loading={loadingNextPage}
                     hideFooterSelectedRowCount
                     onRowClick={handleRowClick}
                   />

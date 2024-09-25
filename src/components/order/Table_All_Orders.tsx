@@ -40,22 +40,32 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
     localStorage.getItem("account_detail") || "{}"
   );
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListQuery({
     owner: account_detailed1.department.id,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
   });
   const [content, setContent] = useState<Order[]>([]);
 
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.expected_deltime;
+        const dateStr = result[i].orderID.expected_deltime;
         const date = new Date(dateStr);
 
         // Format the date components
@@ -71,28 +81,29 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
 
         let name = "";
 
-        if (result.data[i].orderID.customerID.fname === " ") {
-          name = result.data[i].orderID.customerID.customername;
+        if (result[i].orderID.customerID.fname === " ") {
+          name = result[i].orderID.customerID.customername;
         } else {
           name =
-            result.data[i].orderID.customerID.fname +
+            result[i].orderID.customerID.fname +
             " " +
-            result.data[i].orderID.customerID.lname;
+            result[i].orderID.customerID.lname;
         }
 
         order.push({
-          status: result.data[i].orderID.status,
-          id: result.data[i].orderID.id,
+          status: result[i].orderID.status,
+          id: result[i].orderID.id,
           name: name,
-          assignedbranch: result.data[i].orderID.branch.name,
-          amount: result.data[i].grandtotal.toFixed(2),
-          ordertaker: result.data[i].orderID.added_by.fullname,
+          assignedbranch: result[i].orderID.branch.name,
+          amount: result[i].grandtotal.toFixed(2),
+          ordertaker: result[i].orderID.added_by.fullname,
           edt: formattedDate,
-          cid: result.data[i].orderID.customerID.id,
+          cid: result[i].orderID.customerID.id,
         });
       }
 
       setContent(order);
+      setTotalCount(data.count);
     }
   }, [data, isSuccess]);
 
@@ -183,17 +194,30 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
                 },
             }}
             rowHeight={40}
-            rows={filteredContent}
+            rows={loadingNextPage || isLoading ? [] : filteredContent}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,
             }))}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: {
+                  page: 0,
+                  pageSize: 10,
+                },
               },
             }}
-            pageSizeOptions={[5, 10]}
+            paginationMode="server"
+            pagination
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+            rowCount={totalCount}
+            onPaginationModelChange={(newModel) => {
+              setPage(newModel.page);
+              setPageSize(newModel.pageSize);
+              setLoadingNextPage(true);
+            }}
+            loading={loadingNextPage}
             hideFooterSelectedRowCount
           />
         )}

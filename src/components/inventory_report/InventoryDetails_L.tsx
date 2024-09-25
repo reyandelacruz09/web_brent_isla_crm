@@ -31,7 +31,7 @@ interface productsInventory {
 function InventoryDetails_L({ products }: InventoryDetails_LProps) {
   const [inProduct, setInProduct] = useState<productsInventory | null>(null);
   const { data: inventPro, isSuccess: isInventProSuccess } =
-    useInventoryListIDQuery(products.id || "");
+    useInventoryListIDQuery(products.id === 0 ? "0" : products.id);
 
   useEffect(() => {
     if (isInventProSuccess && inventPro) {
@@ -73,7 +73,7 @@ function InventoryDetails_L({ products }: InventoryDetails_LProps) {
                 id="input-group-1"
                 className="bg-gray-100 border border-gray-300 text-gray-900 text-sm  focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 name="id"
-                value={products.id}
+                value={products.id ?? ""}
                 disabled
               />
             </div>

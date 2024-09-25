@@ -100,11 +100,9 @@ function CustomerInformation({
   const [cityList, setCityList] = useState<adress[]>([]);
   const [barangayList, setBarangayList] = useState<adress[]>([]);
 
-  const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(
-    null
-  );
-  const [selectedCityId, setSelectedCityId] = useState<string | null>(null);
+  const [selectedRegionId, setSelectedRegionId] = useState<string>("0");
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string>("0");
+  const [selectedCityId, setSelectedCityId] = useState<string>("0");
   const [apiPhone, setApiPhone] = useState<string>("");
   const [apiPhoneCustomer, setApiPhoneCustomer] = useState<string>("");
   const [apiCustCode, setApiCustCode] = useState<string>("");
@@ -173,19 +171,24 @@ function CustomerInformation({
   if (orderType.orderType === "2") {
     ownerid = "4";
   } else {
-    ownerid = account_detailed1.department.id;
+    ownerid = "3";
   }
-  const branches = useBranchListQuery({
-    owner: ownerid,
-  });
+
   const [branchList, setBranchList] = useState<Branch[]>([]);
+
+  const { data: branchesData, isSuccess: branchesIsSuccess } =
+    useBranchListQuery({
+      owner: ownerid,
+      page: 0,
+      pageSize: 100,
+      searchQuery: "",
+    });
   useEffect(() => {
-    if (branches.isSuccess) {
-      const result = branches.data?.data || [];
-      console.log("Result Branches: ", result);
+    if (branchesIsSuccess) {
+      const result = branchesData.results || [];
       setBranchList(result);
     }
-  }, [branches.isSuccess, branches.data]);
+  }, [branchesIsSuccess, branchesData]);
 
   const [content, setContent] = useState<Customer[]>([]);
   const clients = useListCustomerQuery({
@@ -195,7 +198,7 @@ function CustomerInformation({
   useEffect(() => {
     if (clients.isSuccess) {
       const result = clients.data?.data || [];
-      console.log("Result: ", result);
+      // console.log("Result: ", result);
       setContent(result);
     }
   }, [clients.isSuccess, clients.data]);
@@ -215,8 +218,9 @@ function CustomerInformation({
     }
   };
 
-  const { data: custInfo, isSuccess: isCustInfoSuccess } =
-    useCustomerInfoQuery(apiPhone);
+  const { data: custInfo, isSuccess: isCustInfoSuccess } = useCustomerInfoQuery(
+    apiPhone === "" ? "0" : apiPhone
+  );
   useEffect(() => {
     if (isCustInfoSuccess && custInfo) {
       if (custInfo.data.phone1 != "") {
@@ -256,7 +260,7 @@ function CustomerInformation({
   }, [isCustInfoSuccess, custInfo]);
 
   const { data: custInfoCode, isSuccess: isCustInfoCodeSuccess } =
-    useCustomerInfoCodeQuery(apiCustCode);
+    useCustomerInfoCodeQuery(apiCustCode === "" ? "0" : apiCustCode);
   useEffect(() => {
     if (isCustInfoCodeSuccess && custInfoCode) {
       if (custInfoCode.data.customercode != "") {
@@ -708,9 +712,10 @@ function CustomerInformation({
               name="branch"
               onChange={handleInput}
               id="rec_mode"
+              defaultValue="v1"
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
             >
-              <option value="" disabled selected>
+              <option value="v1" disabled>
                 Choose One
               </option>
               {branchList.map((listOption: any) => (

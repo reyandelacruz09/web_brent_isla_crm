@@ -28,9 +28,24 @@ const orderApi = createApi({
         invalidatesTags: ["order", "dashboard"],
       }),
       OrderList: builder.query({
-        query: ({ owner }) => {
+        query: ({ owner, page, pageSize, searchQuery }) => {
           return {
-            url: `/api/order/order_list/?owner=${owner}`,
+            url: `/api/order/order_list/?owner=${owner}&page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
+      //order_list_status
+      OrderListStatus: builder.query({
+        query: ({ owner, page, pageSize, searchQuery, status }) => {
+          return {
+            url: `/api/order/order_list_status/?owner=${owner}&page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}&status=${status}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -231,6 +246,7 @@ const orderApi = createApi({
 export const {
   useCreateOrderMutation,
   useOrderListQuery,
+  useOrderListStatusQuery,
   useOrderListCustomerQuery,
   useOrderCustomerDetailsQuery,
   useOrderViewQuery,

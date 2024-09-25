@@ -303,9 +303,9 @@ export default function Modal_Show_All_Details({
       );
 
       if (response) {
-        console.log("Response Data:", response.data);
-        console.log("FormData here:", formData);
-        console.log("ApiData here:", newapiData);
+        // console.log("Response Data:", response.data);
+        // console.log("FormData here:", formData);
+        // console.log("ApiData here:", newapiData);
       }
     } catch (error) {
       console.error("Error:", error);
