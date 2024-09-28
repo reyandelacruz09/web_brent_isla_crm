@@ -2,7 +2,7 @@
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
+import { useOrderListHistoryQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
 import Show_Order_Details from "./ShowOrderDetails";
 
@@ -11,6 +11,7 @@ export interface Order {
   id: string;
   neworderID: string;
   name: string;
+  custname: string;
   assignedbranch: string;
   amount: string;
   ordertaker: string;
@@ -33,6 +34,7 @@ interface Complaint {
 
 export interface Table_All_History_Props {
   search: string;
+  owner: string;
 }
 
 const columns: GridColDef[] = [
@@ -45,35 +47,71 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_All_History({ search }: Table_All_History_Props) {
+function Table_All_History({ search, owner }: Table_All_History_Props) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
   const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalComplaint, setTotalComplaint] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+  const [bowner, setBowner] = useState("");
+
+  useEffect(() => {
+    switch (owner) {
+      case "hb":
+        setBowner("3");
+        break;
+      case "rt":
+        setBowner("4");
+        break;
+      default:
+        setBowner("");
+        break;
+    }
+  });
+
   const {
     data: OrderData,
     error: OrderError,
     isLoading: OrderIsLoading,
     isSuccess: OrderIsSuccess,
-  } = useOrderListQuery({
-    owner: account_detailed1.department.id,
+  } = useOrderListHistoryQuery({
+    owner: bowner,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
   });
-  const { data: Complaintdata, isSuccess: ComplaintisSuccess } =
-    useViewComplaintsQuery("");
+  const {
+    data: Complaintdata,
+    isSuccess: ComplaintisSuccess,
+    isLoading: ComplaintisLoading,
+  } = useViewComplaintsQuery({
+    owner: bowner,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
   const [order, setOrder] = useState<Order[]>([]);
   const [complaint, setComplaint] = useState<Complaint[]>([]);
   const [combined, setCombined] = useState<(Order | Complaint)[]>([]);
 
   useEffect(() => {
     if (OrderIsSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = OrderData;
+      result = OrderData.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.completed_date;
+        const dateStr = result[i].orderID.completed_date;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -86,43 +124,46 @@ function Table_All_History({ search }: Table_All_History_Props) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        if (result.data[i].orderID.status > 3) {
+        if (result[i].orderID.status > 3) {
           let newid = i + 100000000000;
           order.push({
-            status: result.data[i].orderID.status,
-            neworderID: result.data[i].orderID.orderID,
+            status: result[i].orderID.status,
+            neworderID: result[i].orderID.orderID,
             id: newid.toString(),
+            custname: result[i].orderID.customerID.customername,
             name:
-              result.data[i].orderID.customerID.fname +
+              result[i].orderID.customerID.fname +
               " " +
-              result.data[i].orderID.customerID.lname,
-            assignedbranch: result.data[i].orderID.branch.name,
-            amount: result.data[i].grandtotal.toFixed(2),
-            ordertaker: result.data[i].orderID.added_by.fullname,
+              result[i].orderID.customerID.lname,
+            assignedbranch: result[i].orderID.branch.name,
+            amount: result[i].grandtotal.toFixed(2),
+            ordertaker: result[i].orderID.added_by.fullname,
             edt: formattedDate,
-            cid: result.data[i].orderID.customerID.id,
+            cid: result[i].orderID.customerID.id,
             type: "order",
           });
         }
       }
       setOrder(order);
-      // console.log("Order: ", order);
+      setTotalOrder(OrderData.count);
+      console.log("Order: ", order);
     }
   }, [OrderData, OrderIsSuccess]);
 
   useEffect(() => {
     if (ComplaintisSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = Complaintdata;
+      result = Complaintdata.results;
 
-      const size = result.data?.length || 0;
+      const size = result?.length || 0;
       const complaint: Complaint[] = [];
 
       // console.log("size: ", size);
 
       for (let i = 0; i < size; i++) {
-        const orderID = result.data[i]?.orderID;
-        const dateStr = result.data[i].date_added;
+        const orderID = result[i]?.orderID;
+        const dateStr = result[i].date_added;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -136,23 +177,24 @@ function Table_All_History({ search }: Table_All_History_Props) {
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
         complaint.push({
-          status: result.data[i]?.complaint === "Canceled Order" ? "1" : "2",
+          status: result[i]?.complaint === "Canceled Order" ? "1" : "2",
           id: i.toString(),
-          neworderID: result.data[i]?.orderID.id || "", // Safeguard against undefined orderID
+          neworderID: result[i]?.orderID.id || "",
           name:
-            result.data[i]?.orderID.customerID.fname +
+            result[i]?.orderID.customerID.fname +
               " " +
-              result.data[i]?.orderID.customerID?.lname || "",
-          assignedbranch: result.data[i]?.orderID.branch.name || "",
+              result[i]?.orderID.customerID?.lname || "",
+          assignedbranch: result[i]?.orderID.branch.name || "",
           amount: "N/A",
-          ordertaker: result.data[i]?.added_by?.fullname || "",
+          ordertaker: result[i]?.added_by?.fullname || "",
           edt: formattedDate,
-          cid: result.data[i]?.orderID.customerID.id || "", // Safeguard against undefined id
+          cid: result[i]?.orderID.customerID.id || "",
           type: "complaint",
         });
       }
       setComplaint(complaint);
-      // console.log("Complaint: ", complaint);
+      setTotalComplaint(Complaintdata.count);
+      console.log("Complaint: ", result);
     }
   }, [Complaintdata, ComplaintisSuccess]);
 
@@ -164,10 +206,10 @@ function Table_All_History({ search }: Table_All_History_Props) {
       const dateB = new Date(b.edt);
       return dateA.getTime() - dateB.getTime();
     });
-
+    setTotalCount(totalOrder + totalComplaint);
     setCombined(sortedCombined);
 
-    // console.log("Combined: ", combined);
+    console.log("Combined: ", combined);
   }, [order, complaint]);
 
   const renderCell = (params: any) => {
@@ -190,7 +232,7 @@ function Table_All_History({ search }: Table_All_History_Props) {
           <Show_Order_Details
             cust_id={params.row.cid}
             orderID={params.row.neworderID}
-            name={params.value}
+            name={params.value === " " ? params.row.custname : params.value}
             type={params.row.type}
           />
           {/* {params.row.cid} */}
@@ -233,7 +275,7 @@ function Table_All_History({ search }: Table_All_History_Props) {
   return (
     <>
       <div className="w-full h-full bg-white">
-        {OrderIsLoading ? (
+        {OrderIsLoading && ComplaintisLoading ? (
           <Skeleton />
         ) : OrderError ? (
           "No data available"
@@ -258,10 +300,23 @@ function Table_All_History({ search }: Table_All_History_Props) {
             }))}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: {
+                  page: 0,
+                  pageSize: 10,
+                },
               },
             }}
-            pageSizeOptions={[5, 10]}
+            paginationMode="server"
+            pagination
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+            rowCount={totalCount}
+            onPaginationModelChange={(newModel) => {
+              setPage(newModel.page);
+              setPageSize(newModel.pageSize);
+              setLoadingNextPage(true);
+            }}
+            loading={loadingNextPage}
             hideFooterSelectedRowCount
           />
         )}

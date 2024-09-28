@@ -66,21 +66,14 @@ function Table_In_Transit({ search }: Table_All_OrdersProps) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        let name = "";
-
-        if (result[i].orderID.customerID.fname === " ") {
-          name = result[i].orderID.customerID.customername;
-        } else {
-          name =
-            result[i].orderID.customerID.fname +
-            " " +
-            result[i].orderID.customerID.lname;
-        }
-
         order.push({
           status: result[i].orderID.status,
           id: result[i].orderID.id,
-          name: name,
+          custname: result[i].orderID.customerID.customername,
+          name:
+            result[i].orderID.customerID.fname +
+            " " +
+            result[i].orderID.customerID.lname,
           assignedbranch: result[i].orderID.branch.name,
           amount: result[i].grandtotal.toFixed(2),
           ordertaker: result[i].orderID.added_by.fullname,
@@ -113,7 +106,7 @@ function Table_In_Transit({ search }: Table_All_OrdersProps) {
           className="cursor-pointer font-bold"
           onClick={() => handleNameClick(params.row.cid, params.row.id)}
         >
-          {params.value}
+          {params.value === " " ? params.row.custname : params.value}
         </span>
       );
     } else if (params.colDef.field === "amount") {

@@ -292,6 +292,20 @@ export default function Modal_Show_All_Details({
     nearest_landmark: "near church",
   };
 
+  // const newapiData = {
+  //   orderID: 14,
+  //   complaint_message: "sample",
+  //   lname: "Bausing",
+  //   fname: "Jonas",
+  //   phone1: "09455904251",
+  //   phone2: "",
+  //   landline: "",
+  //   email: "jonasbausing@gmail.com",
+  //   block_unit: "1167 Chino Roces Ave",
+  //   company: "OODC",
+  //   nearest_landmark: "near church",
+  // };
+
   const externalApi = async () => {
     try {
       const formData = new FormData();
@@ -303,9 +317,10 @@ export default function Modal_Show_All_Details({
       );
 
       if (response) {
-        // console.log("Response Data:", response.data);
-        // console.log("FormData here:", formData);
-        // console.log("ApiData here:", newapiData);
+      console.log("Response Data:", response.data);
+      console.log("FormData here: ", formData);
+      console.log("ApiData here: ", newapiData);
+      console.log("ApiData: ", apiData);
       }
     } catch (error) {
       console.error("Error:", error);

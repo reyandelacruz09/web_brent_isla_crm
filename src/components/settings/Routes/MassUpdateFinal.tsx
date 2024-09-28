@@ -37,11 +37,14 @@ function MassUpdateFinal({ id }: any) {
 
   const getBranchListData = useBranchListQuery({
     owner: account_detailed1.department.id,
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
   });
 
   useEffect(() => {
     if (getBranchListData.isSuccess && getBranchListData.data) {
-      setBranchList(getBranchListData.data?.data);
+      setBranchList(getBranchListData.data?.results);
       // console.log("branchList", getBranchListData.data?.data);
     }
   }, [getBranchListData.isSuccess, getBranchListData.data]);

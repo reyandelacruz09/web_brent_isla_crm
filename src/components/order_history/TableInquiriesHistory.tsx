@@ -6,22 +6,12 @@ import { useEffect, useState } from "react";
 import { Table_All_History_Props } from "./TableAllHistory";
 import ShowOrderDetails from "./ShowOrderDetails";
 
-export interface Order {
-  status: string;
-  id: string;
-  neworderID: string;
-  name: string;
-  assignedbranch: string;
-  amount: string;
-  ordertaker: string;
-  edt: string;
-  cid: string;
-}
 interface Complaint {
   status: string;
   neworderID: string;
   id: string;
   name: string;
+  custname: string;
   assignedbranch: string;
   amount: string;
   ordertaker: string;
@@ -40,82 +30,59 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_Inquiries_History({ search }: Table_All_History_Props) {
+function Table_Inquiries_History({ search, owner }: Table_All_History_Props) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
 
-  const {
-    data: OrderData,
-    error: OrderError,
-    isLoading: OrderIsLoading,
-    isSuccess: OrderIsSuccess,
-  } = useOrderListQuery({
-    owner: account_detailed1.department.id,
-  });
-  const { data: Complaintdata, isSuccess: ComplaintisSuccess } =
-    useViewComplaintsQuery("");
-  const [order, setOrder] = useState<Order[]>([]);
-  const [complaint, setComplaint] = useState<Complaint[]>([]);
-  const [combined, setCombined] = useState<(Order | Complaint)[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const [bowner, setBowner] = useState("");
 
   useEffect(() => {
-    if (OrderIsSuccess) {
-      let result: any = [];
-      result = OrderData;
-
-      const size = Object.keys(result.data).length;
-      const order: Order[] = [];
-
-      for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.completed_date;
-        const date = new Date(dateStr);
-
-        const day = date.getDate();
-        const month = date.getMonth() + 1;
-        const year = date.getFullYear();
-        const hours = date.getHours();
-        const minutes = date.getMinutes();
-
-        const formattedDate = `${month}/${day}/${year} ${hours
-          .toString()
-          .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-
-        if (result.data[i].orderID.status === 5) {
-          let newid = i + 100000000000;
-          order.push({
-            status: result.data[i].orderID.status,
-            neworderID: result.data[i].orderID.orderID,
-            id: newid.toString(),
-            name:
-              result.data[i].orderID.customerID.fname +
-              " " +
-              result.data[i].orderID.customerID.lname,
-            assignedbranch: result.data[i].orderID.branch.name,
-            amount: result.data[i].grandtotal.toFixed(2),
-            ordertaker: result.data[i].orderID.added_by.fullname,
-            edt: formattedDate,
-            cid: result.data[i].orderID.customerID.id,
-          });
-        }
-      }
-      setOrder(order);
-      // console.log("Order: ", order);
+    switch (owner) {
+      case "hb":
+        setBowner("3");
+        break;
+      case "rt":
+        setBowner("4");
+        break;
+      default:
+        setBowner("");
+        break;
     }
-  }, [OrderData, OrderIsSuccess]);
+  });
+
+  const {
+    data: Complaintdata,
+    isSuccess: ComplaintisSuccess,
+    isLoading: ComplaintisLoading,
+    isError: ComplaintisError,
+  } = useViewComplaintsQuery({
+    owner: bowner,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
+  });
+  const [complaint, setComplaint] = useState<Complaint[]>([]);
 
   useEffect(() => {
     if (ComplaintisSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = Complaintdata;
+      result = Complaintdata.results;
 
-      const size = result.data?.length || 0;
+      const size = result?.length || 0;
       const complaint: Complaint[] = [];
 
       // console.log("size: ", size);
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].date_added;
+        const dateStr = result[i].date_added;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -129,39 +96,26 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
         complaint.push({
-          status: result.data[i]?.complaint === "Canceled Order" ? "1" : "2",
+          status: result[i]?.complaint === "Canceled Order" ? "1" : "2",
           id: i.toString(),
-          neworderID: result.data[i]?.orderID.id || "", // Safeguard against undefined orderID
+          neworderID: result[i]?.orderID.id || "",
+          custname: result[i].orderID.customerID.customername,
           name:
-            result.data[i]?.orderID.customerID.fname +
+            result[i]?.orderID.customerID.fname +
               " " +
-              result.data[i]?.orderID.customerID?.lname || "",
-          assignedbranch: result.data[i]?.orderID.branch.name || "",
+              result[i]?.orderID.customerID?.lname || "",
+          assignedbranch: result[i]?.orderID.branch.name || "",
           amount: "N/A",
-          ordertaker: result.data[i]?.added_by?.fullname || "",
+          ordertaker: result[i]?.added_by?.fullname || "",
           edt: formattedDate,
-          cid: result.data[i]?.id || "", // Safeguard against undefined id
+          cid: result[i]?.id || "",
           type: "complaint",
         });
       }
       setComplaint(complaint);
-      // console.log("Complaint: ", complaint);
+      setTotalCount(Complaintdata.count);
     }
   }, [Complaintdata, ComplaintisSuccess]);
-
-  useEffect(() => {
-    const combinedData = [...order, ...complaint];
-
-    const sortedCombined = combinedData.sort((b, a) => {
-      const dateA = new Date(a.edt);
-      const dateB = new Date(b.edt);
-      return dateA.getTime() - dateB.getTime();
-    });
-
-    setCombined(sortedCombined);
-
-    // console.log("Combined: ", combined);
-  }, [order, complaint]);
 
   const renderCell = (params: any) => {
     if (params.colDef.field === "status" && params.value === 4) {
@@ -182,7 +136,7 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
           <ShowOrderDetails
             cust_id={params.row.cid}
             orderID={params.row.neworderID}
-            name={params.value}
+            name={params.value === " " ? params.row.custname : params.value}
             type={params.row.type}
           />
         </span>
@@ -215,17 +169,12 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
     return params.value;
   };
 
-  const filteredContent = combined.filter(
-    (order) =>
-      order.name.toLowerCase().includes(search.toLowerCase()) ||
-      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
-  );
   return (
     <>
       <div className="w-full h-full bg-white">
-        {OrderIsLoading ? (
+        {ComplaintisLoading ? (
           <Skeleton />
-        ) : OrderError ? (
+        ) : ComplaintisError ? (
           "No data available"
         ) : (
           <DataGrid
@@ -241,17 +190,30 @@ function Table_Inquiries_History({ search }: Table_All_History_Props) {
                 },
             }}
             rowHeight={40}
-            rows={filteredContent}
+            rows={complaint}
             columns={columns.map((col) => ({
               ...col,
               renderCell: renderCell,
             }))}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: {
+                  page: 0,
+                  pageSize: 10,
+                },
               },
             }}
-            pageSizeOptions={[5, 10]}
+            paginationMode="server"
+            pagination
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+            rowCount={totalCount}
+            onPaginationModelChange={(newModel) => {
+              setPage(newModel.page);
+              setPageSize(newModel.pageSize);
+              setLoadingNextPage(true);
+            }}
+            loading={loadingNextPage}
             hideFooterSelectedRowCount
           />
         )}

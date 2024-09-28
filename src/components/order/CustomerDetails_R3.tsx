@@ -22,21 +22,32 @@ interface cust_idProps {
 
 function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
   const order_Detailed = JSON.parse(localStorage.getItem("view_id") || "{}");
-  const { data, error, isLoading, isSuccess } =
-    useOrderListCustomerQuery(cust_id);
+
   const [content, setContent] = useState<Order[]>([]);
   const [selectedRow, setSelectedRow] = useState<string>("");
 
+  const [pageSize, setPageSize] = useState(10);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const { data, error, isLoading, isSuccess } = useOrderListCustomerQuery({
+    id: cust_id,
+    page: page,
+    pageSize: pageSize,
+  });
+
   useEffect(() => {
     if (isSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = data;
+      result = data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.expected_deltime;
+        const dateStr = result[i].orderID.expected_deltime;
         const date = new Date(dateStr);
 
         // Format the date components
@@ -51,20 +62,22 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
         order.push({
-          status: result.data[i].orderID.status,
-          id: result.data[i].orderID.id,
+          status: result[i].orderID.status,
+          id: result[i].orderID.id,
+          custname: result[i].orderID.customerID.customername,
           name:
-            result.data[i].orderID.customerID.fname +
+            result[i].orderID.customerID.fname +
             " " +
-            result.data[i].orderID.customerID.lname,
-          assignedbranch: result.data[i].orderID.branch.name,
-          amount: result.data[i].grandtotal.toFixed(2),
-          ordertaker: result.data[i].orderID.added_by.fullname,
+            result[i].orderID.customerID.lname,
+          assignedbranch: result[i].orderID.branch.name,
+          amount: result[i].grandtotal.toFixed(2),
+          ordertaker: result[i].orderID.added_by.fullname,
           edt: formattedDate,
-          cid: result.data[i].orderID.customerID.id,
+          cid: result[i].orderID.customerID.id,
         });
       }
       setContent(order);
+      setTotalCount(data.count);
 
       if (order_Detailed && order.find((row) => row.id === order_Detailed)) {
         setSelectedRow(order_Detailed);
@@ -132,6 +145,12 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
           }).format(parseFloat(params.value ? params.value : "0"))}
         </div>
       );
+    } else if (params.colDef.field === "name") {
+      return (
+        <span className="cursor-pointer font-bold">
+          {params.value === " " ? params.row.custname : params.value}
+        </span>
+      );
     } else if (params.colDef.field === "ordertaker") {
       return <div className="text-center">{params.value}</div>;
     }
@@ -159,17 +178,30 @@ function CustomerDetails_R3({ cust_id, setOrderID }: cust_idProps) {
                         outline: "none",
                       },
                   }}
-                  rows={content}
+                  rows={loadingNextPage || isLoading ? [] : content}
                   columns={columns.map((col) => ({
                     ...col,
                     renderCell: renderCell,
                   }))}
                   initialState={{
                     pagination: {
-                      paginationModel: { page: 0, pageSize: 10 },
+                      paginationModel: {
+                        page: 0,
+                        pageSize: 10,
+                      },
                     },
                   }}
-                  pageSizeOptions={[5, 10]}
+                  paginationMode="server"
+                  pagination
+                  paginationModel={{ page, pageSize }}
+                  pageSizeOptions={[5, 10, 20, 50, 100]}
+                  rowCount={totalCount}
+                  onPaginationModelChange={(newModel) => {
+                    setPage(newModel.page);
+                    setPageSize(newModel.pageSize);
+                    setLoadingNextPage(true);
+                  }}
+                  loading={loadingNextPage}
                   hideFooterSelectedRowCount
                   onRowClick={handleRowClick}
                   rowSelectionModel={selectedRow ? [selectedRow] : []}

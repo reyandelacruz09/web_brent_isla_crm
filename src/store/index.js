@@ -76,6 +76,7 @@ export {
 export {
   useCreateOrderMutation,
   useOrderListQuery,
+  useOrderListHistoryQuery,
   useOrderListStatusQuery,
   useOrderListCustomerQuery,
   useOrderCustomerDetailsQuery,

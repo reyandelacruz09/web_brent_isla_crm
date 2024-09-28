@@ -23,6 +23,7 @@ interface cust_idProps {
 interface customer {
   fname: string;
   lname: string;
+  customername: string;
   email: string;
   phone1: string;
   phone2: string;
@@ -70,6 +71,7 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
   useEffect(() => {
     if (isCustomerSuccess && customer) {
       setCustData(customer.data);
+      console.log("Customer Data: ", customer.data);
     }
   }, [isCustomerSuccess, customer]);
 
@@ -102,13 +104,25 @@ function CustomerDetails_L({ cust_id, orderID }: cust_idProps) {
           <div>
             <Avatar
               {...(custData[0]
-                ? stringAvatar(`${custData[0].fname} ${custData[0].lname}`)
+                ? stringAvatar(
+                    `${
+                      custData[0].fname === ""
+                        ? custData[0].customername
+                        : custData[0].fname
+                    } ${custData[0].lname === "" ? "" : custData[0].lname}`
+                  )
                 : null)}
             />
           </div>
           <div className="pl-3">
             <span className="font-bold">
-              {custData[0] ? `${custData[0].fname} ${custData[0].lname}` : ""}
+              {custData[0]
+                ? `${
+                    custData[0].fname === ""
+                      ? custData[0].customername
+                      : custData[0].fname
+                  } ${custData[0].lname === "" ? " " : custData[0].lname}`
+                : ""}
             </span>
             <p>{custData[0]?.email || ""}</p>
           </div>
