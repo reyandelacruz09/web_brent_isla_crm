@@ -2,23 +2,10 @@
 import { DataGrid, gridClasses, GridColDef } from "@mui/x-data-grid";
 import { createTheme, Skeleton, ThemeProvider } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { useOrderListQuery, useViewComplaintsQuery } from "../../store";
+import { useOrderListHistoryQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
-import { Table_All_History_Props } from "./TableAllHistory";
+import { Order, Table_All_History_Props } from "./TableAllHistory";
 import Show_Order_Details from "./ShowOrderDetails";
-
-export interface Order {
-  status: string;
-  id: string;
-  neworderID: string;
-  name: string;
-  assignedbranch: string;
-  amount: string;
-  ordertaker: string;
-  edt: string;
-  cid: string;
-  type: string;
-}
 
 const columns: GridColDef[] = [
   { field: "status", headerName: "Status", width: 130, align: "center" },
@@ -30,33 +17,61 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "Date", width: 150 },
 ];
 
-function Table_Completed_History({ search }: Table_All_History_Props) {
+function Table_Completed_History({ search, owner }: Table_All_History_Props) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
   const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState("");
+  const [pageSize, setPageSize] = useState(10);
+  const [totalOrder, setTotalOrder] = useState(0);
+  const [totalComplaint, setTotalComplaint] = useState(0);
+  const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const [loadingNextPage, setLoadingNextPage] = useState(false);
+
+  const [bowner, setBowner] = useState("");
+
+  useEffect(() => {
+    switch (owner) {
+      case "hb":
+        setBowner("3");
+        break;
+      case "rt":
+        setBowner("4");
+        break;
+      default:
+        setBowner("");
+        break;
+    }
+  });
+
   const {
     data: OrderData,
     error: OrderError,
     isLoading: OrderIsLoading,
     isSuccess: OrderIsSuccess,
-  } = useOrderListQuery({
-    owner: account_detailed1.department.id,
+  } = useOrderListHistoryQuery({
+    owner: bowner,
+    page: page,
+    pageSize: pageSize,
+    searchQuery: searchQuery,
   });
-  const { data: Complaintdata, isSuccess: ComplaintisSuccess } =
-    useViewComplaintsQuery("");
+
   const [order, setOrder] = useState<Order[]>([]);
 
   useEffect(() => {
     if (OrderIsSuccess) {
+      setLoadingNextPage(false);
       let result: any = [];
-      result = OrderData;
+      result = OrderData.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const order: Order[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result.data[i].orderID.completed_date;
+        const dateStr = result[i].orderID.completed_date;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -69,26 +84,28 @@ function Table_Completed_History({ search }: Table_All_History_Props) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        if (result.data[i].orderID.status == 4) {
+        if (result[i].orderID.status == 4) {
           let newid = i + 100000000000;
           order.push({
-            status: result.data[i].orderID.status,
-            neworderID: result.data[i].orderID.orderID,
+            status: result[i].orderID.status,
+            neworderID: result[i].orderID.orderID,
             id: newid.toString(),
+            custname: result[i].orderID.customerID.customername,
             name:
-              result.data[i].orderID.customerID.fname +
+              result[i].orderID.customerID.fname +
               " " +
-              result.data[i].orderID.customerID.lname,
-            assignedbranch: result.data[i].orderID.branch.name,
-            amount: result.data[i].grandtotal.toFixed(2),
-            ordertaker: result.data[i].orderID.added_by.fullname,
+              result[i].orderID.customerID.lname,
+            assignedbranch: result[i].orderID.branch.name,
+            amount: result[i].grandtotal.toFixed(2),
+            ordertaker: result[i].orderID.added_by.fullname,
             edt: formattedDate,
-            cid: result.data[i].orderID.customerID.id,
+            cid: result[i].orderID.customerID.id,
             type: "order",
           });
         }
       }
       setOrder(order);
+      setTotalCount(OrderData.count);
       // console.log("Order: ", order);
     }
   }, [OrderData, OrderIsSuccess]);
@@ -112,7 +129,7 @@ function Table_Completed_History({ search }: Table_All_History_Props) {
           <Show_Order_Details
             cust_id={params.row.cid}
             orderID={params.row.neworderID}
-            name={params.value}
+            name={params.value === " " ? params.row.custname : params.value}
             type={params.row.type}
           />
         </span>
@@ -178,10 +195,23 @@ function Table_Completed_History({ search }: Table_All_History_Props) {
             }))}
             initialState={{
               pagination: {
-                paginationModel: { page: 0, pageSize: 10 },
+                paginationModel: {
+                  page: 0,
+                  pageSize: 10,
+                },
               },
             }}
-            pageSizeOptions={[5, 10]}
+            paginationMode="server"
+            pagination
+            paginationModel={{ page, pageSize }}
+            pageSizeOptions={[5, 10, 20, 50, 100]}
+            rowCount={totalCount}
+            onPaginationModelChange={(newModel) => {
+              setPage(newModel.page);
+              setPageSize(newModel.pageSize);
+              setLoadingNextPage(true);
+            }}
+            loading={loadingNextPage}
             hideFooterSelectedRowCount
           />
         )}

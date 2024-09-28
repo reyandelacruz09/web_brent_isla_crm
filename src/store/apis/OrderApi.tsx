@@ -39,6 +39,18 @@ const orderApi = createApi({
         },
         providesTags: ["order"],
       }),
+      OrderListHistory: builder.query({
+        query: ({ owner, page, pageSize, searchQuery }) => {
+          return {
+            url: `/api/order/order_list_history/?owner=${owner}&page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["order"],
+      }),
       //order_list_status
       OrderListStatus: builder.query({
         query: ({ owner, page, pageSize, searchQuery, status }) => {
@@ -53,9 +65,11 @@ const orderApi = createApi({
         providesTags: ["order"],
       }),
       OrderListCustomer: builder.query({
-        query: (id) => {
+        query: ({ id, page, pageSize }) => {
           return {
-            url: `/api/order/${id}/order_list_customer`,
+            url: `/api/order/${id}/order_list_customer/?page=${
+              page + 1
+            }&page_size=${pageSize}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -182,9 +196,11 @@ const orderApi = createApi({
       }),
       ///api/order/view_complaints
       ViewComplaints: builder.query({
-        query: () => {
+        query: ({ owner, page, pageSize, searchQuery }) => {
           return {
-            url: `api/order/view_complaints`,
+            url: `api/order/view_complaints/?owner=${owner}&page=${
+              page + 1
+            }&page_size=${pageSize}&query=${searchQuery}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -246,6 +262,7 @@ const orderApi = createApi({
 export const {
   useCreateOrderMutation,
   useOrderListQuery,
+  useOrderListHistoryQuery,
   useOrderListStatusQuery,
   useOrderListCustomerQuery,
   useOrderCustomerDetailsQuery,
