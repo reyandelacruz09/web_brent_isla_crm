@@ -14,6 +14,7 @@ import {
   useBranchListQuery,
   useCategoryListQuery,
   useGetRolesQuery,
+  useGetSeriesProductQuery,
 } from "../../store";
 import { Slide, toast } from "react-toastify";
 
@@ -45,12 +46,13 @@ function AddProduct() {
   const [validationErrors, setValidationErrors] = useState({
     owner: false,
     category: false,
-    code: false,
     name: false,
     price: false,
     discount: false,
     description: false,
   });
+
+  const [series, setSeries] = useState("");
 
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
@@ -66,7 +68,6 @@ function AddProduct() {
     const errors = {
       owner: !product.owner,
       category: !product.category,
-      code: !product.code,
       name: !product.name,
       price: !product.price,
       discount: !product.discount,
@@ -93,7 +94,7 @@ function AddProduct() {
       client: product.client,
       owner: product.owner,
       category: product.category,
-      code: product.code,
+      code: series,
       name: product.name,
       active: product.active ? 1 : 2,
       price: product.price,
@@ -170,10 +171,12 @@ function AddProduct() {
       const client: Client[] = [];
 
       for (let i = 0; i < size; i++) {
-        client.push({
-          id: result[i].id,
-          name: result[i].name,
-        });
+        if (result[i].id === account_detailed1.department.id) {
+          client.push({
+            id: result[i].id,
+            name: result[i].name,
+          });
+        }
       }
       setContent(client);
     }
@@ -188,6 +191,18 @@ function AddProduct() {
       setListCategory(category_result);
     }
   }, [productcategory.isSuccess, productcategory.data]);
+
+  const getSeries = useGetSeriesProductQuery({
+    branch: account_detailed1.branch.id,
+    type: "product",
+  });
+  useEffect(() => {
+    if (getSeries.isSuccess) {
+      // const series = ((getSeries.data as any).data as PCategory[]) || [];
+      setSeries(getSeries.data.series);
+      console.log("Series: ", getSeries.data);
+    }
+  }, [getSeries.isSuccess, getSeries.data]);
 
   const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,
@@ -319,13 +334,10 @@ function AddProduct() {
                   <input
                     type="text"
                     name="code"
-                    value={product.code}
+                    disabled
+                    value={series}
                     onChange={handleInput}
-                    className={`bg-gray-50 border ${
-                      validationErrors.code
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                   />
                 </div>
               </div>

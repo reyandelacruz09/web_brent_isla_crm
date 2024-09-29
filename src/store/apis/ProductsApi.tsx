@@ -32,12 +32,12 @@ const productApi = createApi({
   endpoints(builder) {
     return {
       ProductList: builder.query({
-        query: ({ page, pageSize, searchQuery }) => {
+        query: ({ page, pageSize, searchQuery, owner }) => {
           // query: () => {
           return {
             url: `/api/products/product_list/?page=${
               page + 1
-            }&page_size=${pageSize}&query=${searchQuery}`,
+            }&page_size=${pageSize}&query=${searchQuery}&owner=${owner}`,
             // url: `/api/products/product_list`,
             headers: { Authorization: "token " + token },
             method: "GET",
@@ -127,11 +127,11 @@ const productApi = createApi({
         invalidatesTags: ["products"],
       }),
       InventoryList: builder.query({
-        query: ({ page, pageSize, searchQuery }) => {
+        query: ({ page, pageSize, searchQuery, owner }) => {
           return {
             url: `/api/products/inventory_list/?page=${
               page + 1
-            }&page_size=${pageSize}&query=${searchQuery}`,
+            }&page_size=${pageSize}&query=${searchQuery}&owner=${owner}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -160,6 +160,17 @@ const productApi = createApi({
         },
         providesTags: ["products"],
       }),
+      //get_series_type
+      GetSeriesProduct: builder.query({
+        query: ({ branch, type }) => {
+          return {
+            url: `/api/products/get_series_type/?branch=${branch}&type=${type}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["products"],
+      }),
     };
   },
 });
@@ -176,5 +187,6 @@ export const {
   useInventoryListQuery,
   useInventoryListIDQuery,
   useInventoryHistoryQuery,
+  useGetSeriesProductQuery,
 } = productApi;
 export { productApi };

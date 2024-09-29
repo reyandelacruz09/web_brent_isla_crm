@@ -9,18 +9,28 @@ import { Checkbox, FormControlLabel } from "@mui/material";
 
 type OrderType = {
   demographic: string;
+  rt_type: string;
   order_type: string;
   call_type: string;
   type_of_complaint: string;
   reason_cancell: string;
 };
 
+type OwnerType = {
+  ownerType: string;
+};
+
 type OrderTypeProps = {
   orderType: OrderType;
   setOrderType: React.Dispatch<React.SetStateAction<OrderType>>;
+  ownerType: OwnerType;
 };
 
-function Modal_Order_Type({ orderType, setOrderType }: OrderTypeProps) {
+function Modal_Order_Type({
+  orderType,
+  setOrderType,
+  ownerType,
+}: OrderTypeProps) {
   const [value, setValue] = React.useState("callType");
   const [otypeCall, setotypeCall] = React.useState("");
   const [otypeComplaint, setotypeComplaint] = React.useState("hidden");
@@ -60,44 +70,84 @@ function Modal_Order_Type({ orderType, setOrderType }: OrderTypeProps) {
   return (
     <>
       <div className="grid grid-cols-5">
-        <div>
-          <FormControl>
-            <FormLabel id="demo-row-radio-buttons-group-label">
-              <span className="text-md font-bold text-slate-900">
-                Demographic
-              </span>
-            </FormLabel>
-            <RadioGroup
-              row
-              aria-labelledby="demo-row-radio-buttons-group-label"
-              name="demographic"
-              className="border-2 border-blue-500 rounded-md px-2 mt-1"
-              onChange={handleRadioChange}
-              defaultValue={1}
-            >
-              <FormControlLabel
-                value="1"
-                control={<Radio />}
-                label={<span className="text-sm">Residential</span>}
-                sx={{
-                  "& .MuiSvgIcon-root": {
-                    fontSize: 15,
-                  },
-                }}
-              />
-              <FormControlLabel
-                value="2"
-                control={<Radio />}
-                label={<span className="text-sm">Business</span>}
-                sx={{
-                  "& .MuiSvgIcon-root": {
-                    fontSize: 15,
-                  },
-                }}
-              />
-            </RadioGroup>
-          </FormControl>
-        </div>
+        {ownerType.ownerType === "2" ? (
+          <div className="pr-3">
+            <FormControl className="w-full">
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                <span className="text-md font-bold text-slate-900">Type</span>
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="rt_type"
+                className="border-2 border-blue-500 rounded-md px-2 mt-1 w-full"
+                onChange={handleRadioChange}
+                defaultValue={1}
+              >
+                <FormControlLabel
+                  value="1"
+                  control={<Radio />}
+                  label={<span className="text-sm">Bulk</span>}
+                  sx={{
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 15,
+                    },
+                  }}
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio />}
+                  label={<span className="text-sm">NADS</span>}
+                  sx={{
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 15,
+                    },
+                  }}
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+        ) : (
+          <div>
+            <FormControl>
+              <FormLabel id="demo-row-radio-buttons-group-label">
+                <span className="text-md font-bold text-slate-900">
+                  Demographic
+                </span>
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-labelledby="demo-row-radio-buttons-group-label"
+                name="demographic"
+                className="border-2 border-blue-500 rounded-md px-2 mt-1"
+                onChange={handleRadioChange}
+                defaultValue={1}
+              >
+                <FormControlLabel
+                  value="1"
+                  control={<Radio />}
+                  label={<span className="text-sm">Residential</span>}
+                  sx={{
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 15,
+                    },
+                  }}
+                />
+                <FormControlLabel
+                  value="2"
+                  control={<Radio />}
+                  label={<span className="text-sm">Business</span>}
+                  sx={{
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 15,
+                    },
+                  }}
+                />
+              </RadioGroup>
+            </FormControl>
+          </div>
+        )}
+
         <div>
           <FormControl>
             <FormLabel id="demo-row-radio-buttons-group-label">

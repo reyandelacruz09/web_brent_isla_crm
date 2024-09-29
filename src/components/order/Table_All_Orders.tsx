@@ -19,6 +19,8 @@ export interface Order {
 
 export interface Table_All_OrdersProps {
   search: string;
+  radioVal: string;
+  radioValRT: string;
 }
 
 const columns: GridColDef[] = [
@@ -36,7 +38,11 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-function Table_All_Orders({ search }: Table_All_OrdersProps) {
+function Table_All_Orders({
+  search,
+  radioVal,
+  radioValRT,
+}: Table_All_OrdersProps) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
@@ -46,13 +52,29 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
   const [page, setPage] = useState(0);
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [bowner, setBowner] = useState("");
+
+  useEffect(() => {
+    switch (radioVal) {
+      case "hb":
+        setBowner("3");
+        break;
+      case "rt":
+        setBowner("4");
+        break;
+      default:
+        setBowner("");
+        break;
+    }
+  });
 
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListQuery({
-    owner: account_detailed1.department.id,
+    owner: bowner,
     page: page,
     pageSize: pageSize,
     searchQuery: searchQuery,
+    rt_type: radioValRT,
   });
   const [content, setContent] = useState<Order[]>([]);
 
@@ -78,17 +100,6 @@ function Table_All_Orders({ search }: Table_All_OrdersProps) {
         const formattedDate = `${month}/${day}/${year} ${hours
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
-
-        // let name = "";
-
-        // if (result[i].orderID.customerID.fname === "") {
-        //   name = result[i].orderID.customerID.customername;
-        // } else {
-        //   name =
-        //     result[i].orderID.customerID.fname +
-        //     " " +
-        //     result[i].orderID.customerID.lname;
-        // }
 
         order.push({
           status: result[i].orderID.status,

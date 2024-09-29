@@ -5,50 +5,96 @@ import { Link, useNavigate } from "react-router-dom";
 import { useOrderListHistoryQuery, useViewComplaintsQuery } from "../../store";
 import { useEffect, useState } from "react";
 import Show_Order_Details from "./ShowOrderDetails";
+import PrintIcon from "@mui/icons-material/Print";
+import PrintRTInvoice from "./PrintRTInvoice";
 
-export interface Order {
+export interface OrderRT {
   status: string;
+  orderID: string;
   id: string;
-  neworderID: string;
-  name: string;
+  custcode: string;
   custname: string;
-  assignedbranch: string;
-  amount: string;
-  ordertaker: string;
+  truck: string;
+  tripno: string;
+  date: string;
+  refno: string;
+  //   orderqty: string;
+  //   cyltype: string;
+  //   wwight: string;
+  remarks: string;
+  print: string;
   edt: string;
   cid: string;
-  type: string;
 }
-interface Complaint {
+
+export interface ComplaintRT {
   status: string;
-  neworderID: string;
+  orderID: string;
   id: string;
+  custcode: string;
   custname: string;
-  name: string;
-  assignedbranch: string;
-  amount: string;
-  ordertaker: string;
+  truck: string;
+  tripno: string;
+  date: string;
+  refno: string;
+  //   orderqty: string;
+  //   cyltype: string;
+  //   wwight: string;
+  remarks: string;
+  print: string;
   edt: string;
   cid: string;
-  type: string;
 }
+// interface Complaint {
+//   status: string;
+//   neworderID: string;
+//   id: string;
+//   custname: string;
+//   name: string;
+//   assignedbranch: string;
+//   amount: string;
+//   ordertaker: string;
+//   edt: string;
+//   cid: string;
+//   type: string;
+// }
 
 export interface Table_All_History_Props {
   search: string;
   owner: string;
+  rt_type: string;
 }
 
 const columns: GridColDef[] = [
-  { field: "status", headerName: "Status", width: 130, align: "center" },
-  { field: "neworderID", headerName: "ID", width: 70 },
-  { field: "name", headerName: "Name", width: 200 },
-  { field: "assignedbranch", headerName: "Assigned Branch", width: 200 },
-  { field: "amount", headerName: "Amount", width: 130 },
-  { field: "ordertaker", headerName: "Order Taker", width: 150 },
-  { field: "edt", headerName: "Date", width: 150 },
+  {
+    field: "orderID",
+    headerName: "ID",
+    width: 100,
+    align: "center",
+  },
+  {
+    field: "custcode",
+    headerName: "Code",
+    width: 100,
+    align: "center",
+  },
+  { field: "custname", headerName: "Name", width: 150 },
+  { field: "truck", headerName: "Truck", width: 120 },
+  { field: "tripno", headerName: "Trip No", width: 120 },
+  { field: "date", headerName: "Date", width: 130 },
+  { field: "refno", headerName: "Ref No", width: 100 },
+  //   { field: "orderqty", headerName: "Order Quantity", width: 80 },
+  //   { field: "cyltype", headerName: "CYL Type", width: 100 },
+  //   { field: "weight", headerName: "Weight/Accum", width: 100 },
+  { field: "remarks", headerName: "Remarks", width: 280 },
+  { field: "print", headerName: "Print", width: 100 },
 ];
 
-function Table_All_History({ search, owner }: Table_All_History_Props) {
+function TableInquiryHistoryRT({
+  search,
+  owner,
+  rt_type,
+}: Table_All_History_Props) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
@@ -87,6 +133,7 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
     page: page,
     pageSize: pageSize,
     searchQuery: searchQuery,
+    rt_type: rt_type,
   });
   const {
     data: Complaintdata,
@@ -98,9 +145,9 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
     pageSize: pageSize,
     searchQuery: searchQuery,
   });
-  const [order, setOrder] = useState<Order[]>([]);
-  const [complaint, setComplaint] = useState<Complaint[]>([]);
-  const [combined, setCombined] = useState<(Order | Complaint)[]>([]);
+  const [order, setOrder] = useState<OrderRT[]>([]);
+  const [complaint, setComplaint] = useState<ComplaintRT[]>([]);
+  const [combined, setCombined] = useState<(OrderRT | ComplaintRT)[]>([]);
 
   useEffect(() => {
     if (OrderIsSuccess) {
@@ -109,10 +156,10 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
       result = OrderData.results;
 
       const size = Object.keys(result).length;
-      const order: Order[] = [];
+      const order: OrderRT[] = [];
 
       for (let i = 0; i < size; i++) {
-        const dateStr = result[i].orderID.completed_date;
+        const dateStr = result[i].orderID.expected_deltime;
         const date = new Date(dateStr);
 
         const day = date.getDate();
@@ -125,25 +172,23 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
           .toString()
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
-        if (result[i].orderID.status > 3) {
-          let newid = i + 100000000000;
-          order.push({
-            status: result[i].orderID.status,
-            neworderID: result[i].orderID.orderID,
-            id: newid.toString(),
-            custname: result[i].orderID.customerID.customername,
-            name:
-              result[i].orderID.customerID.fname +
-              " " +
-              result[i].orderID.customerID.lname,
-            assignedbranch: result[i].orderID.branch.name,
-            amount: result[i].grandtotal.toFixed(2),
-            ordertaker: result[i].orderID.added_by.fullname,
-            edt: formattedDate,
-            cid: result[i].orderID.customerID.id,
-            type: "order",
-          });
-        }
+        let newid = i + 100000000000;
+        order.push({
+          orderID: result[i].orderID.orderID,
+          status: result[i].orderID.status,
+          // neworderID: result[i].orderID.orderID,
+          id: newid.toString(),
+          custcode: result[i].orderID.customerID.customercode,
+          custname: result[i].orderID.customerID.customername,
+          truck: result[i].orderID.truck,
+          tripno: result[i].orderID.tripno,
+          date: formattedDate,
+          refno: result[i].orderID.invoiceno,
+          remarks: "",
+          print: "",
+          edt: formattedDate,
+          cid: result[i].orderID.customerID.id,
+        });
       }
       setOrder(order);
       setTotalOrder(OrderData.count);
@@ -158,7 +203,7 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
       result = Complaintdata.results;
 
       const size = result?.length || 0;
-      const complaint: Complaint[] = [];
+      const complaint: ComplaintRT[] = [];
 
       // console.log("size: ", size);
 
@@ -178,20 +223,20 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
           .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}`;
 
         complaint.push({
-          status: result[i]?.complaint === "Canceled Order" ? "1" : "2",
+          orderID: result[i].orderID.orderID,
+          status: result[i].orderID.status,
+          // neworderID: result[i].orderID.orderID,
           id: i.toString(),
-          neworderID: result[i]?.orderID.id || "",
+          custcode: result[i].orderID.customerID.customercode,
           custname: result[i].orderID.customerID.customername,
-          name:
-            result[i]?.orderID.customerID.fname +
-              " " +
-              result[i]?.orderID.customerID?.lname || "",
-          assignedbranch: result[i]?.orderID.branch.name || "",
-          amount: "N/A",
-          ordertaker: result[i]?.added_by?.fullname || "",
+          truck: result[i].orderID.truck,
+          tripno: result[i].orderID.tripno,
+          date: "",
+          refno: result[i].orderID.invoiceno,
+          remarks: "",
+          print: "",
           edt: formattedDate,
-          cid: result[i]?.orderID.customerID.id || "",
-          type: "complaint",
+          cid: result[i].orderID.customerID.id,
         });
       }
       setComplaint(complaint);
@@ -253,6 +298,15 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
           </span>
         </div>
       );
+    } else if (params.colDef.field === "print") {
+      return (
+        <div className="text-right pr-5">
+          <span className="cursor-pointer">
+            {/* <PrintIcon className="text-blue-700" /> */}
+            <PrintRTInvoice />
+          </span>
+        </div>
+      );
     }
 
     if (params.colDef.field === "status" && params.value === "2") {
@@ -268,10 +322,10 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
     return params.value;
   };
 
-  const filteredContent = combined.filter(
+  const filteredContent = order.filter(
     (order) =>
-      order.name.toLowerCase().includes(search.toLowerCase()) ||
-      order.assignedbranch.toLowerCase().includes(search.toLowerCase())
+      order.custcode.toLowerCase().includes(search.toLowerCase()) ||
+      order.custname.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
@@ -327,4 +381,4 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
   );
 }
 
-export default Table_All_History;
+export default TableInquiryHistoryRT;

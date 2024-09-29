@@ -50,6 +50,7 @@ export {
   useInventoryListQuery,
   useInventoryListIDQuery,
   useInventoryHistoryQuery,
+  useGetSeriesProductQuery,
 } from "../store/apis/ProductsApi";
 
 export {
