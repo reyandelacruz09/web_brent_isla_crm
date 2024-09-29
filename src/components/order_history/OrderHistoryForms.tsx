@@ -13,6 +13,7 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import TableAllHistoryRT from "./TableAllHistoryRT";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -202,13 +203,43 @@ export default function OrderHistoryForm() {
               </Tabs>
             </Box>
             <CustomTabPanel value={value} index={0}>
-              <Table_All_History search={searchQuery} owner={radioVal} />
+              {radioVal === "hb" ? (
+                <Table_All_History search={searchQuery} owner={radioVal} />
+              ) : (
+                <TableAllHistoryRT
+                  search={searchQuery}
+                  owner={radioVal}
+                  rt_type={radioValRT}
+                />
+              )}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <Table_Completed_History search={searchQuery} owner={radioVal} />
+              {radioVal === "hb" ? (
+                <Table_Completed_History
+                  search={searchQuery}
+                  owner={radioVal}
+                />
+              ) : (
+                <TableAllHistoryRT
+                  search={searchQuery}
+                  owner={radioVal}
+                  rt_type={radioValRT}
+                />
+              )}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <Table_Inquiries_History search={searchQuery} owner={radioVal} />
+              {radioVal === "hb" ? (
+                <Table_Inquiries_History
+                  search={searchQuery}
+                  owner={radioVal}
+                />
+              ) : (
+                <TableAllHistoryRT
+                  search={searchQuery}
+                  owner={radioVal}
+                  rt_type={radioValRT}
+                />
+              )}
             </CustomTabPanel>
           </Box>
         </div>

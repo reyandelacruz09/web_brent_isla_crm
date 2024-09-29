@@ -132,6 +132,10 @@ export default function CustomizedDialogs() {
     orderType: "",
   });
 
+  const [ownerType, setOwnerType] = useState({
+    ownerType: "",
+  });
+
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
@@ -178,6 +182,7 @@ export default function CustomizedDialogs() {
 
   const [orderType, setOrderType] = React.useState({
     demographic: "1",
+    rt_type: "1",
     order_type: "1",
     call_type: "1",
     type_of_complaint: "0",
@@ -268,6 +273,7 @@ export default function CustomizedDialogs() {
     department: account_detailed1.department.id,
 
     demographic: orderType.demographic,
+    rt_type: orderType.rt_type,
     order_type: orderType.order_type,
     call_type: orderType.call_type,
     type_of_complaint: orderType.type_of_complaint,
@@ -299,6 +305,7 @@ export default function CustomizedDialogs() {
 
         setOrderType({
           demographic: "1",
+          rt_type: "",
           order_type: "1",
           call_type: "1",
           type_of_complaint: "0",
@@ -555,6 +562,10 @@ export default function CustomizedDialogs() {
               ...orderType,
               orderType: "1",
             });
+            setOwnerType({
+              ...ownerType,
+              ownerType: "1",
+            });
             setOpen(true);
             handleCloseDropdown();
           }}
@@ -569,6 +580,10 @@ export default function CustomizedDialogs() {
             setTypeOrder({
               ...orderType,
               orderType: "2",
+            });
+            setOwnerType({
+              ...ownerType,
+              ownerType: "2",
             });
             setOpen(true);
             handleCloseDropdown();
@@ -592,18 +607,6 @@ export default function CustomizedDialogs() {
             <div className="w-1/3">Create Order</div>
             <div className="w-2/3 flex justify-end pr-10">
               <div className="flex gap-3">
-                <Button
-                  component="label"
-                  variant="contained"
-                  className="w-32 pt-2"
-                  tabIndex={-1}
-                  size="small"
-                  color="primary"
-                  onClick={saveOrder}
-                  disabled={changeamt}
-                >
-                  <span className="">Save & Close</span>
-                </Button>
                 <Button
                   component="label"
                   variant="contained"
@@ -632,7 +635,11 @@ export default function CustomizedDialogs() {
           <CloseIcon />
         </IconButton>
         <DialogContent dividers>
-          <Modal_Order_Type orderType={orderType} setOrderType={setOrderType} />
+          <Modal_Order_Type
+            orderType={orderType}
+            setOrderType={setOrderType}
+            ownerType={ownerType}
+          />
 
           <hr className="mt-3" />
           <CustomerInformation
@@ -659,6 +666,34 @@ export default function CustomizedDialogs() {
 
           <div className="flex justify-center gap-5 py-10"></div>
         </DialogContent>
+
+        <DialogActions>
+          <div className="w-full flex gap-10 justify-center py-2">
+            <Button
+              component="label"
+              variant="contained"
+              className="w-52 pt-2"
+              tabIndex={-1}
+              size="small"
+              color="primary"
+              onClick={saveOrder}
+              disabled={changeamt}
+            >
+              <span className="">Send to Scheduler</span>
+            </Button>
+            <Button
+              component="label"
+              variant="contained"
+              className="w-52 pt-2"
+              tabIndex={-1}
+              size="small"
+              color="info"
+              onClick={handleClose}
+            >
+              <span className="">Close</span>
+            </Button>
+          </div>
+        </DialogActions>
       </BootstrapDialog>
     </React.Fragment>
   );

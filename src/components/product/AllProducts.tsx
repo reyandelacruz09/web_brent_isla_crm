@@ -55,10 +55,15 @@ function AllProducts() {
   const [page, setPage] = useState(0);
   const [loadingNextPage, setLoadingNextPage] = useState(false);
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   const { data, error, isLoading, isSuccess } = useProductListQuery({
     page: page,
     pageSize: pageSize,
     searchQuery: searchQuery,
+    owner: account_detailed1.department.id,
   });
 
   useEffect(() => {
@@ -90,10 +95,6 @@ function AllProducts() {
       setTotalCount(data.count);
     }
   }, [data, isSuccess]);
-
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
 
   const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,

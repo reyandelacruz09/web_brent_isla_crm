@@ -28,11 +28,11 @@ const orderApi = createApi({
         invalidatesTags: ["order", "dashboard"],
       }),
       OrderList: builder.query({
-        query: ({ owner, page, pageSize, searchQuery }) => {
+        query: ({ owner, page, pageSize, searchQuery, rt_type }) => {
           return {
             url: `/api/order/order_list/?owner=${owner}&page=${
               page + 1
-            }&page_size=${pageSize}&query=${searchQuery}`,
+            }&page_size=${pageSize}&query=${searchQuery}&rt_type=${rt_type}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
@@ -40,11 +40,11 @@ const orderApi = createApi({
         providesTags: ["order"],
       }),
       OrderListHistory: builder.query({
-        query: ({ owner, page, pageSize, searchQuery }) => {
+        query: ({ owner, page, pageSize, searchQuery, rt_type }) => {
           return {
             url: `/api/order/order_list_history/?owner=${owner}&page=${
               page + 1
-            }&page_size=${pageSize}&query=${searchQuery}`,
+            }&page_size=${pageSize}&query=${searchQuery}&rt_type=${rt_type}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };
