@@ -169,6 +169,7 @@ const productApi = createApi({
             method: "GET",
           };
         },
+        // refetchOnMountOrArgChange: true,
         providesTags: ["products"],
       }),
     };

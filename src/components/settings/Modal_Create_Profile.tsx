@@ -34,7 +34,7 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   },
 }));
 
-interface roles {
+export interface roles {
   id: string;
   name: string;
 }

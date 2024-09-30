@@ -8,6 +8,7 @@ import {
   useClientListQuery,
   useCreateBranchMutation,
   useGetRolesQuery,
+  useGetSeriesProductQuery,
 } from "../../store";
 import { useEffect, useState } from "react";
 import Branch from "../../pages/Branch";
@@ -54,6 +55,15 @@ function AddBranch() {
   const [selectedRegionId, setSelectedRegionId] = useState<string>("0");
   const [selectedProvinceId, setSelectedProvinceId] = useState<string>("0");
   const [selectedCityId, setSelectedCityId] = useState<string>("0");
+
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
+  const getRolesAPI = useGetRolesQuery({
+    client: account_detailed1.department?.id || 0,
+    role: account_detailed1.role || 0,
+  });
 
   const { data: regions, isSuccess: isRegionSuccess } = useRegionListQuery("");
   useEffect(() => {
@@ -106,16 +116,20 @@ function AddBranch() {
       const client: Client[] = [];
 
       for (let i = 0; i < size; i++) {
-        client.push({
-          id: result[i].id,
-          name: result[i].name,
-        });
+        if (result[i].id === account_detailed1.department.id) {
+          client.push({
+            id: result[i].id,
+            name: result[i].name,
+          });
+        }
       }
 
       setContent(client);
     }
   }, [clients, clients.isSuccess]);
   const listOptions = content;
+
+  const [series, setSeries] = useState("");
 
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRegionId(event.target.value);
@@ -160,7 +174,6 @@ function AddBranch() {
   };
 
   const [validationErrors, setValidationErrors] = useState({
-    code: false,
     name: false,
     owner: false,
     block_street: false,
@@ -173,7 +186,6 @@ function AddBranch() {
 
   const validateFields = () => {
     const errors = {
-      code: !branch.code,
       name: !branch.name,
       owner: !branch.owner,
       block_street: !branch.block_street,
@@ -200,7 +212,7 @@ function AddBranch() {
     }
 
     const data1 = {
-      code: branch.code,
+      code: series,
       name: branch.name,
       active: branch.active,
       owner: branch.owner,
@@ -230,6 +242,7 @@ function AddBranch() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
+        getSeries.refetch();
       } else {
         alert("something wrong");
       }
@@ -259,14 +272,16 @@ function AddBranch() {
     setSelectedCityId("0");
   };
 
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
-
-  const getRolesAPI = useGetRolesQuery({
-    client: account_detailed1.department?.id || 0,
-    role: account_detailed1.role || 0,
+  const getSeries = useGetSeriesProductQuery({
+    branch: account_detailed1.branch.id,
+    type: "branch",
   });
+  useEffect(() => {
+    if (getSeries.isSuccess) {
+      setSeries(getSeries.data.series);
+      console.log("Series: ", getSeries.data);
+    }
+  }, [getSeries.isSuccess, getSeries.data]);
 
   return (
     <>
@@ -325,13 +340,12 @@ function AddBranch() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className={`bg-gray-50 border ${
-                    validationErrors.code ? "border-red-500" : "border-gray-300"
-                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                   placeholder=""
                   onChange={handleInput}
                   name="code"
-                  value={branch.code}
+                  value={series}
+                  disabled
                 />
               </div>
             </div>

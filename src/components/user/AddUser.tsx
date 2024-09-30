@@ -4,10 +4,13 @@ import {
   useBranchListQuery,
   useClientListQuery,
   useGetRolesQuery,
+  useAccountRoleListQuery,
+  useGetSeriesProductQuery,
 } from "../../store";
 import { useEffect, useState } from "react";
 import { useCreateUserMutation } from "../../store";
 import { Slide, toast } from "react-toastify";
+import { roles } from "../settings/Modal_Create_Profile";
 
 interface Client {
   id: number;
@@ -24,21 +27,12 @@ function AddUser() {
   );
 
   const [departmentID, setDepatmentID] = useState("");
+  const [roleList, setroleList] = useState<roles[]>([]);
 
-  // const clients = useBranchListQuery({
-  //   owner: departmentID,
-  //   page: 0,
-  //   pageSize: 100,
-  //   searchQuery: "",
-  // });
-
-  // useEffect(() => {
-  //   if (clients.isSuccess) {
-  //     const result = clients.data?.data || [];
-  //     setContent(result);
-  //   }
-  // }, [clients.isSuccess, clients.data]);
   const [content, setContent] = useState<Client[]>([]);
+
+  const [series, setSeries] = useState("");
+
   const { data: branchesData, isSuccess: branchesIsSuccess } =
     useBranchListQuery({
       owner: departmentID,
@@ -53,13 +47,42 @@ function AddUser() {
     }
   }, [branchesIsSuccess, branchesData]);
 
-  const depList = useClientListQuery("");
+  const { data: roles, isSuccess: isRolesSuccess } =
+    useAccountRoleListQuery("");
+  useEffect(() => {
+    if (isRolesSuccess && roles) {
+      setroleList(roles.data);
+    }
+  }, [isRolesSuccess, roles]);
+
+  const depList = useClientListQuery({
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
+  });
   const [clientList, setClientList] = useState<Department[]>([]);
   useEffect(() => {
     if (depList.isSuccess) {
-      const category_result =
-        ((depList.data as any).data as Department[]) || [];
-      setClientList(category_result);
+      // const category_result =
+      //   ((depList.data as any).data as Department[]) || [];
+      // setClientList(category_result);
+
+      let result: any = [];
+      result = depList.data.results;
+
+      const size = Object.keys(result).length;
+      const client: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        if (result[i].id === account_detailed1.department.id) {
+          client.push({
+            id: result[i].id,
+            name: result[i].name,
+          });
+        }
+      }
+
+      setClientList(client);
     }
   }, [depList.isSuccess, depList.data]);
 
@@ -77,7 +100,6 @@ function AddUser() {
   });
 
   const [validationErrors, setValidationErrors] = useState({
-    code: false,
     email: false,
     password: false,
     cpassword: false,
@@ -100,7 +122,6 @@ function AddUser() {
 
   const validateFields = () => {
     const errors = {
-      code: !user.code,
       email: !user.email,
       password: !user.password,
       cpassword: !user.cpassword,
@@ -146,18 +167,19 @@ function AddUser() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-        setUser({
-          code: "",
-          email: "",
-          status: true,
-          password: "",
-          cpassword: "",
-          fullname: "",
-          phone: "",
-          role: 0,
-          department: 0,
-          branch: 0,
-        });
+        // setUser({
+        //   code: "",
+        //   email: "",
+        //   status: true,
+        //   password: "",
+        //   cpassword: "",
+        //   fullname: "",
+        //   phone: "",
+        //   role: 0,
+        //   department: 0,
+        //   branch: 0,
+        // });
+        getSeries.refetch();
       } else {
         alert("something wrong");
       }
@@ -189,6 +211,18 @@ function AddUser() {
     client: account_detailed1.department?.id || 0,
     role: account_detailed1.role || 0,
   });
+
+  const getSeries = useGetSeriesProductQuery({
+    branch: account_detailed1.branch.id,
+    type: "user",
+  });
+  useEffect(() => {
+    if (getSeries.isSuccess) {
+      setSeries(getSeries.data.series);
+      console.log("Series: ", getSeries.data);
+    }
+  }, [getSeries.isSuccess, getSeries.data]);
+
   return (
     <>
       <div className="w-full pt-5">
@@ -246,12 +280,10 @@ function AddUser() {
                 <input
                   type="text"
                   id="input-group-1"
-                  className={`bg-gray-50 border ${
-                    validationErrors.code ? "border-red-500" : "border-gray-300"
-                  } text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5`}
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
                   name="code"
-                  value={user.code}
-                  onChange={handleInput}
+                  value={series}
+                  disabled
                 />
               </div>
             </div>
@@ -378,11 +410,13 @@ function AddUser() {
                   onChange={handleInput}
                 >
                   <option value="0" selected disabled>
-                    Choose One
+                    Choose one
                   </option>
-                  <option value="3">Admin</option>
-                  <option value="2">Supervisor</option>
-                  <option value="1">Agent</option>
+                  {roleList.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
