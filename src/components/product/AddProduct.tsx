@@ -196,9 +196,9 @@ function AddProduct() {
     branch: account_detailed1.branch.id,
     type: "product",
   });
+
   useEffect(() => {
     if (getSeries.isSuccess) {
-      // const series = ((getSeries.data as any).data as PCategory[]) || [];
       setSeries(getSeries.data.series);
       console.log("Series: ", getSeries.data);
     }

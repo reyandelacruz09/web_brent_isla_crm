@@ -73,6 +73,7 @@ export {
   useViewBranchQuery,
   useUpdateBranchMutation,
   useDeleteBranchMutation,
+  useGetSeriesProductBranchQuery,
 } from "../store/apis/BranchApi";
 export {
   useCreateOrderMutation,

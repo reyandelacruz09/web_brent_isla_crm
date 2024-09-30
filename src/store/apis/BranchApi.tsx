@@ -9,7 +9,7 @@ const branchApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: apiDomain,
   }),
-  tagTypes: ["branch"],
+  tagTypes: ["branch", "products"],
   endpoints(builder) {
     return {
       BranchList: builder.query({
@@ -70,6 +70,17 @@ const branchApi = createApi({
         },
         invalidatesTags: ["branch"],
       }),
+      //get_series_type
+      GetSeriesProductBranch: builder.query({
+        query: ({ branch, type }) => {
+          return {
+            url: `/api/products/get_series_type/?branch=${branch}&type=${type}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["branch"],
+      }),
     };
   },
 });
@@ -80,5 +91,6 @@ export const {
   useViewBranchQuery,
   useUpdateBranchMutation,
   useDeleteBranchMutation,
+  useGetSeriesProductBranchQuery,
 } = branchApi;
 export { branchApi };
