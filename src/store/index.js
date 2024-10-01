@@ -51,6 +51,7 @@ export {
   useInventoryListIDQuery,
   useInventoryHistoryQuery,
   useGetSeriesProductQuery,
+  useViewProductHistoryQuery,
 } from "../store/apis/ProductsApi";
 
 export {

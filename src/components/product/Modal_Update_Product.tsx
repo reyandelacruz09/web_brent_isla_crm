@@ -23,6 +23,7 @@ import {
 import { useEffect, useState } from "react";
 import { Client, PCategory } from "./AddProduct";
 import { Slide, toast } from "react-toastify";
+import EditHistoryProduct from "./EditHistoryProduct";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -54,6 +55,10 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
 }) => {
   const [open, setOpen] = React.useState(false);
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   const [updateProduct, setUpdateProduct] = React.useState({
     id: "",
     client: "",
@@ -65,6 +70,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
     price: "",
     discount: "",
     description: "",
+    modified: account_detailed1.id,
   });
 
   const handleClickOpen = () => {
@@ -73,10 +79,6 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
   const handleClose = () => {
     setOpen(false);
   };
-
-  const account_detailed1 = JSON.parse(
-    localStorage.getItem("account_detail") || "{}"
-  );
 
   const getRolesAPI = useGetRolesQuery({
     client: account_detailed1.department?.id || 0,
@@ -108,6 +110,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
       result = data;
 
       setUpdateProduct({
+        ...updateProduct,
         id: result.data.id || "",
         client: result.data.client || "",
         owner: result.data.branch.id || "",
@@ -151,11 +154,14 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
 
   const clients = useBranchListQuery({
     owner: account_detailed1.department.id,
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
   });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess && clients.data) {
-      const result = clients.data?.data || [];
+      const result = clients.data?.results || [];
       setContent(result);
     }
   }, [clients.isSuccess, clients.data]);
@@ -197,6 +203,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                 </div>
                 <div className="w-2/3 flex justify-end pr-10">
                   <div className="flex gap-3">
+                    <EditHistoryProduct pid={modalid} />
                     <Button
                       component="label"
                       variant="contained"
@@ -300,6 +307,7 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
                       onChange={handleInput}
                       id="rec_mode"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-1.5"
+                      disabled
                     >
                       <option value="" disabled>
                         Choose One
@@ -389,9 +397,9 @@ const Modal_Update_Product: React.FC<ModalUpdateProductProps> = ({
               </div>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={saveProduct}>
+              {/* <Button autoFocus onClick={saveProduct}>
                 Save changes
-              </Button>
+              </Button> */}
             </DialogActions>
           </BootstrapDialog>
           {/* )} */}

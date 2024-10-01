@@ -172,6 +172,16 @@ const productApi = createApi({
         // refetchOnMountOrArgChange: true,
         providesTags: ["products"],
       }),
+      ViewProductHistory: builder.query({
+        query: ({ productID }) => {
+          return {
+            url: `/api/products/view_product_history/?productID=${productID}`,
+            headers: { Authorization: "token " + token },
+            method: "GET",
+          };
+        },
+        providesTags: ["products"],
+      }),
     };
   },
 });
@@ -189,5 +199,6 @@ export const {
   useInventoryListIDQuery,
   useInventoryHistoryQuery,
   useGetSeriesProductQuery,
+  useViewProductHistoryQuery,
 } = productApi;
 export { productApi };

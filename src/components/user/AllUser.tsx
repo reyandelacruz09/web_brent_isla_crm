@@ -29,7 +29,7 @@ interface User {
 }
 
 const columns: GridColDef[] = [
-  { field: "id", headerName: "Code", width: 80 },
+  { field: "code", headerName: "Code", width: 80 },
   { field: "fullname", headerName: "Fullname", width: 180 },
   { field: "email", headerName: "Email", width: 200 },
   { field: "role", headerName: "Role", width: 130 },

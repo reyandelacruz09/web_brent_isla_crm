@@ -87,6 +87,9 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
     city: "",
   });
 
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
   const handleInput = (e: any) => {
     const { name, value, type, checked } = e.target;
     setUpdateBranch({
@@ -101,23 +104,29 @@ const Modal_Update_Branch: React.FC<ModalUpdateBranchProps> = ({ modalid }) => {
   let result: any = [];
   result = data;
 
-  const clients = useClientListQuery("");
+  const clients = useClientListQuery({
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
+  });
   const [content, setContent] = useState<Client[]>([]);
 
   useEffect(() => {
     if (clients.isSuccess && clients) {
       let result: any = [];
       let content: any = [];
-      result = clients.data;
+      result = clients.data.results;
 
-      const size = Object.keys(result.data).length;
+      const size = Object.keys(result).length;
       const client: Client[] = [];
 
       for (let i = 0; i < size; i++) {
-        client.push({
-          id: result.data[i].id,
-          name: result.data[i].name,
-        });
+        if (result[i].id === account_detailed1.department.id) {
+          client.push({
+            id: result[i].id,
+            name: result[i].name,
+          });
+        }
       }
 
       setContent(client);

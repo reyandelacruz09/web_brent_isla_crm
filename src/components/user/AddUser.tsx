@@ -31,6 +31,8 @@ function AddUser() {
 
   const [content, setContent] = useState<Client[]>([]);
 
+  const [branch, setBranch] = useState("");
+
   const [series, setSeries] = useState("");
 
   const { data: branchesData, isSuccess: branchesIsSuccess } =
@@ -118,6 +120,9 @@ function AddUser() {
     if (name === "department") {
       setDepatmentID(value);
     }
+    if (name === "branch") {
+      setBranch(value);
+    }
   };
 
   const validateFields = () => {
@@ -149,7 +154,7 @@ function AddUser() {
     }
 
     const data1 = {
-      code: user.code,
+      code: series,
       email: user.email,
       status: user.status,
       password: user.password,
@@ -167,18 +172,18 @@ function AddUser() {
         toast.success("Successfully Added!", {
           transition: Slide,
         });
-        // setUser({
-        //   code: "",
-        //   email: "",
-        //   status: true,
-        //   password: "",
-        //   cpassword: "",
-        //   fullname: "",
-        //   phone: "",
-        //   role: 0,
-        //   department: 0,
-        //   branch: 0,
-        // });
+        setUser({
+          code: "",
+          email: "",
+          status: true,
+          password: "",
+          cpassword: "",
+          fullname: "",
+          phone: "",
+          role: 0,
+          department: 0,
+          branch: 0,
+        });
         getSeries.refetch();
       } else {
         alert("something wrong");
@@ -213,7 +218,7 @@ function AddUser() {
   });
 
   const getSeries = useGetSeriesProductQuery({
-    branch: account_detailed1.branch.id,
+    branch: branch,
     type: "user",
   });
   useEffect(() => {
