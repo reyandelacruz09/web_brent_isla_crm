@@ -55,14 +55,35 @@ export default function Modal_Update_User({
   const handleClose = () => {
     setOpen(false);
   };
+  const account_detailed1 = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
 
-  const depList = useClientListQuery("");
+  const depList = useClientListQuery({
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
+  });
   const [clientList, setClientList] = useState<Department[]>([]);
   useEffect(() => {
     if (depList.isSuccess) {
-      const category_result =
-        ((depList.data as any).data as Department[]) || [];
-      setClientList(category_result);
+      let result: any = [];
+      result = depList.data.results;
+
+      const size = Object.keys(result).length;
+      const client: Client[] = [];
+
+      for (let i = 0; i < size; i++) {
+        if (result[i].id === account_detailed1.department.id) {
+          client.push({
+            id: result[i].id,
+            name: result[i].name,
+          });
+          setDepatmentID(result[i].id);
+        }
+      }
+
+      setClientList(client);
     }
   }, [depList.isSuccess, depList.data]);
 
@@ -87,9 +108,9 @@ export default function Modal_Update_User({
       ...updateUser,
       [name]: type === "checkbox" ? checked : value,
     });
-    if (name === "department") {
-      setDepatmentID(value);
-    }
+    // if (name === "department") {
+    //   setDepatmentID(value);
+    // }
   };
 
   const { data, error, isLoading, isSuccess } = useViewUserQuery(modalid);
@@ -150,15 +171,20 @@ export default function Modal_Update_User({
     }
   };
 
-  const [departmentID, setDepatmentID] = useState("");
+  const [departmentID, setDepatmentID] = useState("3");
   const clients = useBranchListQuery({
-    owner: updateUser.department || "0",
+    owner: departmentID,
+    page: 0,
+    pageSize: 100,
+    searchQuery: "",
   });
   const [content, setContent] = useState<Client[]>([]);
   useEffect(() => {
     if (clients.isSuccess) {
-      const result = clients.data?.data || [];
+      const result = clients.data.results || [];
       setContent(result);
+
+      console.log(clients.data);
     }
   }, [clients.isSuccess, clients.data]);
 
