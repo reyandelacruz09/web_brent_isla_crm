@@ -13,6 +13,7 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { styled } from "@mui/material";
 import { useAccountRoleListQuery } from "../../store";
 import Modal_Edit_Roles from "./Modal_Edit_Roles";
+import Restricted from "../../pages/Restricted";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -75,6 +76,10 @@ function Profiles() {
     }
   }, [isRolesSuccess, roles]);
 
+  const acc_detailed = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   return (
     <>
       <NavBar />
@@ -88,52 +93,62 @@ function Profiles() {
             </Link>
           </div>
           <div className="flex-grow"></div>
-          <div className="flex-shrink-0">
-            <Modal_Create_Profile />
+          {acc_detailed.role === 1 ? (
+            <div className="flex-shrink-0"> </div>
+          ) : (
+            <div className="flex-shrink-0">
+              <Modal_Create_Profile />
+            </div>
+          )}
+        </div>
+      </div>
+      {acc_detailed.role === 1 ? (
+        <div className="flex justify-center">
+          <Restricted />
+        </div>
+      ) : (
+        <div className="flex justify-center">
+          <div className="w-2/3">
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell width="20%">Profile Name</StyledTableCell>
+                    <StyledTableCell align="center" width="50%">
+                      Description
+                    </StyledTableCell>
+                    <StyledTableCell align="center" width="15%">
+                      Date Created
+                    </StyledTableCell>
+                    <StyledTableCell align="center" width="15%">
+                      Created by
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {roleList.map((roles) => (
+                    <StyledTableRow
+                      key={roles.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {roles.name}
+                      </TableCell>
+                      <TableCell align="center">{roles.description}</TableCell>
+                      <TableCell align="center">
+                        {formatDate(roles.date_created)}
+                      </TableCell>
+                      <TableCell align="center">
+                        {roles.added_by.fullname}
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
         </div>
-      </div>
-      <div className="flex justify-center">
-        <div className="w-2/3">
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell width="20%">Profile Name</StyledTableCell>
-                  <StyledTableCell align="center" width="50%">
-                    Description
-                  </StyledTableCell>
-                  <StyledTableCell align="center" width="15%">
-                    Date Created
-                  </StyledTableCell>
-                  <StyledTableCell align="center" width="15%">
-                    Created by
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {roleList.map((roles) => (
-                  <StyledTableRow
-                    key={roles.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {roles.name}
-                    </TableCell>
-                    <TableCell align="center">{roles.description}</TableCell>
-                    <TableCell align="center">
-                      {formatDate(roles.date_created)}
-                    </TableCell>
-                    <TableCell align="center">
-                      {roles.added_by.fullname}
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </div>
-      </div>
+      )}
     </>
   );
 }

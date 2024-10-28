@@ -11,8 +11,13 @@ import {
 import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import { Link } from "react-router-dom";
+import Restricted from "../../pages/Restricted";
 
 function Settings_Info() {
+  const acc_detailed = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   return (
     <>
       <div className="flex justify-center gap-10 p-5">
