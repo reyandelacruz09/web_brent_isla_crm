@@ -53,11 +53,11 @@ const orderApi = createApi({
       }),
       //order_list_status
       OrderListStatus: builder.query({
-        query: ({ owner, page, pageSize, searchQuery, status }) => {
+        query: ({ owner, page, pageSize, searchQuery, status, rt_type }) => {
           return {
             url: `/api/order/order_list_status/?owner=${owner}&page=${
               page + 1
-            }&page_size=${pageSize}&query=${searchQuery}&status=${status}`,
+            }&page_size=${pageSize}&query=${searchQuery}&status=${status}&rt_type=${rt_type}`,
             headers: { Authorization: "token " + token },
             method: "GET",
           };

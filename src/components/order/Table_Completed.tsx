@@ -21,7 +21,11 @@ const columns: GridColDef[] = [
   { field: "edt", headerName: "EDT", width: 130 },
 ];
 
-function Table_Completed({ search }: Table_All_OrdersProps) {
+function Table_Completed({
+  search,
+  radioVal,
+  radioValRT,
+}: Table_All_OrdersProps) {
   const account_detailed1 = JSON.parse(
     localStorage.getItem("account_detail") || "{}"
   );
@@ -31,6 +35,21 @@ function Table_Completed({ search }: Table_All_OrdersProps) {
   const [page, setPage] = useState(0);
   const [loadingNextPage, setLoadingNextPage] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [bowner, setBowner] = useState("");
+
+  useEffect(() => {
+    switch (radioVal) {
+      case "hb":
+        setBowner("3");
+        break;
+      case "rt":
+        setBowner("4");
+        break;
+      default:
+        setBowner("");
+        break;
+    }
+  });
 
   const navigate = useNavigate();
   const { data, error, isLoading, isSuccess } = useOrderListStatusQuery({
@@ -39,6 +58,7 @@ function Table_Completed({ search }: Table_All_OrdersProps) {
     pageSize: pageSize,
     searchQuery: searchQuery,
     status: 4,
+    rt_type: radioValRT,
   });
   const [content, setContent] = useState<Order[]>([]);
 

@@ -96,11 +96,12 @@ function EditHistoryProduct({ pid }: pid) {
           price: result[i].price.toFixed(2),
           status: result[i].status,
           delete: result[i].deleted,
-          modified: result[i].modified,
+          modified: result[i].modified?.fullname,
         });
       }
 
       setContent(products);
+      console.log("Result Here: ", result);
     }
   }, [phistory.data, phistory.isSuccess]);
   return (

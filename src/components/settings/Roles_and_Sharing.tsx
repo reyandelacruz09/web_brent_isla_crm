@@ -13,6 +13,7 @@ import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
 import { styled } from "@mui/material";
 import { useAccountRoleListQuery } from "../../store";
 import Modal_Edit_Roles from "./Modal_Edit_Roles";
+import Restricted from "../../pages/Restricted";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -70,6 +71,10 @@ function Roles_and_Sharing() {
     }
   }, [isRolesSuccess, roles]);
 
+  const acc_detailed = JSON.parse(
+    localStorage.getItem("account_detail") || "{}"
+  );
+
   return (
     <>
       <NavBar />
@@ -86,37 +91,43 @@ function Roles_and_Sharing() {
           <div className="flex-shrink-0"></div>
         </div>
       </div>
-      <div className="flex justify-center">
-        <div className="w-2/3">
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <StyledTableCell width="20%">Profile Name</StyledTableCell>
-                  <StyledTableCell align="center" width="50%">
-                    Edit
-                  </StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {roleList.map((roles) => (
-                  <StyledTableRow
-                    key={roles.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {roles.name}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Modal_Edit_Roles id={roles.id} name={roles.name} />
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+      {acc_detailed.role === 1 ? (
+        <div className="flex justify-center">
+          <Restricted />
         </div>
-      </div>
+      ) : (
+        <div className="flex justify-center">
+          <div className="w-2/3">
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell width="20%">Profile Name</StyledTableCell>
+                    <StyledTableCell align="center" width="50%">
+                      Edit
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {roleList.map((roles) => (
+                    <StyledTableRow
+                      key={roles.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {roles.name}
+                      </TableCell>
+                      <TableCell align="center">
+                        <Modal_Edit_Roles id={roles.id} name={roles.name} />
+                      </TableCell>
+                    </StyledTableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
+        </div>
+      )}
     </>
   );
 }
