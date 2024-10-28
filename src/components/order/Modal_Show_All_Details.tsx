@@ -199,6 +199,8 @@ export default function Modal_Show_All_Details({
         orderID: dbutton.data.id,
       }));
 
+      console.log(dbutton.data);
+
       if (dbutton.data.status < 3) {
         setDisabledButton(false);
       } else {
@@ -317,10 +319,10 @@ export default function Modal_Show_All_Details({
       );
 
       if (response) {
-      console.log("Response Data:", response.data);
-      console.log("FormData here: ", formData);
-      console.log("ApiData here: ", newapiData);
-      console.log("ApiData: ", apiData);
+        console.log("Response Data:", response.data);
+        console.log("FormData here: ", formData);
+        console.log("ApiData here: ", newapiData);
+        console.log("ApiData: ", apiData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -399,6 +401,7 @@ export default function Modal_Show_All_Details({
                       {customerInfo.fname} {customerInfo.lname}
                     </span>
                     <p>Order ID: {orderID}</p>
+                    {/* <p>{dbutton.data.branch.owner.name}</p> */}
                   </div>
                 </div>
               </div>
