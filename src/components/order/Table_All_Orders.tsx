@@ -75,6 +75,8 @@ function Table_All_Orders({
     pageSize: pageSize,
     searchQuery: searchQuery,
     rt_type: radioValRT,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const [content, setContent] = useState<Order[]>([]);
 

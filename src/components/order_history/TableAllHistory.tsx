@@ -87,6 +87,8 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
     page: page,
     pageSize: pageSize,
     searchQuery: searchQuery,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const {
     data: Complaintdata,
@@ -97,6 +99,8 @@ function Table_All_History({ search, owner }: Table_All_History_Props) {
     page: page,
     pageSize: pageSize,
     searchQuery: searchQuery,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const [order, setOrder] = useState<Order[]>([]);
   const [complaint, setComplaint] = useState<Complaint[]>([]);
