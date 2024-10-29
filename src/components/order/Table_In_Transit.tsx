@@ -59,6 +59,8 @@ function Table_In_Transit({
     searchQuery: searchQuery,
     status: 3,
     rt_type: radioValRT,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const [content, setContent] = useState<Order[]>([]);
 

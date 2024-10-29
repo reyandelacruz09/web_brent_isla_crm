@@ -72,6 +72,8 @@ function AllUser() {
           newrole = "Supervisor";
         } else if (result[i].role === 1) {
           newrole = "Agent";
+        } else if (result[i].role === 4) {
+          newrole = "Scheduler";
         } else {
           newrole = "";
         }

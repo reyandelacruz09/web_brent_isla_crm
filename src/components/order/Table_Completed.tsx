@@ -59,6 +59,8 @@ function Table_Completed({
     searchQuery: searchQuery,
     status: 4,
     rt_type: radioValRT,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const [content, setContent] = useState<Order[]>([]);
 

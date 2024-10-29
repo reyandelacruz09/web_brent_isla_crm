@@ -59,6 +59,8 @@ function Table_New_Orders({
     searchQuery: searchQuery,
     status: 1,
     rt_type: radioValRT,
+    role: account_detailed1.role,
+    branch: account_detailed1.branch.id,
   });
   const [content, setContent] = useState<Order[]>([]);
 

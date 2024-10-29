@@ -103,78 +103,88 @@ export default function OrderHistoryForm() {
     <div className="w-full">
       <div className="flex justify-center pt-5">
         <div className="w-5/6 flex  gap-5">
-          <div className="flex justify-start gap-5 w-1/2">
-            <FormControl>
-              <RadioGroup
-                row
-                aria-labelledby="demo-row-radio-buttons-group-label"
-                name="row-radio-buttons-group"
-                value={radioVal}
-                className="gap-5 px-2 border rounded-lg border-blue-600"
-                onChange={handleSelect}
-              >
-                <FormControlLabel
-                  value="hb"
-                  control={
-                    <Radio
-                      size="small"
-                      style={{ transform: "scale(0.9)", margin: "0" }}
-                    />
-                  }
-                  label={
-                    <span className="text-sm text-slate-600">Hatid Bahay</span>
-                  }
-                  defaultChecked
-                  className=""
-                  sx={{ marginRight: 1 }}
-                />
-                <FormControlLabel
-                  disabled={disabledRT}
-                  value="rt"
-                  control={<Radio size="small" />}
-                  label={
-                    <span className="text-sm text-slate-600">
-                      Road Transport
-                    </span>
-                  }
-                  className=""
-                  sx={{ marginRight: 1 }}
-                />
-              </RadioGroup>
-            </FormControl>
-            <div className={RT}>
+          {account_detailed1.role === 4 ? (
+            <div className="flex justify-start gap-5 w-1/2"></div>
+          ) : (
+            <div className="flex justify-start gap-5 w-1/2">
               <FormControl>
                 <RadioGroup
                   row
                   aria-labelledby="demo-row-radio-buttons-group-label"
                   name="row-radio-buttons-group"
-                  value={radioValRT}
+                  value={radioVal}
                   className="gap-5 px-2 border rounded-lg border-blue-600"
-                  onChange={handleSelectRT}
+                  onChange={handleSelect}
                 >
                   <FormControlLabel
-                    value="bulk"
+                    value="hb"
                     control={
                       <Radio
                         size="small"
                         style={{ transform: "scale(0.9)", margin: "0" }}
                       />
                     }
-                    label={<span className="text-sm text-slate-600">Bulk</span>}
+                    label={
+                      <span className="text-sm text-slate-600">
+                        Hatid Bahay
+                      </span>
+                    }
+                    defaultChecked
                     className=""
                     sx={{ marginRight: 1 }}
                   />
                   <FormControlLabel
-                    value="nads"
+                    disabled={disabledRT}
+                    value="rt"
                     control={<Radio size="small" />}
-                    label={<span className="text-sm text-slate-600">NADS</span>}
+                    label={
+                      <span className="text-sm text-slate-600">
+                        Road Transport
+                      </span>
+                    }
                     className=""
                     sx={{ marginRight: 1 }}
                   />
                 </RadioGroup>
               </FormControl>
+              <div className={RT}>
+                <FormControl>
+                  <RadioGroup
+                    row
+                    aria-labelledby="demo-row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    value={radioValRT}
+                    className="gap-5 px-2 border rounded-lg border-blue-600"
+                    onChange={handleSelectRT}
+                  >
+                    <FormControlLabel
+                      value="bulk"
+                      control={
+                        <Radio
+                          size="small"
+                          style={{ transform: "scale(0.9)", margin: "0" }}
+                        />
+                      }
+                      label={
+                        <span className="text-sm text-slate-600">Bulk</span>
+                      }
+                      className=""
+                      sx={{ marginRight: 1 }}
+                    />
+                    <FormControlLabel
+                      value="nads"
+                      control={<Radio size="small" />}
+                      label={
+                        <span className="text-sm text-slate-600">NADS</span>
+                      }
+                      className=""
+                      sx={{ marginRight: 1 }}
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </div>
             </div>
-          </div>
+          )}
           <div className="flex justify-end gap-5 w-1/2">
             <input
               type="text"
